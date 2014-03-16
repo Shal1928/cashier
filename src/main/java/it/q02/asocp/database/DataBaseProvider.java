@@ -110,8 +110,13 @@ public class DataBaseProvider {
 
 
         @Override
-        public SqlSession getSession() {
+        public SqlSession openSession() {
             return this.session;
+        }
+
+        @Override
+        public void closeSession() {
+            this.session.close();
         }
 
         @Override

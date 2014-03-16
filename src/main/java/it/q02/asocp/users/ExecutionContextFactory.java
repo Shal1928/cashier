@@ -1,5 +1,6 @@
 package it.q02.asocp.users;
 
+import it.q02.asocp.database.DataBaseProvider;
 import it.q02.asocp.database.DataBaseService;
 import it.q02.asocp.users.impl.ExecutionContextImpl;
 
@@ -8,8 +9,8 @@ import it.q02.asocp.users.impl.ExecutionContextImpl;
  */
 public class ExecutionContextFactory {
 
-    public ExecutionContext createContext(UserInfo info,DataBaseService service){
-        return new ExecutionContextImpl(info,service);
+    public ExecutionContext createContext(UserInfo info){
+        return new ExecutionContextImpl(info);
     }
 
 }

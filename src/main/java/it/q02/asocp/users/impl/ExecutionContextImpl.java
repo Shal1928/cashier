@@ -1,5 +1,6 @@
 package it.q02.asocp.users.impl;
 
+import it.q02.asocp.database.DataBaseProvider;
 import it.q02.asocp.database.DataBaseService;
 import it.q02.asocp.users.ExecutionContext;
 import it.q02.asocp.users.UserInfo;
@@ -9,13 +10,15 @@ import it.q02.asocp.users.UserInfo;
  */
 public class ExecutionContextImpl implements ExecutionContext {
 
+    private DataBaseProvider provider;
     private UserInfo userInfo;
     private DataBaseService service;
 
 
-    public ExecutionContextImpl(UserInfo userInfo, DataBaseService service) {
+    public ExecutionContextImpl(UserInfo userInfo) {
         this.userInfo = userInfo;
-        this.service = service;
+        this.provider = provider;
+
     }
 
     @Override
@@ -25,11 +28,22 @@ public class ExecutionContextImpl implements ExecutionContext {
 
     @Override
     public DataBaseService getDatabaseService() {
+        if(service == null){
+            service = DataBaseProvider.createService();
+
+        }
         return service;
     }
+
+
 
     @Override
     public <T> T getMapper(Class<T> tClass) {
         return service.getMapper(tClass);
+    }
+
+    @Override
+    public boolean dbIsConnected() {
+        return service == null;
     }
 }

@@ -10,8 +10,8 @@ public interface DataBaseService {
 
     public void commitTransaction();
     public void revertTransaction();
-    public SqlSession getSession();
-
+    public SqlSession openSession();
+    public void closeSession();
     public <T> T getMapper(Class<T> clazz);
 
 

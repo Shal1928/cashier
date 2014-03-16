@@ -28,4 +28,6 @@ public interface ExecutionContext {
      */
     public <T> T getMapper(Class<T> tClass);
 
+    public boolean dbIsConnected();
+
 }
