@@ -1,0 +1,57 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<Configure class="org.eclipse.jetty.maven.plugin.JettyWebAppContext">
+
+    <New id="MainDB" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg></Arg>
+        <Arg>jdbc/MainDB</Arg>
+        <Arg>
+            <New class="org.postgresql.ds.PGSimpleDataSource">
+                <Set name="User">asofcp</Set>
+                <Set name="Password">asd12345</Set>
+                <Set name="DatabaseName">asofcp_db</Set>
+                <Set name="ServerName">localhost</Set>
+                <Set name="PortNumber">5432</Set>
+            </New>
+        </Arg>
+    </New>
+
+    <New id="UserInfo" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg></Arg>
+        <Arg>utils/UserInfo</Arg>
+        <Arg>
+            <New class="it.q02.asocp.utils.impl.UserInfoProviderImpl">
+                <Set name="SourceFile">file://<SystemProperty name="jetty.home" default="."/>/src/other/user_info.properties</Set>
+            </New>
+        </Arg>
+    </New>
+
+    <New id="DataBaseProvider" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg></Arg>
+        <Arg>utils/DBProvider</Arg>
+        <Arg>
+            <New class="it.q02.asocp.database.DataBaseProvider">
+                <Set name="ConfigurationURL">file://<SystemProperty name="jetty.home" default="."/>/src/main/resources/database/configuration.xml</Set>
+                <Set name="PropertiesURL">file://<SystemProperty name="jetty.home" default="."/>/src/other/user_info.properties</Set>
+                <Set name="UpdateScriptPath">database.xml</Set>
+                <Set name="ResourceAccessor">
+                    <New class="liquibase.resource.FileSystemResourceAccessor">
+                        <Arg><SystemProperty name="jetty.home" default="."/>/src/main/resources/database/scripts/</Arg>
+                    </New>
+                </Set>
+            </New>
+        </Arg>
+    </New>
+
+        <Get name="securityHandler">
+            <Set name="loginService">
+                <New class="org.eclipse.jetty.security.HashLoginService">
+                    <Set name="name">default</Set>
+                    <Set name="config"><SystemProperty name="jetty.home" default="."/>/src/other/users</Set>
+                </New>
+            </Set>
+        </Get>
+
+
+</Configure>
