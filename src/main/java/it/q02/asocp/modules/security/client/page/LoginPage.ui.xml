@@ -5,13 +5,13 @@
     <b:Modal title="Представьтесь пожалуйста" closable="false" fade="true" backdrop="STATIC" keyboard="false">
         <b:ModalBody>
             <b:Form ui:field="loginForm">
-
-                <b:FormGroup>
+                <b:Alert type="DANGER" ui:field="alert" visible="false"></b:Alert>
+                <b:FormGroup ui:field="loginGroup">
                     <b:FormLabel for="formName">Логин:</b:FormLabel>
                     <b:TextBox text="" ui:field="login"/>
                 </b:FormGroup>
 
-                <b:FormGroup>
+                <b:FormGroup ui:field="passwordGroup">
                     <b:FormLabel for="formPassword">Пароль:</b:FormLabel>
                     <b:Input type="PASSWORD" ui:field="password"/>
                 </b:FormGroup>
