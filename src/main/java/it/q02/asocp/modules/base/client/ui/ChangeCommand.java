@@ -48,11 +48,6 @@ public interface ChangeCommand<T> {
         }
     }
 
-    /**
-     * Идентификатор комманды
-     * @return
-     */
-    public String getId();
 
     /**
      * Виджет описывающий комманду

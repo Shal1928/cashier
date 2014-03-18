@@ -112,7 +112,7 @@ public class LoginPage {
                     password.setFormValue("");
                     login.setFocus(true);
                 } else {
-                    Window.alert("Вы авторизованы!");
+                    Window.Location.replace("/selection/");
                 }
             }
 
