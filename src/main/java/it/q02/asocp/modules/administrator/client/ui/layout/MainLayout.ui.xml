@@ -1,0 +1,70 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+    <ui:style>
+        .navigationPanel{
+            background-color:red;
+        }
+        .contentPanel{
+            background-color:green;
+        }
+        .systemPanel{
+            background-color:pink;
+        }
+        .dataPanel{
+            background-color:yellow;
+        }
+
+    </ui:style>
+    <b:FluidContainer height="100%" width="100%">
+        <b:Row height="100%">
+            <b:Column height="100%" size="MD_2" addStyleNames="{style.navigationPanel}">
+                <b:LinkedGroup width="100%">
+                    <b:LinkedGroupItem active="true" text="menu1"/>
+                    <b:LinkedGroupItem text="menu2"/>
+                    <b:LinkedGroupItem text="menu3"/>
+                </b:LinkedGroup>
+            </b:Column>
+            <b:Column height="100%" size="MD_10" addStyleNames="{style.contentPanel}">
+                <b:Row addStyleNames="{style.systemPanel}" width="100%" height="50px">
+                    <b:Navbar>
+                        <b:NavbarHeader>
+                        <b:NavbarBrand>Brand</b:NavbarBrand>
+                        <b:NavbarCollapseButton target="#navbar-collapse"/>
+                        </b:NavbarHeader>
+
+                        <b:NavbarCollapse b:id="navbar-collapse">
+                            <b:NavbarNav>
+                                <b:ListItem active="true">Item 1</b:ListItem>
+                                <b:ListItem>Item 2</b:ListItem>
+                                <b:ListItem>Item 3</b:ListItem>
+
+                                <b:ListDropDown>
+                                    <b:AnchorButton toggle="DROPDOWN">Dropdown</b:AnchorButton>
+                                    <b:DropDownMenu>
+                                        <b:ListItem>Dropdown 1</b:ListItem>
+                                        <b:ListItem>Dropdown 2</b:ListItem>
+                                        <b:ListItem>Dropdown 3</b:ListItem>
+                                    </b:DropDownMenu>
+                                </b:ListDropDown>
+                            </b:NavbarNav>
+
+                            <b:NavbarForm pull="LEFT">
+                                <b:TextBox placeholder="Search" addStyleNames="col-lg-8"/>
+                            </b:NavbarForm>
+
+                            <b:NavbarText pull="RIGHT">
+                                Signed in as
+                                <b:NavbarLink>John Snow</b:NavbarLink>
+                            </b:NavbarText>
+                        </b:NavbarCollapse>
+                    </b:Navbar>
+                </b:Row>
+                <b:Row addStyleNames="{style.dataPanel}" width="100%" height="100%">
+
+                </b:Row>
+            </b:Column>
+        </b:Row>
+
+    </b:FluidContainer>
+</ui:UiBinder>
