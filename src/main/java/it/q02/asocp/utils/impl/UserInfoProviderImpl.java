@@ -1,12 +1,15 @@
 package it.q02.asocp.utils.impl;
 
 import it.q02.asocp.users.UserInfo;
+import it.q02.asocp.utils.SystemHelper;
 import it.q02.asocp.utils.UserInfoProvider;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.regex.Matcher;
 
 /**
  * User: aleksander at  16.03.14, 14:49
@@ -18,6 +21,13 @@ public class UserInfoProviderImpl implements UserInfoProvider {
     private String file;
 
     public void setSourceFile(String file) {
+
+        if(SystemHelper.isWindows()){
+            String firstPart = file.substring(0, 7);
+            String secondPart = file.substring(7, file.length());
+            file = firstPart + secondPart.replace('/', File.separatorChar);
+        }
+
         this.file = file;
         this.properties = new Properties();
         try {
