@@ -21,12 +21,8 @@ public class UserInfoProviderImpl implements UserInfoProvider {
     private String file;
 
     public void setSourceFile(String file) {
-
-        if(SystemHelper.isWindows()){
-            String firstPart = file.substring(0, 7);
-            String secondPart = file.substring(7, file.length());
-            file = firstPart + secondPart.replace('/', File.separatorChar);
-        }
+        if(SystemHelper.isWindows())
+            file = file.replace(File.separatorChar, '/');
 
         this.file = file;
         this.properties = new Properties();
