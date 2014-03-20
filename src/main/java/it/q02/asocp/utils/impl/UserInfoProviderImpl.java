@@ -21,8 +21,10 @@ public class UserInfoProviderImpl implements UserInfoProvider {
     private String file;
 
     public void setSourceFile(String file) {
-        if(SystemHelper.isWindows())
-            file = file.replace(File.separatorChar, '/');
+        if(SystemHelper.isWindows()){
+            file = file.replaceAll("://",":///").replace(File.separatorChar, '/');
+        }
+
 
         this.file = file;
         this.properties = new Properties();

@@ -1,5 +1,6 @@
 package it.q02.asocp.database;
 
+import it.q02.asocp.utils.SystemHelper;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
@@ -11,6 +12,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
@@ -38,11 +40,17 @@ public class DataBaseProvider {
     }
 
     public void setConfigurationURL(String configurationURL) {
+        if(configurationURL!=null && SystemHelper.isWindows()){
+            configurationURL = configurationURL.replaceAll("://",":///").replace(File.separatorChar, '/');
+        }
         this.configurationURL = configurationURL;
     }
 
 
     public void setPropertiesURL(String propertiesURL) {
+        if(propertiesURL!=null && SystemHelper.isWindows()){
+            propertiesURL = propertiesURL.replaceAll("://",":///").replace(File.separatorChar, '/');
+        }
         this.propertiesURL = propertiesURL;
     }
 
@@ -60,7 +68,7 @@ public class DataBaseProvider {
         SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
         Properties properties = new Properties();
         try {
-            if(properties!=null && !propertiesURL.isEmpty()){
+            if(propertiesURL!=null && !propertiesURL.isEmpty()){
                 properties.load(new URL(propertiesURL).openStream());
             }
             this.factory = builder.build(new URL(configurationURL).openStream(), properties);
