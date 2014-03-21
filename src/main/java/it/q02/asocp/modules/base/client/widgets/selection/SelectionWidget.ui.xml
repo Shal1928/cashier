@@ -1,0 +1,42 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+    <ui:style>
+        .navigationPanel {
+            background-color: red;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .contentPanel {
+            background-color: green;
+
+        }
+
+        .systemPanel {
+            background-color: pink;
+        }
+
+        .dataPanel {
+            background-color: yellow;
+        }
+
+    </ui:style>
+
+    <b:FluidContainer height="100%" width="100%">
+        <b:Row height="100%">
+            <b:Column height="100%" size="MD_2" addStyleNames="{style.navigationPanel}">
+                <b:Panel height="100%">
+                    <b:PanelBody>
+                        <b:LinkedGroup>
+                            <b:LinkedGroupItem active="true" text="menu1"/>
+                            <b:LinkedGroupItem text="menu2"/>
+                            <b:LinkedGroupItem text="menu3"/>
+                        </b:LinkedGroup>
+                    </b:PanelBody>
+                </b:Panel>
+            </b:Column>
+
+        </b:Row>
+
+    </b:FluidContainer>
+</ui:UiBinder>

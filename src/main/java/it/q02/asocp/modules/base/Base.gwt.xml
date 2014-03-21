@@ -3,6 +3,7 @@
 <module rename-to="base">
 
     <inherits name='com.google.gwt.user.User'/>
+    <inherits name="org.gwtbootstrap3.GwtBootstrap3"/>
 
     <set-property name="user.agent" value="safari"/>
 
