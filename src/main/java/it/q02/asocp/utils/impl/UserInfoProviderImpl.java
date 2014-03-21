@@ -1,6 +1,7 @@
 package it.q02.asocp.utils.impl;
 
 import it.q02.asocp.users.UserInfo;
+import it.q02.asocp.users.helper.UserRoles;
 import it.q02.asocp.utils.SystemHelper;
 import it.q02.asocp.utils.UserInfoProvider;
 
@@ -42,7 +43,7 @@ public class UserInfoProviderImpl implements UserInfoProvider {
             UserInfo userInfo = new UserInfo();
             userInfo.setUserLogin(userLogin);
             userInfo.setUserName(properties.getProperty(userLogin + ".display"));
-            userInfo.setUserRoles(Arrays.asList(properties.getProperty(userLogin + ".roles").split(";")));
+            userInfo.setUserRoles(new UserRoles(properties.getProperty(userLogin + ".roles").split(";")));
             return userInfo;
         }else{
             return null;

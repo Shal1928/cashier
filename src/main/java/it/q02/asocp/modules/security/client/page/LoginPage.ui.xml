@@ -5,7 +5,7 @@
     <b:Modal title="Представьтесь пожалуйста" closable="false" fade="true" backdrop="STATIC" keyboard="false">
         <b:ModalBody>
             <b:Form ui:field="loginForm">
-                <b:Alert type="DANGER" ui:field="alert" visible="false"></b:Alert>
+                <b:Alert type="DANGER" ui:field="alert" visible="false" />
                 <b:FormGroup ui:field="loginGroup">
                     <b:FormLabel for="formName">Логин:</b:FormLabel>
                     <b:TextBox text="" ui:field="login"/>
@@ -20,8 +20,8 @@
 
         </b:ModalBody>
         <b:ModalFooter>
-            <b:Button type="PRIMARY" ui:field="enter">Войти</b:Button>
-            <b:Button type="DANGER"  ui:field="clear">Очистить</b:Button>
+            <b:Button type="PRIMARY" size="LARGE" ui:field="enter">Войти</b:Button>
+            <b:Button type="DANGER" size="LARGE" ui:field="clear">Очистить</b:Button>
         </b:ModalFooter>
     </b:Modal>
 </ui:UiBinder>

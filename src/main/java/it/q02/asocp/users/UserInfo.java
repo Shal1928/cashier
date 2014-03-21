@@ -1,5 +1,7 @@
 package it.q02.asocp.users;
 
+import it.q02.asocp.users.helper.UserRoles;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ public class UserInfo {
     private String userLogin;
     private String userName;
 
-    private List<String> userRoles;
+    private UserRoles userRoles;
 
     public String getUserLogin() {
         return userLogin;
@@ -30,11 +32,11 @@ public class UserInfo {
         this.userName = userName;
     }
 
-    public List<String> getUserRoles() {
+    public UserRoles getUserRoles() {
         return userRoles;
     }
 
-    public void setUserRoles(List<String> userRoles) {
+    public void setUserRoles(UserRoles userRoles) {
         this.userRoles = userRoles;
     }
 }

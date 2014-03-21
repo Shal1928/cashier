@@ -1,7 +1,6 @@
 package it.q02.asocp.modules.security.client.page;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -9,15 +8,14 @@ import com.google.gwt.http.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.datepicker.client.CalendarUtil;
+import it.q02.asocp.modules.base.client.widgets.selection.SelectionWidget;
+import it.q02.asocp.users.ExecutionContextStorage;
+import it.q02.asocp.users.helper.UserRoles;
 import org.gwtbootstrap3.client.ui.*;
-import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
-import java.util.Date;
+import static it.q02.asocp.utils.Helper.isNullOrEmpty;
 
 /**
  * User: aleksander at  16.03.14, 19:40
@@ -46,24 +44,24 @@ public class LoginPage {
     }
 
     @UiHandler("password")
-    public void onKeyPress(KeyPressEvent event){
-        if(event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER){
+    public void onKeyPress(KeyPressEvent event) {
+        if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
             makeCall();
         }
     }
 
     @UiHandler("clear")
-    public void onClear(ClickEvent event){
+    public void onClear(ClickEvent event) {
         login.setText("");
         password.setFormValue("");
     }
 
-    protected boolean validateGroup(String value,FormGroup group){
-        boolean isError=false;
-        if(value.trim().isEmpty()){
+    protected boolean validateGroup(String value, FormGroup group) {
+        boolean isError = false;
+        if (value.trim().isEmpty()) {
             group.setValidationState(ValidationState.ERROR);
             isError = true;
-        }else{
+        } else {
             group.setValidationState(ValidationState.NONE);
             isError = false;
         }
@@ -71,23 +69,23 @@ public class LoginPage {
     }
 
     @UiHandler("enter")
-    public void onEnter(ClickEvent event){
+    public void onEnter(ClickEvent event) {
         boolean isError = false;
-        isError|=validateGroup(login.getValue(),loginGroup);
-        isError|=validateGroup(password.getFormValue(),passwordGroup);
+        isError |= validateGroup(login.getValue(), loginGroup);
+        isError |= validateGroup(password.getFormValue(), passwordGroup);
 
-        if(!isError){
+        if (!isError) {
             alert.setVisible(false);
             alert.clear();
             makeCall();
-        }else{
+        } else {
             alert.setVisible(true);
             alert.clear();
             alert.add(new HTML("<strong>Ошибка</strong> заполнения формы"));
         }
     }
 
-    public void makeCall(){
+    public void makeCall() {
 
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, "../j_security_check");
         requestBuilder.setHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -112,7 +110,35 @@ public class LoginPage {
                     password.setFormValue("");
                     login.setFocus(true);
                 } else {
-                    Window.Location.replace("/selection/");
+//                    Window.Location.replace("/widgets/");
+
+                    alert.clear();
+                    alert.add(new SelectionWidget(null));
+                    alert.setVisible(true);
+
+
+//                    UserRoles roles = ExecutionContextStorage.getContext().getUserInfo().getUserRoles();
+//
+//                    //Если ничего или Aut
+//                    if (isNullOrEmpty(roles) || roles.isOnlyAut()) {
+//                        alert.setVisible(true);
+//                        alert.clear();
+//                        alert.add(new HTML("<strong>Ошибка</strong> у вас не достаточно полномочий для работы"));
+//                        login.setFocus(true);
+//                        return;
+//                    }
+//
+//                    //Получаем только нормальные роли
+//                    roles = roles.getIgnoreAut();
+//                    if (roles.size() == 1) {
+//                        //Что-то что понимает по какой роли в какое представление отправить
+//                        //PROFIT!
+//                        return;
+//                    }
+
+
+                    passwordGroup.setVisible(false);
+                    loginGroup.setVisible(false);
                 }
             }
 
