@@ -2,9 +2,21 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
     <ui:style>
-            </ui:style>
-    <b:Nav addStyleNames="nav-stacked nav-inverted ">
-        <b:ListItem active="true">Item 1</b:ListItem>
+        .ActiveStyle > li[class~=active]{
+           border-right: 2px solid #428bca;
+        }
+
+        .ActiveStyle > li[class~=active] a{
+            color: white;
+        }
+        .ActiveStyle > li[class~=active] a:hover{
+            color: #2a6496;
+        }
+
+
+    </ui:style>
+    <b:Nav addStyleNames="nav-stacked nav-inverted {style.ActiveStyle}">
+        <b:ListItem active="true"  >Item 1</b:ListItem>
         <b:ListItem>Item 2</b:ListItem>
         <b:ListItem>Item 3</b:ListItem>
     </b:Nav>
