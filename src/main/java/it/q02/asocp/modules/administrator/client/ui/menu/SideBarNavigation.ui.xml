@@ -1,0 +1,11 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+    <ui:style>
+            </ui:style>
+    <b:Nav addStyleNames="nav-stacked nav-inverted ">
+        <b:ListItem active="true">Item 1</b:ListItem>
+        <b:ListItem>Item 2</b:ListItem>
+        <b:ListItem>Item 3</b:ListItem>
+    </b:Nav>
+</ui:UiBinder>
