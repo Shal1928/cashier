@@ -10,35 +10,18 @@
         </ui:style>
          <b:Navbar addStyleNames=" navbar-inverse {style.noSpace}">
             <b:NavbarHeader>
-                <b:NavbarBrand>ASofCP</b:NavbarBrand>
+                <b:NavbarBrand>ASofCP(v.0.0.1)</b:NavbarBrand>
                 <b:NavbarCollapseButton target="#navbar-collapse"/>
             </b:NavbarHeader>
 
             <b:NavbarCollapse b:id="navbar-collapse">
-                <b:NavbarNav>
-                    <b:ListItem active="true">Item 1</b:ListItem>
-                    <b:ListItem>Item 2</b:ListItem>
-                    <b:ListItem>Item 3</b:ListItem>
-
-                    <b:ListDropDown>
-                        <b:AnchorButton toggle="DROPDOWN">Dropdown</b:AnchorButton>
-                        <b:DropDownMenu>
-                            <b:ListItem>Dropdown 1</b:ListItem>
-                            <b:ListItem>Dropdown 2</b:ListItem>
-                            <b:ListItem>Dropdown 3</b:ListItem>
-                        </b:DropDownMenu>
-                    </b:ListDropDown>
-                </b:NavbarNav>
-
-                <b:NavbarForm pull="LEFT">
-                    <b:TextBox placeholder="Search" addStyleNames="col-lg-8"/>
-                </b:NavbarForm>
 
                 <b:NavbarText pull="RIGHT">
-                    Signed in as
-                    <b:NavbarLink>John Snow</b:NavbarLink>
+                  <b:Icon type="USER"></b:Icon>
+                  <b:NavbarLink>Administrator</b:NavbarLink>
                 </b:NavbarText>
             </b:NavbarCollapse>
+
         </b:Navbar>
 
 
