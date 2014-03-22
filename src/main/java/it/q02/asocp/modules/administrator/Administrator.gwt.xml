@@ -5,7 +5,12 @@
     <inherits name='com.google.gwt.user.User'/>
     <inherits name="it.q02.asocp.modules.base.Base"/>
     <inherits name="org.gwtbootstrap3.GwtBootstrap3"/>
+    <inherits name="com.google.gwt.place.Place"/>
+    <inherits name="com.google.gwt.activity.Activity"/>
 
+    <replace-with class="it.q02.asocp.modules.administrator.client.impl.ClientFactoryImpl">
+        <when-type-is class="it.q02.asocp.modules.administrator.client.ClientFactory"/>
+    </replace-with>
     <entry-point class='it.q02.asocp.modules.administrator.client.Administrator'/>
     <set-property name="user.agent" value="safari"/>
 </module>

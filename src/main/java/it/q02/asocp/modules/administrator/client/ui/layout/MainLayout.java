@@ -3,8 +3,11 @@ package it.q02.asocp.modules.administrator.client.ui.layout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import it.q02.asocp.modules.administrator.client.ui.menu.SideBarNavigation;
+import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.FluidContainer;
 
 /**
@@ -22,9 +25,20 @@ public class MainLayout implements IsWidget {
     }
 
     private static MainLayoutUiBinder ourUiBinder = GWT.create(MainLayoutUiBinder.class);
+    @UiField
+    protected SideBarNavigation sideBar;
+    @UiField
+    protected Column container;
 
     public MainLayout() {
         this.rootWidget = ourUiBinder.createAndBindUi(this);
+    }
 
+    public SideBarNavigation getSideBar() {
+        return sideBar;
+    }
+
+    public Column getContainer() {
+        return container;
     }
 }

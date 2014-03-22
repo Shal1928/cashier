@@ -19,9 +19,9 @@
     <b:FluidContainer>
         <b:Row>
             <b:Column size="MD_2" addStyleNames="{style.position} {style.blackBG} {style.rightShadow}" height="100%" >
-                <l:SideBarNavigation></l:SideBarNavigation>
+                <l:SideBarNavigation ui:field="sideBar"></l:SideBarNavigation>
             </b:Column>
-            <b:Column size="MD_10" height="100%">
+            <b:Column size="MD_10" height="100%" ui:field="container">
 
             </b:Column>
         </b:Row>

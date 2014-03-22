@@ -14,8 +14,9 @@
                 <b:NavbarCollapseButton target="#navbar-collapse"/>
             </b:NavbarHeader>
 
-            <b:NavbarCollapse b:id="navbar-collapse">
+             <b:NavbarNav ui:field="contextMenu"/>
 
+             <b:NavbarCollapse b:id="navbar-collapse">
                 <b:NavbarText pull="RIGHT">
                   <b:Icon type="USER"></b:Icon>
                   <b:NavbarLink>Administrator</b:NavbarLink>
