@@ -1,10 +1,10 @@
-package it.q02.asocp.users.helper;
+package it.q02.asocp.modules.base.client.helpers;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import static it.q02.asocp.utils.Helper.isNullOrEmpty;
+import static it.q02.asocp.modules.base.client.helpers.CommonHelper.isNullOrEmpty;
 
 /**
  *

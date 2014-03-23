@@ -8,14 +8,16 @@ import com.google.gwt.http.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import it.q02.asocp.modules.base.client.helpers.UserRoles;
+import it.q02.asocp.modules.security.client.rpc.CanHandleUserRoles;
+import it.q02.asocp.modules.security.client.rpc.CanHandleUserRolesAsync;
 import it.q02.asocp.modules.base.client.widgets.selection.SelectionWidget;
-import it.q02.asocp.users.ExecutionContextStorage;
-import it.q02.asocp.users.helper.UserRoles;
 import org.gwtbootstrap3.client.ui.*;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
-import static it.q02.asocp.utils.Helper.isNullOrEmpty;
+import static it.q02.asocp.modules.base.client.helpers.CommonHelper.isNullOrEmpty;
 
 /**
  * User: aleksander at  16.03.14, 19:40
@@ -25,6 +27,9 @@ public class LoginPage {
     }
 
     private static LoginPageUiBinder ourUiBinder = GWT.create(LoginPageUiBinder.class);
+
+    private static final CanHandleUserRolesAsync getUserRolesService = GWT.create(CanHandleUserRoles.class);
+
     @UiField
     protected TextBox login;
     @UiField
@@ -104,41 +109,47 @@ public class LoginPage {
                 if ("true".equalsIgnoreCase(response.getHeader("IS_ERROR"))) {
                     alert.setVisible(true);
                     alert.clear();
-                    alert.add(new HTML("<strong>Ошибка</strong> не верный логин или пароль"));
+                    alert.add(new HTML("<strong>Ошибка</strong> неверный логин или пароль"));
                     passwordGroup.setValidationState(ValidationState.ERROR);
                     loginGroup.setValidationState(ValidationState.ERROR);
                     password.setFormValue("");
                     login.setFocus(true);
                 } else {
 //                    Window.Location.replace("/widgets/");
-
                     alert.clear();
-                    alert.add(new SelectionWidget(null));
-                    alert.setVisible(true);
 
+                    final UserRoles allRoles = new UserRoles();
+                    getUserRolesService.getRoles(new AsyncCallback() {
+                        public void onSuccess(Object result) {
+                            allRoles.addAll((UserRoles) result);
+                        }
 
-//                    UserRoles roles = ExecutionContextStorage.getContext().getUserInfo().getUserRoles();
-//
-//                    //Если ничего или Aut
-//                    if (isNullOrEmpty(roles) || roles.isOnlyAut()) {
-//                        alert.setVisible(true);
-//                        alert.clear();
-//                        alert.add(new HTML("<strong>Ошибка</strong> у вас не достаточно полномочий для работы"));
-//                        login.setFocus(true);
-//                        return;
-//                    }
-//
-//                    //Получаем только нормальные роли
-//                    roles = roles.getIgnoreAut();
-//                    if (roles.size() == 1) {
-//                        //Что-то что понимает по какой роли в какое представление отправить
-//                        //PROFIT!
-//                        return;
-//                    }
+                        public void onFailure(Throwable caught) {
+                            System.out.println(caught);
+                        }
+                    });
 
+                    if(isNullOrEmpty(allRoles) || allRoles.isOnlyAut()){
+                        alert.add(new HTML("<strong>Ошибка</strong> у вас недостаточно полномочий для работы"));
+                        alert.setVisible(true);
+                        login.setFocus(true);
+                        return;
+                    }
 
                     passwordGroup.setVisible(false);
                     loginGroup.setVisible(false);
+
+                    UserRoles roles = allRoles.getIgnoreAut();
+                    if (roles.size() == 1) {
+                        //Что-то что понимает по какой роли в какое представление отправить
+                        //PROFIT!
+                        alert.add(new HTML("<strong>Выбирать не надо!</strong> сразу куда надо"));
+                        alert.setVisible(true);
+                        return;
+                    }
+
+                    alert.add(new SelectionWidget(null));
+                    alert.setVisible(true);
                 }
             }
 

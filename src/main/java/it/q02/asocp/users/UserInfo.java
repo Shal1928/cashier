@@ -1,8 +1,6 @@
 package it.q02.asocp.users;
 
-import it.q02.asocp.users.helper.UserRoles;
-
-import java.util.List;
+import it.q02.asocp.modules.base.client.helpers.UserRoles;
 
 /**
  * User: aleksander at  16.03.14, 12:23

@@ -1,11 +1,11 @@
-package it.q02.asocp.utils;
+package it.q02.asocp.modules.base.client.helpers;
 
 import java.util.Collection;
 
 /**
  *
  */
-public class Helper {
+public class CommonHelper {
 
     public static boolean isNullOrEmpty(String object){
         return object == null || object.isEmpty();

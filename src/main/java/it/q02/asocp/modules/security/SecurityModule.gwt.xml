@@ -6,8 +6,8 @@
     <inherits name="org.gwtbootstrap3.GwtBootstrap3"/>
     <inherits name="it.q02.asocp.modules.base.Base"/>
 
-
     <entry-point class='it.q02.asocp.modules.security.client.SecurityModule'/>
+    <servlet path="/CanHandleUserRoles" class="it.q02.asocp.modules.security.server.rpc.CanHandleUserRolesImpl"/>
     <set-property name="user.agent" value="safari"/>
 
 </module>

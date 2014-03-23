@@ -1,16 +1,14 @@
 package it.q02.asocp.utils.impl;
 
 import it.q02.asocp.users.UserInfo;
-import it.q02.asocp.users.helper.UserRoles;
+import it.q02.asocp.modules.base.client.helpers.UserRoles;
 import it.q02.asocp.utils.SystemHelper;
 import it.q02.asocp.utils.UserInfoProvider;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Properties;
-import java.util.regex.Matcher;
 
 /**
  * User: aleksander at  16.03.14, 14:49
