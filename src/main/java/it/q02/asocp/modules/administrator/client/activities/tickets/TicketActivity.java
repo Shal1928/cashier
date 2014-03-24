@@ -42,13 +42,13 @@ public class TicketActivity implements Activity {
         eventBus.fireEvent(new AddMenu(new MenuWithIcon("Создать","create",IconType.PLUS){
             @Override
             public void execute() {
-                Window.alert("create");
+               view.createNew();
             }
         }));
         eventBus.fireEvent(new AddMenu(new MenuWithIcon("Править","edit",IconType.EDIT){
             @Override
             public void execute() {
-                Window.alert("edit");
+
             }
         }));
         eventBus.fireEvent(new AddMenu(new MenuWithIcon("Удалить","delete",IconType.ERASER){

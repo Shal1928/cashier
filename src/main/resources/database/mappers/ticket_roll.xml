@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="it.q02.asocp.database.TicketRollDAO">
+
+    <insert id="create" parameterType="it.q02.asocp.modules.base.client.data.TicketRoll" keyProperty="id" keyColumn="id" useGeneratedKeys="true" flushCache="true">
+        INSERT INTO ticket_roll(first_ticket_number,ticket_count,color,create_date,owner) values (#{firstTicketNumber},#{ticketCount},#{color},now(),#{owner});
+    </insert>
+
+    <update id="update" parameterType="it.q02.asocp.modules.base.client.data.TicketRoll"  flushCache="true">
+        UPDATE ticket_roll SET
+                              first_ticket_number=#{firstTicketNumber}
+                              ,ticket_count=#{ticketCount}
+                              ,color=#{color}
+                              ,owner =#{owner}
+
+                            WHERE id = #{id}
+    </update>
+
+    <select id="find" resultType="it.q02.asocp.modules.base.client.data.TicketRoll">
+        SELECT * from ticket_roll;
+    </select>
+
+    <select id="getUniqueColors" resultType="java.lang.String">
+       select  distinct  color from ticket_roll;
+    </select>
+
+</mapper>

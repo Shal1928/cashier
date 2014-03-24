@@ -1,11 +1,13 @@
 package it.q02.asocp.modules.base.client.data;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.util.Date;
 
 /**
  * User: aleksander at  22.03.14, 18:57
  */
-public class TicketRoll {
+public class TicketRoll implements IsSerializable{
 
     public static enum State {
 
@@ -25,7 +27,7 @@ public class TicketRoll {
 
     private TicketRollActivationInfo activationInfo;
 
-    public static class TicketRollActivationInfo{
+    public static class TicketRollActivationInfo implements IsSerializable{
 
         private long id;
 
@@ -33,7 +35,39 @@ public class TicketRoll {
 
         private String station;
 
-        private Date date;
+        private Date activationDate;
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        public String getCashier() {
+            return cashier;
+        }
+
+        public void setCashier(String cashier) {
+            this.cashier = cashier;
+        }
+
+        public String getStation() {
+            return station;
+        }
+
+        public void setStation(String station) {
+            this.station = station;
+        }
+
+        public Date getActivationDate() {
+            return activationDate;
+        }
+
+        public void setActivationDate(Date activationDate) {
+            this.activationDate = activationDate;
+        }
     }
 
     public long getId() {

@@ -10,4 +10,33 @@
 
 
     </changeSet>
+
+    <changeSet id="2" author="aausov" >
+
+        <createTable tableName="change_log">
+            <column name="type" type="VARCHAR(100)"></column>
+            <column name="object_id" type="BIGINT"></column>
+            <column name="user" type="BIGINT"></column>
+            <column name="change_date" type="TIMESTAMP"></column>
+        </createTable>
+
+        <createTable tableName="ticket_roll">
+            <column name="id" autoIncrement="true" type="BIGINT"></column>
+            <column name="first_ticket_number"  type="VARCHAR(20)"></column>
+            <column name="ticket_count" type="BIGINT"></column>
+            <column name="color" type="VARCHAR(10)"></column>
+            <column name="create_date" type="TIMESTAMP"></column>
+            <column name="owner" type="VARCHAR(20)"></column>
+        </createTable>
+
+        <createTable tableName="ticket_roll_activation_info">
+            <column name="id" autoIncrement="true" type="BIGINT"></column>
+            <column name="cashier"  type="VARCHAR(20)"></column>
+            <column name="station"  type="VARCHAR(20)"></column>
+            <column name="activation_date" type="TIMESTAMP"></column>
+        </createTable>
+
+
+    </changeSet>
+
 </databaseChangeLog>
