@@ -6,33 +6,42 @@ import it.q02.asocp.users.ExecutionContextStorage;
 import it.q02.asocp.users.UserInfo;
 
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletRequestListener;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * User: aleksander at  16.03.14, 12:25
  */
-public class ExecutionContextListener implements ServletRequestListener {
+public class ExecutionContextFilter implements Filter {
+
+
 
 
     @Override
-    public void requestInitialized(ServletRequestEvent servletRequestEvent) {
-        ServletRequest servletRequest = servletRequestEvent.getServletRequest();
+    public void init(FilterConfig filterConfig) throws ServletException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        createInfo(servletRequest);
+        filterChain.doFilter(servletRequest, servletResponse);
+        destroyInfo();
+    }
+
+    private void createInfo(ServletRequest servletRequest) {
         if (servletRequest instanceof HttpServletRequest) {
             UserInfo userInfo = null;
             if(((HttpServletRequest) servletRequest).isUserInRole("AUTHENTICATED")){
-                 userInfo = UserInfoProvider.Provider.getUserInfo(((HttpServletRequest) servletRequest).getUserPrincipal().getName());
+                userInfo = UserInfoProvider.Provider.getUserInfo(((HttpServletRequest) servletRequest).getUserPrincipal().getName());
             }
             ExecutionContext context = new ExecutionContextFactory().createContext(userInfo);
             ExecutionContextStorage.setExecutionContenxt(context);
         }
     }
 
-
-    @Override
-    public void requestDestroyed(ServletRequestEvent servletRequestEvent) {
+    private void destroyInfo() {
         try {
             ExecutionContext context = ExecutionContextStorage.getContext();
             if (context != null) {
@@ -43,7 +52,10 @@ public class ExecutionContextListener implements ServletRequestListener {
         } finally {
             ExecutionContextStorage.setExecutionContenxt(null);
         }
-
     }
 
+    @Override
+    public void destroy() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
