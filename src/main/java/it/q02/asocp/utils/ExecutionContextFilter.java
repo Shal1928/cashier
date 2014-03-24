@@ -46,6 +46,7 @@ public class ExecutionContextFilter implements Filter {
             ExecutionContext context = ExecutionContextStorage.getContext();
             if (context != null) {
                 if(context.dbIsConnected()){
+                    context.getDatabaseService().commitTransaction();
                     context.getDatabaseService().closeSession();
                 }
             }

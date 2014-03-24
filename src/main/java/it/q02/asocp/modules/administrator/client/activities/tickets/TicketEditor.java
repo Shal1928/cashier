@@ -55,7 +55,9 @@ public class TicketEditor implements IsWidget   {
         formClearWith(ticketRoll);
         changeState(ticketRoll!=null);
         this.editableObject = ticketRoll;
-        stateCallBack.onBeginEdit(ticketRoll);
+        if(stateCallBack!=null){
+            stateCallBack.onBeginEdit(ticketRoll);
+        }
     }
 
     private void changeState(boolean newState) {
@@ -140,7 +142,6 @@ public class TicketEditor implements IsWidget   {
     public void onCancel(ClickEvent event){
         if(this.editableObject!=null){
             stateCallBack.onCancelEdit(editableObject);
-            formClearWith(editableObject.getId() == 0 ? null : editableObject);
         }
     }
 

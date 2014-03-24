@@ -15,12 +15,14 @@ import java.util.List;
 public class TicketRollServiceImpl extends RemoteServiceServlet implements TicketRollService {
     @Override
     public TicketRoll saveAndUpdate(TicketRoll ticketRoll) {
-        TicketRollDAO dao = getDAO();
+        DataBaseService service = ExecutionContextStorage.getContext().getDatabaseService();
+        TicketRollDAO dao =service.getMapper(TicketRollDAO.class);
         if(ticketRoll.getId()==0){
               dao.create(ticketRoll);
         }else{
             dao.update(ticketRoll);
         }
+        service.commitTransaction();
         return ticketRoll;
     }
 

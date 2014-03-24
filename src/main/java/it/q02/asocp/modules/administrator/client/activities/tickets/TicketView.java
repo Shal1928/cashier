@@ -15,6 +15,7 @@ import it.q02.asocp.modules.administrator.client.rpc.TicketRollService;
 import it.q02.asocp.modules.administrator.client.rpc.TicketRollServiceAsync;
 import it.q02.asocp.modules.base.client.data.TicketRoll;
 import it.q02.asocp.modules.base.client.ui.EditorStateCallback;
+import it.q02.asocp.modules.base.client.ui.EditorStateCallbackProxy;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.DataGrid;
 
@@ -27,7 +28,7 @@ import java.util.List;
 public class TicketView implements IsWidget {
     private Widget rootPanel;
     private TicketRollDataProvider rollProvider = new TicketRollDataProvider();
-
+    private EditorStateCallbackProxy<TicketRoll> proxyListener;
     public TicketView(TicketActivity ticketActivity) {
            this();
     }
@@ -85,10 +86,21 @@ public class TicketView implements IsWidget {
         rollProvider.reloadData();
     }
 
-    public void createNew() {
-      ticketEditor.setValue(new TicketRoll(), new NewObjectCallbacks());
+    public void setListener(EditorStateCallback<TicketRoll> listener){
+        proxyListener=new EditorStateCallbackProxy<TicketRoll>(listener);
     }
-                                                         //To change body of implemented methods use File | Settings | File Templates.
+
+    public void createNew() {
+        TicketRoll ticketRoll = new TicketRoll();
+        ticketRoll.setId(0);
+        ticketEditor.setValue(ticketRoll, proxyListener.callWith(new NewObjectCallbacks()));
+    }
+
+    public boolean hasSelectedItems() {
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    //To change body of implemented methods use File | Settings | File Templates.
     public static class TicketViewPresenter{
 
     }
@@ -118,7 +130,7 @@ public class TicketView implements IsWidget {
 
         @Override
         public void onFailure(Throwable throwable) {
-            Window.alert("Fuck, error");
+            Window.alert("error, object");
         }
 
         @Override
@@ -127,20 +139,40 @@ public class TicketView implements IsWidget {
         }
     }
 
-    private static class NewObjectCallbacks implements EditorStateCallback<TicketRoll> {
+    private class NewObjectCallbacks implements EditorStateCallback<TicketRoll> , AsyncCallback<TicketRoll>{
+        private MessageNotifer notifiter;
+
         @Override
         public void onBeginEdit(TicketRoll editedObject) {
-            //todo: Заблокировать таблицу
+
         }
 
         @Override
         public void onCommitEdit(TicketRoll editedObject, MessageNotifer notifiter) {
-          //todo: Сходить на сервер
+            this.notifiter = notifiter;
+            TicketRollService.App.getInstance().saveAndUpdate(editedObject,this);
         }
 
         @Override
         public void onCancelEdit(TicketRoll editedObject) {
-            //todo: нечего не делать
+            ticketEditor.setValue(null,null);
+        }
+
+        @Override
+        public void onFailure(Throwable throwable) {
+            if(notifiter!=null){
+                notifiter.addMessage(throwable.getMessage());
+                if(throwable instanceof TicketRollService.TicketRollServiceException){
+                    notifiter.addMessage(((TicketRollService.TicketRollServiceException) throwable).getError().getErrorDescribe());
+                }
+                notifiter.showMessages();
+            }
+        }
+
+        @Override
+        public void onSuccess(TicketRoll ticketRoll) {
+            ticketEditor.setValue(null,null);
+            rollProvider.reloadData();
         }
     }
 }
