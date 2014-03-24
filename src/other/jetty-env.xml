@@ -1,4 +1,4 @@
-<?xml version="1.0"  encoding="ISO-8859-1"?>
+<?xml version="1.0"  encoding="UTF-8"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
 
 <Configure class="org.eclipse.jetty.maven.plugin.JettyWebAppContext">
@@ -34,7 +34,7 @@
             <New class="it.q02.asocp.utils.impl.RoleMapInfoProviderImpl">
                 <Call name="addMap">
                     <Arg>ADMIN</Arg>
-                    <Arg>Module administrator</Arg>
+                    <Arg>АРМ "Администратор"</Arg>
                     <Arg>/administrator/</Arg>
                 </Call>
                 <Call name="addMap">

@@ -28,7 +28,6 @@ public class SelectionWidget implements IsWidget {
     private static SelectionPageUiBinder ourUiBinder = GWT.create(SelectionPageUiBinder.class);
     //endregion
 
-    @UiField
     protected final ListGroup rootWidget;
 
     public SelectionWidget(Collection<RoleMap> roleMaps) {
@@ -37,7 +36,9 @@ public class SelectionWidget implements IsWidget {
 
 
         for(final RoleMap roleMap:roleMaps){
+            ListGroupItem litem = new ListGroupItem();
             Button item = new Button();
+            litem.add(item);
             item.setText(roleMap.getTitle());
 
             item.addClickHandler(new ClickHandler() {
@@ -51,7 +52,7 @@ public class SelectionWidget implements IsWidget {
             item.setType(ButtonType.SUCCESS);
             item.setWidth("500px");
             item.setHeight("80px");
-            rootWidget.add(item);
+            rootWidget.add(litem);
         }
     }
 

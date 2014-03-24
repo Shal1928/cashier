@@ -2,6 +2,7 @@ package it.q02.asocp.modules.administrator.client.activities.tickets;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -11,6 +12,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import it.q02.asocp.modules.administrator.client.rpc.TicketRollService;
 import it.q02.asocp.modules.administrator.client.rpc.TicketRollServiceAsync;
 import it.q02.asocp.modules.base.client.data.TicketRoll;
@@ -48,40 +51,54 @@ public class TicketView implements IsWidget {
         dataContainer.addColumn(new TextColumn<TicketRoll>() {
             @Override
             public String getValue(TicketRoll ticketRoll) {
-                return "1";
+                return Long.toString(ticketRoll.getId());
             }
         },"№");
         dataContainer.addColumn(new TextColumn<TicketRoll>() {
+            private  DateTimeFormat dtf = DateTimeFormat.getFormat("dd.MM.yyyy");
             @Override
             public String getValue(TicketRoll ticketRoll) {
-                return "";
+                return ticketRoll.getCreateDate()!=null ? dtf.format(ticketRoll.getCreateDate()) : "";
             }
         },"Создан");
         dataContainer.addColumn(new TextColumn<TicketRoll>() {
             @Override
             public String getValue(TicketRoll ticketRoll) {
-                return "1";
+                return ticketRoll.getColor();
             }
         },"Цвет");
         dataContainer.addColumn(new TextColumn<TicketRoll>() {
             @Override
             public String getValue(TicketRoll ticketRoll) {
-                return "1";
+                return ticketRoll.getFirstTicketNumber();
             }
         },"Первый билет");
         dataContainer.addColumn(new TextColumn<TicketRoll>() {
             @Override
             public String getValue(TicketRoll ticketRoll) {
-                return "1";
+                return  ticketRoll.getActivationInfo() == null ? "Нет" : "Да";
+
             }
         },"Активирован");
         dataContainer.addColumn(new TextColumn<TicketRoll>() {
             @Override
             public String getValue(TicketRoll ticketRoll) {
-                return "1";
+                return Long.toString(ticketRoll.getTicketCount());
             }
         },"Остаток");
         dataContainer.setEmptyTableWidget(new Alert("Нет данных."));
+        final SingleSelectionModel<TicketRoll> selectionModel = new SingleSelectionModel<TicketRoll>();
+        dataContainer.setSelectionModel(selectionModel);
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
+                if(ticketEditor.getValue()!=null){
+                   selectionModel.setSelected(ticketEditor.getValue(),true);
+                }else{
+                    ticketEditor.setValue(selectionModel.getSelectedObject(),proxyListener.callWith(new NewObjectCallbacks()));
+                }
+            }
+        });
         rollProvider.addDataDisplay(dataContainer);
         rollProvider.reloadData();
     }

@@ -145,6 +145,11 @@ public class TicketEditor implements IsWidget   {
         }
     }
 
+    public TicketRoll getValue() {
+
+        return editableObject;
+    }
+
 
     interface TicketEditorUiBinder extends UiBinder<Panel, TicketEditor> {
     }

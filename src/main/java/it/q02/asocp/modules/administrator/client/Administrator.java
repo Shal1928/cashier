@@ -43,8 +43,13 @@ public class Administrator implements EntryPoint {
          * todo: Сделать привязку к ролям
          * todo:
          */
+        mainLayout.getSideBar().addItem(new ChangePlace("Сводка",new Place(){},controller));
         mainLayout.getSideBar().addItem(new ChangePlace("Билеты",new TicketPlace(),controller));
         mainLayout.getSideBar().addItem(new ChangePlace("Атракционы",new TubesPlace(),controller));
+        mainLayout.getSideBar().addItem(new ChangePlace("Пользователи",new Place() {
+        },controller));
+        mainLayout.getSideBar().addItem(new ChangePlace("Кассы",new Place(){},controller));
+        mainLayout.getSideBar().addItem(new ChangePlace("Расписания",new Place(){},controller));
 
         eventBus.addHandler(AddMenu.TYPE,topMenu);
         eventBus.addHandler(ChangeMenuState.TYPE,topMenu);

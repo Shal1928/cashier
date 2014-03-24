@@ -22,7 +22,7 @@
 
     </ui:style>
 
-    <b:ListGroup ui:field="rootWidget" >
+    <b:ListGroup  >
 
     </b:ListGroup>
 </ui:UiBinder>

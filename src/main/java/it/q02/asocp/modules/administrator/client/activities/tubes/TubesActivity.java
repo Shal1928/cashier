@@ -31,6 +31,6 @@ public class TubesActivity implements Activity {
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         this.eventBus = eventBus;
-        acceptsOneWidget.setWidget(new Label("HUI!"));
+
     }
 }
