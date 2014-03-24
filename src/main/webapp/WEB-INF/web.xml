@@ -101,6 +101,11 @@
     </resource-ref>
 
     <resource-ref>
+        <res-ref-name>utils/RoleMapInfo</res-ref-name>
+        <res-type>it.q02.asocp.utils.RoleMapInfoProvider</res-type>
+    </resource-ref>
+
+    <resource-ref>
         <res-ref-name>utils/DBProvider</res-ref-name>
         <res-type>it.q02.asocp.database.DataBaseProvider</res-type>
     </resource-ref>

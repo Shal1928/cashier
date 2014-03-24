@@ -27,6 +27,30 @@
         </Arg>
     </New>
 
+    <New id="RoleMapInfo" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg></Arg>
+        <Arg>utils/RoleMapInfo</Arg>
+        <Arg>
+            <New class="it.q02.asocp.utils.impl.RoleMapInfoProviderImpl">
+                <Call name="addMap">
+                    <Arg>ADMIN</Arg>
+                    <Arg>Module administrator</Arg>
+                    <Arg>/administrator/</Arg>
+                </Call>
+                <Call name="addMap">
+                    <Arg>REPORTS</Arg>
+                    <Arg>Module reports</Arg>
+                    <Arg>/reports/</Arg>
+                </Call>
+                <Call name="addMap">
+                    <Arg>CASHIER</Arg>
+                    <Arg>Module cashier</Arg>
+                    <Arg>/cashier/</Arg>
+                </Call>
+            </New>
+        </Arg>
+    </New>
+
         <New id="DataBaseProvider" class="org.eclipse.jetty.plus.jndi.Resource">
             <Arg></Arg>
             <Arg>utils/DBProvider</Arg>

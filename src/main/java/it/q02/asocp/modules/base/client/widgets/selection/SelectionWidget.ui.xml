@@ -22,21 +22,7 @@
 
     </ui:style>
 
-    <b:FluidContainer height="100%" width="100%">
-        <b:Row height="100%">
-            <b:Column height="100%" size="MD_2" addStyleNames="{style.navigationPanel}">
-                <b:Panel height="100%">
-                    <b:PanelBody>
-                        <b:LinkedGroup>
-                            <b:LinkedGroupItem active="true" text="menu1"/>
-                            <b:LinkedGroupItem text="menu2"/>
-                            <b:LinkedGroupItem text="menu3"/>
-                        </b:LinkedGroup>
-                    </b:PanelBody>
-                </b:Panel>
-            </b:Column>
+    <b:ListGroup ui:field="rootWidget" >
 
-        </b:Row>
-
-    </b:FluidContainer>
+    </b:ListGroup>
 </ui:UiBinder>

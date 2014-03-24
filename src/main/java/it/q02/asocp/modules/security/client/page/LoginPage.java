@@ -8,14 +8,19 @@ import com.google.gwt.http.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import it.q02.asocp.modules.base.client.data.RoleMap;
 import it.q02.asocp.modules.base.client.helpers.UserRoles;
 import it.q02.asocp.modules.security.client.rpc.CanHandleUserRoles;
 import it.q02.asocp.modules.security.client.rpc.CanHandleUserRolesAsync;
 import it.q02.asocp.modules.base.client.widgets.selection.SelectionWidget;
 import org.gwtbootstrap3.client.ui.*;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
+import java.util.Collection;
+import java.util.List;
 
 import static it.q02.asocp.modules.base.client.helpers.CommonHelper.isNullOrEmpty;
 
@@ -115,41 +120,34 @@ public class LoginPage {
                     password.setFormValue("");
                     login.setFocus(true);
                 } else {
-//                    Window.Location.replace("/widgets/");
+
                     alert.clear();
 
-                    final UserRoles allRoles = new UserRoles();
-                    getUserRolesService.getRoles(new AsyncCallback() {
-                        public void onSuccess(Object result) {
-                            allRoles.addAll((UserRoles) result);
+                    getUserRolesService.getRoleMaps(new AsyncCallback<List<RoleMap>>() {
+                        public void onSuccess(List<RoleMap> result) {
+                            if (result == null) {
+                                alert.add(new HTML("<strong>Ошибка</strong> у вас недостаточно полномочий для работы"));
+                                alert.setVisible(true);
+                                login.setFocus(true);
+                                return;
+                            }
+
+                            passwordGroup.setVisible(false);
+                            loginGroup.setVisible(false);
+
+                            if (result.size() == 1) {
+                                Window.Location.replace(result.get(0).getUrl());
+                                return;
+                            }
+
+                            alert.add(new SelectionWidget(result));
+                            alert.setVisible(true);
                         }
 
                         public void onFailure(Throwable caught) {
-                            System.out.println(caught);
+                            GWT.log(caught.getMessage());
                         }
                     });
-
-                    if(isNullOrEmpty(allRoles) || allRoles.isOnlyAut()){
-                        alert.add(new HTML("<strong>Ошибка</strong> у вас недостаточно полномочий для работы"));
-                        alert.setVisible(true);
-                        login.setFocus(true);
-                        return;
-                    }
-
-                    passwordGroup.setVisible(false);
-                    loginGroup.setVisible(false);
-
-                    UserRoles roles = allRoles.getIgnoreAut();
-                    if (roles.size() == 1) {
-                        //Что-то что понимает по какой роли в какое представление отправить
-                        //PROFIT!
-                        alert.add(new HTML("<strong>Выбирать не надо!</strong> сразу куда надо"));
-                        alert.setVisible(true);
-                        return;
-                    }
-
-                    alert.add(new SelectionWidget(null));
-                    alert.setVisible(true);
                 }
             }
 
