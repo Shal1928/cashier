@@ -12,7 +12,7 @@
                 <Set name="Password">asd12345</Set>
                 <Set name="DatabaseName">asofcp_db</Set>
                 <Set name="ServerName">localhost</Set>
-                <Set name="PortNumber">5432</Set>
+                <Set name="PortNumber"><SystemProperty name="pg.port" default="5432"/></Set>
             </New>
         </Arg>
     </New>
