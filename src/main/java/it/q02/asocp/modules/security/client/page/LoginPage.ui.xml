@@ -22,6 +22,7 @@
         <b:ModalFooter>
             <b:Button type="PRIMARY" size="LARGE" ui:field="enter">Войти</b:Button>
             <b:Button type="DANGER" size="LARGE" ui:field="clear">Очистить</b:Button>
+            <b:Button type="INFO" size="LARGE" visible="false" ui:field="change">Сменить пользователя</b:Button>
         </b:ModalFooter>
     </b:Modal>
 </ui:UiBinder>

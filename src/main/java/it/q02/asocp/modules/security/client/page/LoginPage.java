@@ -48,9 +48,20 @@ public class LoginPage {
     @UiField
     protected Alert alert;
 
+    @UiField(provided = true)
+    protected Button enter = new Button();
+    @UiField(provided = true)
+    protected Button clear = new Button();
+    @UiField(provided = true)
+    protected Button change = new Button();
+
+    private final Modal rootElement;
+    private final SelectionWidget selectionWidget = new SelectionWidget();
+
     public LoginPage() {
-        Modal rootElement = ourUiBinder.createAndBindUi(this);
+        this.rootElement = ourUiBinder.createAndBindUi(this);
         rootElement.show();
+        selectionWidget.setVisible(false);
     }
 
     @UiHandler("password")
@@ -95,6 +106,20 @@ public class LoginPage {
         }
     }
 
+    @UiHandler("change")
+    public void onChange(ClickEvent event) {
+        login.setText("");
+        password.setFormValue("");
+        selectionWidget.setVisible(false);
+        rootElement.setTitle("Представьтесь пожалуйста");
+        enter.setVisible(true);
+        clear.setVisible(true);
+        change.setVisible(false);
+        passwordGroup.setVisible(true);
+        loginGroup.setVisible(true);
+        alert.clear();
+    }
+
     public void makeCall() {
 
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, "../j_security_check");
@@ -120,28 +145,31 @@ public class LoginPage {
                     password.setFormValue("");
                     login.setFocus(true);
                 } else {
-
-                    alert.clear();
-
                     getUserRolesService.getRoleMaps(new AsyncCallback<List<RoleMap>>() {
                         public void onSuccess(List<RoleMap> result) {
                             if (result == null) {
+                                alert.clear();
                                 alert.add(new HTML("<strong>Ошибка</strong> у вас недостаточно полномочий для работы"));
                                 alert.setVisible(true);
                                 login.setFocus(true);
                                 return;
                             }
 
-                            passwordGroup.setVisible(false);
-                            loginGroup.setVisible(false);
-
                             if (result.size() == 1) {
                                 Window.Location.replace(result.get(0).getUrl());
                                 return;
                             }
 
-                            alert.add(new SelectionWidget(result));
-                            alert.setVisible(true);
+                            rootElement.setTitle("Выберите рабочее пространство");
+                            passwordGroup.setVisible(false);
+                            loginGroup.setVisible(false);
+                            enter.setVisible(false);
+                            clear.setVisible(false);
+                            change.setVisible(true);
+
+                            selectionWidget.setVisible(true);
+                            selectionWidget.setRoleMaps(result);
+                            loginForm.add(selectionWidget);
                         }
 
                         public void onFailure(Throwable caught) {
