@@ -1,0 +1,72 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+    <ui:with field="res" type="it.q02.asocp.modules.cashier.client.ui.resources.Resources"/>
+
+    <b:FluidContainer addStyleNames="{res.layoutStyle.baseBackground}">
+        <!--Кепа-->
+        <b:Row>
+            <b:Column size="MD_12">
+                <b:Column size="MD_2">
+                    <b:Label text="Касса: " addStyleNames="{res.layoutStyle.labelBase}" />
+                    <b:Label text="№5" addStyleNames="{res.layoutStyle.labelBase}" />
+                </b:Column>
+                <b:Column size="MD_2">
+                    <b:Label text="Чек:" addStyleNames="{res.layoutStyle.labelBase}" />
+                    <b:Label text="2028" addStyleNames="{res.layoutStyle.labelBase}" />
+                </b:Column>
+                <b:Column size="MD_6" />
+                <b:Column size="MD_2">
+                    <b:Label text="28.03.2014" addStyleNames="{res.layoutStyle.labelBase}" />
+                    <b:Label text="20:15" addStyleNames="{res.layoutStyle.labelBase}" />
+                </b:Column>
+            </b:Column>
+        </b:Row>
+        <!--Кепа-->
+
+        <!--Малинка-->
+        <b:Row>
+            <b:Column size="MD_5">
+                <b:Row>
+                    <!--Поиск-->
+                </b:Row>
+                <b:Row>
+                    <!--Представление услуг-->
+                </b:Row>
+            </b:Column>
+            <b:Column size="MD_2" />
+            <b:Column size="MD_5">
+                <b:Row>
+                    <b:Column size="MD_5">
+                        <!--Цена-->
+                    </b:Column>
+                </b:Row>
+                <b:Row>
+                    <b:Column size="MD_5">
+                        <!--Последняя выбранная услуга-->
+                    </b:Column>
+                </b:Row>
+                <b:Row>
+                    <b:Column size="MD_2">
+                        <!--Количество-->
+                    </b:Column>
+                    <b:Column size="MD_2">
+                        <!--Цена-->
+                    </b:Column>
+                </b:Row>
+                <b:Row>
+                    <b:Column size="MD_5">
+                        <!--Список услуг чека (выбранных)-->
+                    </b:Column>
+                </b:Row>
+            </b:Column>
+        </b:Row>
+        <!--Малинка-->
+
+        <!--Подвал-->
+        <b:Row>
+
+        </b:Row>
+        <!--Подвал-->
+    </b:FluidContainer>
+</ui:UiBinder>

@@ -1,0 +1,65 @@
+.baseBackground {
+    position: relative;
+    top: 15px;
+    left: 0px;
+    background-color: purple;
+
+
+    /*right: 5px;*/
+    /*color: #ccc;*/
+    /*font-size: 10pt;*/
+    /*cursor: hand;*/
+}
+
+.labelBase {
+    background-color: transparent;
+    font-size: 11pt;
+}
+
+/*.readStyle, .messageStyle, .readMessageStyle {*/
+    /*cursor: hand;*/
+/*}*/
+
+/*.messageStyle, .readMessageStyle, .anchorStyle, .visitedAnchorStyle {*/
+    /*font-size: 8pt;*/
+
+    /*margin-left: 5px;*/
+    /*margin-top: 7px;*/
+/*}*/
+
+/*.messageStyle, .anchorStyle {*/
+    /*font-weight: bold;*/
+/*}*/
+
+/*.readMessageStyle, .visitedAnchorStyle {*/
+    /*font-weight: normal;*/
+/*}*/
+
+/*.anchorStyle, .visitedAnchorStyle {*/
+    /*text-decoration: underline;*/
+/*}*/
+
+/*.alertFlag, .infoFlag, .warningFlag, .deadlineFlag, .errorFlag {*/
+    /*padding: 2px;*/
+    /*cursor: hand;*/
+/*}*/
+
+/*.infoFlag {*/
+    /*background: #29a8c8;*/
+/*}*/
+
+/*.alertFlag {*/
+    /*background: #fce15d;*/
+/*}*/
+
+/*.deadlineFlag {*/
+    /*background: #c81e2b;*/
+/*}*/
+
+/*.warningFlag {*/
+    /*background: #ff7716;*/
+/*}*/
+
+/*.errorFlag {*/
+    /*background: #c81e2b;*/
+/*}*/
