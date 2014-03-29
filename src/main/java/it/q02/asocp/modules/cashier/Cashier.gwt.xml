@@ -4,6 +4,8 @@
 
     <inherits name='com.google.gwt.user.User'/>
     <inherits name="org.gwtbootstrap3.GwtBootstrap3"/>
+    <inherits name="it.q02.asocp.modules.base.Base"/>
+    <!--<inherits name="com.google.gwt.resources.Resources" />-->
 
     <entry-point class='it.q02.asocp.modules.cashier.client.Cashier'/>
     <set-property name="user.agent" value="safari"/>

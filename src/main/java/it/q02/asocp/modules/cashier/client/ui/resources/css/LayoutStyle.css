@@ -1,24 +1,34 @@
-.baseBackground {
+.baseFont, .rootBase {
+    font-family: Georgia, Verdana, Arial, sans-serif;
+}
+
+.rootBase {
     position: relative;
-    top: 15px;
     left: 0px;
     background-color: purple;
-
-
-    /*right: 5px;*/
-    /*color: #ccc;*/
-    /*font-size: 10pt;*/
-    /*cursor: hand;*/
 }
 
-.labelBase {
+.labelBase, .jumbotronLabelBase, .firstLineLabels {
     background-color: transparent;
     font-size: 11pt;
+
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
 }
 
-/*.readStyle, .messageStyle, .readMessageStyle {*/
-    /*cursor: hand;*/
-/*}*/
+.firstLineLabels{
+    top: 55px;
+}
+
+.jumbotronLabelBase {
+    font-size: 54pt;
+}
+
+.secondRow{
+    margin-top: 15px;
+}
 
 /*.messageStyle, .readMessageStyle, .anchorStyle, .visitedAnchorStyle {*/
     /*font-size: 8pt;*/

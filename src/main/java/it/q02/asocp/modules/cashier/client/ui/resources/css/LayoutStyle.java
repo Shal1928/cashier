@@ -6,6 +6,10 @@ import com.google.gwt.resources.client.CssResource;
  *
  */
 public interface LayoutStyle extends CssResource {
-    String baseBackground();
+    String baseFont();
+    String rootBase();
     String labelBase();
+    String firstLineLabels();
+    String jumbotronLabelBase();
+    String secondRow();
 }
