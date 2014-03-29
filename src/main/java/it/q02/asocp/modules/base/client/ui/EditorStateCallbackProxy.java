@@ -31,8 +31,8 @@ public class EditorStateCallbackProxy<T> implements EditorStateCallback<T>{
 
     @Override
     public void onCancelEdit(T editedObject) {
-        informationCallBack.onBeginEdit(editedObject);
-        logicCallBack.onBeginEdit(editedObject);
+        informationCallBack.onCancelEdit(editedObject);
+        logicCallBack.onCancelEdit(editedObject);
     }
 
     public EditorStateCallback callWith(EditorStateCallback callback){

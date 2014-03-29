@@ -16,5 +16,5 @@
 
 
     </ui:style>
-    <b:Nav addStyleNames="nav-stacked nav-inverted {style.activeElement}" ui:field="leftBar"/>
+    <b:Nav height="100%" addStyleNames="nav-stacked nav-inverted {style.activeElement}" ui:field="leftBar"/>
 </ui:UiBinder>

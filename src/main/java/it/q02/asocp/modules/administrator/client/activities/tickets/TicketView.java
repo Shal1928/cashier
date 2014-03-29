@@ -70,9 +70,17 @@ public class TicketView implements IsWidget {
         dataContainer.addColumn(new TextColumn<TicketRoll>() {
             @Override
             public String getValue(TicketRoll ticketRoll) {
+                return ticketRoll.getFirstTicketSeries();
+            }
+        },"Серия");
+
+        dataContainer.addColumn(new TextColumn<TicketRoll>() {
+            @Override
+            public String getValue(TicketRoll ticketRoll) {
                 return ticketRoll.getFirstTicketNumber();
             }
-        },"Первый билет");
+        },"Номер");
+
         dataContainer.addColumn(new TextColumn<TicketRoll>() {
             @Override
             public String getValue(TicketRoll ticketRoll) {
@@ -116,12 +124,6 @@ public class TicketView implements IsWidget {
     public boolean hasSelectedItems() {
         return false;  //To change body of created methods use File | Settings | File Templates.
     }
-
-    //To change body of implemented methods use File | Settings | File Templates.
-    public static class TicketViewPresenter{
-
-    }
-
 
     interface TicketViewUiBinder extends UiBinder<Widget, TicketView> {
     }

@@ -28,8 +28,6 @@ public class Administrator implements EntryPoint {
 
     public void onModuleLoad() {
 
-        MainMenu topMenu = new MainMenu();
-        RootPanel.get().add(topMenu);
         MainLayout mainLayout = new MainLayout();
         RootPanel.get().add(mainLayout);
 
@@ -51,10 +49,10 @@ public class Administrator implements EntryPoint {
         mainLayout.getSideBar().addItem(new ChangePlace("Кассы",new Place(){},controller));
         mainLayout.getSideBar().addItem(new ChangePlace("Расписания",new Place(){},controller));
 
-        eventBus.addHandler(AddMenu.TYPE,topMenu);
-        eventBus.addHandler(ChangeMenuState.TYPE,topMenu);
-        eventBus.addHandler(ClearMenu.TYPE,topMenu);
-        eventBus.addHandler(UpdateMenuItems.TYPE,topMenu);
+        eventBus.addHandler(AddMenu.TYPE,mainLayout.getMenu());
+        eventBus.addHandler(ChangeMenuState.TYPE,mainLayout.getMenu());
+        eventBus.addHandler(ClearMenu.TYPE,mainLayout.getMenu());
+        eventBus.addHandler(UpdateMenuItems.TYPE,mainLayout.getMenu());
 
         ActivityMapper activityMapper = new ActivityMapper(factory,mainLayout);
         ActivityManager manager = new ActivityManager(activityMapper,eventBus);

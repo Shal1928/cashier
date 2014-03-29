@@ -4,16 +4,22 @@
              xmlns:ed="urn:import:it.q02.asocp.modules.administrator.client.activities.tickets"
         >
 
-    <ui:style>
-        .addPadding{
-            padding-top:10px;
-            padding-left: 15px;
-            padding-right:10px;
-        }
-    </ui:style>
 
-    <b:Row addStyleNames="{style.addPadding}">
-       <ed:TicketEditor ui:field="ticketEditor"></ed:TicketEditor>
-       <b:DataGrid ui:field="dataContainer" bordered="true" condensed="true" striped="true" hover="true" width="100%" height="400px" ></b:DataGrid>
+
+    <b:Row>
+    <b:Column size="MD_12">
+        <b:Row>
+            <b:Column size="MD_12">
+            <ed:TicketEditor ui:field="ticketEditor"></ed:TicketEditor>
+            </b:Column>
+        </b:Row>
+        <b:Row>
+            <b:Column size="MD_12">
+            <b:DataGrid ui:field="dataContainer" bordered="true" condensed="true" striped="true" hover="true" width="100%" height="400px" ></b:DataGrid>
+            </b:Column>
+        </b:Row>
+
+    </b:Column>
     </b:Row>
+
 </ui:UiBinder>

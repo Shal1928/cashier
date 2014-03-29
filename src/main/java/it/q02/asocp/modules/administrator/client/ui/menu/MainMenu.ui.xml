@@ -2,13 +2,9 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
         <ui:style>
-            .noSpace{
-                margin-bottom: 0px;
-                border-radius: 0px;
-                z-index: 10;
-            }
+
         </ui:style>
-         <b:Navbar addStyleNames=" navbar-inverse {style.noSpace}">
+         <b:Navbar addStyleNames=" navbar-inverse navbar-fixed-top">
             <b:NavbarHeader>
                 <b:NavbarBrand>ASofCP(v.0.0.1)</b:NavbarBrand>
                 <b:NavbarCollapseButton target="#navbar-collapse"/>

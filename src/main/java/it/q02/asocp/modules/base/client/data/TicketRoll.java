@@ -15,6 +15,8 @@ public class TicketRoll implements IsSerializable{
 
     private long id;
 
+    private String firstTicketSeries;
+
     private String firstTicketNumber;
 
     private long ticketCount;
@@ -68,6 +70,14 @@ public class TicketRoll implements IsSerializable{
         public void setActivationDate(Date activationDate) {
             this.activationDate = activationDate;
         }
+    }
+
+    public String getFirstTicketSeries() {
+        return firstTicketSeries;
+    }
+
+    public void setFirstTicketSeries(String firstTicketSeries) {
+        this.firstTicketSeries = firstTicketSeries;
     }
 
     public long getId() {

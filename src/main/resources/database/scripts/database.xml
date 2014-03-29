@@ -38,5 +38,11 @@
 
 
     </changeSet>
+    
+    <changeSet id="3" author="aausov">
+        <addColumn tableName="ticket_roll">
+            <column name="first_ticket_series" type="VARCHAR(10)"></column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

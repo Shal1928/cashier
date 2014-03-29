@@ -6,7 +6,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import it.q02.asocp.modules.administrator.client.ui.menu.MainMenu;
 import it.q02.asocp.modules.administrator.client.ui.menu.SideBarNavigation;
+import it.q02.asocp.modules.administrator.client.ui.menu.bus.AddMenuHandler;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.FluidContainer;
 
@@ -21,6 +23,10 @@ public class MainLayout implements IsWidget {
         return rootWidget;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public MainMenu getMenu() {
+        return topMenu;
+    }
+
     interface MainLayoutUiBinder extends UiBinder<FluidContainer, MainLayout> {
     }
 
@@ -29,6 +35,8 @@ public class MainLayout implements IsWidget {
     protected SideBarNavigation sideBar;
     @UiField
     protected Column container;
+    @UiField
+    protected MainMenu topMenu;
 
     public MainLayout() {
         this.rootWidget = ourUiBinder.createAndBindUi(this);
