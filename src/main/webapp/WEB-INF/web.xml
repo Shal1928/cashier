@@ -13,6 +13,10 @@
         <servlet-name>it.q02.asocp.modules.administrator.Administrator TicketRollService</servlet-name>
         <servlet-class>it.q02.asocp.modules.administrator.server.rpc.TicketRollServiceImpl</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>it.q02.asocp.modules.administrator.Administrator AttractionService</servlet-name>
+        <servlet-class>it.q02.asocp.modules.administrator.server.rpc.AttractionServiceImpl</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>it.q02.asocp.modules.security.client.rpc CanHandleUserRoles</servlet-name>
         <url-pattern>security/CanHandleUserRoles</url-pattern>
@@ -20,6 +24,10 @@
     <servlet-mapping>
         <servlet-name>it.q02.asocp.modules.administrator.Administrator TicketRollService</servlet-name>
         <url-pattern>/administrator/TicketRollService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>it.q02.asocp.modules.administrator.Administrator AttractionService</servlet-name>
+        <url-pattern>/administrator/AttractionService</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
       <welcome-file>index.jsp</welcome-file>

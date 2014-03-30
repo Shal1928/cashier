@@ -13,10 +13,12 @@ import java.util.List;
  * User: aleksander at  24.03.14, 17:06
  */
 public class TicketRollServiceImpl extends RemoteServiceServlet implements TicketRollService {
+
     @Override
     public TicketRoll saveAndUpdate(TicketRoll ticketRoll) {
         DataBaseService service = ExecutionContextStorage.getContext().getDatabaseService();
         TicketRollDAO dao =service.getMapper(TicketRollDAO.class);
+        ticketRoll.setOwner(ExecutionContextStorage.getContext().getUserInfo().getUserLogin());
         if(ticketRoll.getId()==0){
               dao.create(ticketRoll);
         }else{

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="it.q02.asocp.database.AttractionDAO">
+
+    <resultMap id="atraction" type="it.q02.asocp.modules.base.client.data.Attraction">
+        <id property="id" column="id"/>
+
+        <result property="versionSeries" column="version_series"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="printName" column="print_name"/>
+        <result property="price" column="price"/>
+        <result property="minPrice" column="min_price"></result>
+
+        <result property="createDate" column="create_date"/>
+        <result property="owner" column="owner"/>
+
+
+
+    </resultMap>
+    <insert id="create" keyProperty="id" keyColumn="id" useGeneratedKeys="true" flushCache="true">
+        insert into attraction(version_series,code,"name",print_name,price,create_date,owner) values (#{versionSeries},#{code},#{name},#{printName},#{price},now(),#{owner})
+    </insert>
+
+    <update id="update">
+        update attraction set
+                              code = #{code},
+                              "name" = #{name},
+                               print_name=#{printName},
+                               price = #{price}
+        where
+                 version_series = #{versionSeries} and id = #{id}
+
+    </update>
+
+
+
+    <select id="find" resultType="it.q02.asocp.modules.base.client.data.Attraction" resultMap="atraction">
+
+        select * from attraction order by version_series;
+
+    </select>
+
+
+</mapper>

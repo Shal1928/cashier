@@ -45,4 +45,31 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="4" author="aausov">
+        <createTable tableName="attraction">
+            <column name="version_series" autoIncrement="true" type="BIGINT"></column>
+            <column name="id" autoIncrement="true" type="BIGINT"></column>
+            <column name="code" type="VARCHAR(10)"></column>
+            <column name="name" type="VARCHAR(50)"></column>
+            <column name="print_name" type="VARCHAR(20)"></column>
+            <column name="price" type="BIGINT"></column>
+            <column name="min_price" type="BIGINT"></column>
+            <column name="is_active" type="BOOL"></column>
+
+            <column name="create_date" type="TIMESTAMP"></column>
+            <column name="owner" type="VARCHAR(20)"></column>
+
+            <column name="version_create_date" type="TIMESTAMP"></column>
+            <column name="version_owner" type="TIMESTAMP"></column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="5" author="aausov">
+        <modifyDataType tableName="attraction" columnName="version_series" newDataType="VARCHAR(16)" ></modifyDataType>
+    </changeSet>
+
+    <changeSet id="6" author="aausov">
+        <modifyDataType tableName="attraction" columnName="version_series" newDataType="VARCHAR(36)" ></modifyDataType>
+    </changeSet>
+
 </databaseChangeLog>

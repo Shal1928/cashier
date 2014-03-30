@@ -19,6 +19,7 @@ import it.q02.asocp.modules.administrator.client.rpc.TicketRollServiceAsync;
 import it.q02.asocp.modules.base.client.data.TicketRoll;
 import it.q02.asocp.modules.base.client.ui.EditorStateCallback;
 import it.q02.asocp.modules.base.client.ui.EditorStateCallbackProxy;
+import it.q02.asocp.modules.base.client.ui.editor.BaseEditor;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.DataGrid;
 
@@ -44,7 +45,7 @@ public class TicketView implements IsWidget {
     @UiField
     protected DataGrid<TicketRoll> dataContainer;
     @UiField
-    protected TicketEditor ticketEditor;
+    protected BaseEditor<TicketRoll> ticketEditor;
 
     public TicketView() {
         rootPanel = ourUiBinder.createAndBindUi(this);

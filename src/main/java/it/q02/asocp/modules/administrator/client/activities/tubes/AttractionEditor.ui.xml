@@ -15,7 +15,8 @@
         <b:PanelBody>
             <b:TabPanel>
                 <b:NavTabs>
-                    <b:TabListItem active="true" target="#tab7" toggle="TAB" text="Свойства"/>
+                    <b:TabListItem active="true" target="#editorTab" toggle="TAB" text="Свойства"/>
+                    <b:TabListItem  target="#specialTabs" toggle="TAB" text="Спец.предложения"/>
                     <b:TabListItem enabled="false" toggle="TAB" text="Продажи"/>
                     <b:TabListItem enabled="false" toggle="TAB" text="История"/>
                 </b:NavTabs>
@@ -25,38 +26,41 @@
                             <b:FieldSet addStyleNames="{style.clear_margins}">
                                 <b:Alert type="DANGER" visible="false" ui:field="errorMessage"/>
                                 <b:FormGroup>
-                                    <b:FormLabel addStyleNames="col-lg-1">Серия</b:FormLabel>
+                                    <b:FormLabel addStyleNames="col-lg-1">Код</b:FormLabel>
                                     <g:FlowPanel addStyleNames="col-lg-1">
-                                        <b:TextBox ui:field="ticketSeries" enabled="false"
-                                                   placeholder="Серия"></b:TextBox>
+                                        <b:TextBox maxLength="5" ui:field="attractionCode" placeholder="Код"></b:TextBox>
                                     </g:FlowPanel>
-                                    <b:FormLabel addStyleNames="col-lg-2">Номер</b:FormLabel>
-                                    <g:FlowPanel addStyleNames="col-lg-2">
-                                        <b:TextBox ui:field="ticketNumber" enabled="false"
-                                                   placeholder="Номер"></b:TextBox>
+                                    <b:FormLabel addStyleNames="col-lg-1">Название</b:FormLabel>
+                                    <g:FlowPanel addStyleNames="col-lg-3">
+                                        <b:TextBox ui:field="attractionName" placeholder="Название"></b:TextBox>
                                     </g:FlowPanel>
-
+                                    <b:FormLabel addStyleNames="col-lg-2">На билете</b:FormLabel>
+                                    <g:FlowPanel addStyleNames="col-lg-3">
+                                        <b:TextBox ui:field="attractionPrintName" placeholder="Для печати"></b:TextBox>
+                                    </g:FlowPanel>
                                 </b:FormGroup>
-
                                 <b:FormGroup>
-                                    <b:FormLabel addStyleNames="col-lg-1">Цвет</b:FormLabel>
-                                    <g:FlowPanel addStyleNames="col-lg-2">
-                                        <b:TextBox ui:field="ticketColor" enabled="false"
-                                                   placeholder="Цвет"></b:TextBox>
+                                    <b:FormLabel addStyleNames="col-lg-1">Цена:</b:FormLabel>
+                                    <g:FlowPanel addStyleNames="col-lg-1">
+                                        <b:TextBox ui:field="attractionPrice" placeholder="Цена"></b:TextBox>
                                     </g:FlowPanel>
-                                    <b:FormLabel addStyleNames="col-lg-1">Количество</b:FormLabel>
-                                    <g:FlowPanel addStyleNames="col-lg-2">
-                                        <b:TextBox ui:field="ticketCount" enabled="false"
-                                                   placeholder="Кол-во билетов"></b:TextBox>
+                                    <b:FormLabel addStyleNames="col-lg-1">Мин.Цена</b:FormLabel>
+                                    <g:FlowPanel addStyleNames="col-lg-1">
+                                        <b:TextBox ui:field="attractionMinPrice" placeholder="Минимальная цена с учетом скидки"></b:TextBox>
                                     </g:FlowPanel>
                                 </b:FormGroup>
+
                             </b:FieldSet>
                         </b:Form>
                     </b:TabPane>
+                    <b:TabPane active="true" b:id="specialTabs">
+
+                    </b:TabPane>
+
                 </b:TabContent>
             </b:TabPanel>
         </b:PanelBody>
-        <b:PanelFooter ui:field="buttonGroup" visible="true">
+        <b:PanelFooter ui:field="buttonGroup" >
             <b:Row>
                 <b:Column size="MD_1" addStyleNames="pull-right">
                     <b:Button addStyleNames="{style.paddingRight} pull-right" ui:field="cancelButton">Отмена</b:Button>

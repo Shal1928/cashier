@@ -8,8 +8,10 @@
     <inherits name="com.google.gwt.place.Place"/>
     <inherits name="com.google.gwt.activity.Activity"/>
     <inherits name="org.gwtbootstrap3.extras.select.Select"/>
+    <inherits name="org.hibernate.validator.HibernateValidator" />
 
     <servlet path="/TicketRollService" class="it.q02.asocp.modules.administrator.server.rpc.TicketRollServiceImpl"/>
+    <servlet path="/AttractionService" class="it.q02.asocp.modules.administrator.server.rpc.AttractionServiceImpl"/>
 
     <replace-with class="it.q02.asocp.modules.administrator.client.impl.ClientFactoryImpl">
         <when-type-is class="it.q02.asocp.modules.administrator.client.ClientFactory"/>

@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import it.q02.asocp.modules.base.client.data.TicketRoll;
 import it.q02.asocp.modules.base.client.ui.EditorStateCallback;
+import it.q02.asocp.modules.base.client.ui.editor.BaseEditor;
 import org.gwtbootstrap3.client.ui.*;
 
 import java.util.LinkedList;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * User: aleksander at  24.03.14, 17:27
  */
-public class TicketEditor implements IsWidget   {
+public class TicketEditor implements BaseEditor<TicketRoll> {
     private final Panel rootPanel;
     private TicketRoll editableObject;
 
@@ -101,7 +102,8 @@ public class TicketEditor implements IsWidget   {
     }
 
 
-    public void setValue(TicketRoll ticketRoll,EditorStateCallback<TicketRoll> callBack) {
+    @Override
+    public void setValue(TicketRoll ticketRoll, EditorStateCallback<TicketRoll> callBack) {
         this.stateCallBack = callBack;
         formClearWith(ticketRoll);
         changeState(ticketRoll!=null);
@@ -113,6 +115,7 @@ public class TicketEditor implements IsWidget   {
 
 
 
+    @Override
     public TicketRoll getValue() {
         return editableObject;
     }

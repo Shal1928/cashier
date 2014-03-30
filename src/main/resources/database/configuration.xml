@@ -13,5 +13,6 @@
     </environments>
     <mappers>
         <mapper resource="database/mappers/ticket_roll.xml"></mapper>
+        <mapper resource="database/mappers/attraction.xml"></mapper>
     </mappers>
 </configuration>

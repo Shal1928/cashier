@@ -39,8 +39,10 @@ public class TicketActivity implements Activity, EditorStateCallback<TicketRoll>
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         this.eventBus = eventBus;
-        this.view = new TicketView(this);
-        this.view.setListener(this);
+        if(this.view==null){
+            this.view = new TicketView(this);
+            this.view.setListener(this);
+        }
         acceptsOneWidget.setWidget(this.view);
         eventBus.fireEvent(new AddMenu(new MenuWithIcon("Создать","create",IconType.PLUS){
             @Override
