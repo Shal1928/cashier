@@ -4,10 +4,12 @@ import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import it.q02.asocp.modules.administrator.client.activities.tickets.dialogs.LegalEntityEditor;
 import it.q02.asocp.modules.administrator.client.ui.menu.bus.AddMenu;
 import it.q02.asocp.modules.administrator.client.ui.menu.bus.ByIdFilter;
 import it.q02.asocp.modules.administrator.client.ui.menu.bus.ChangeMenuState;
 import it.q02.asocp.modules.administrator.client.ui.menu.bus.ClearMenu;
+import it.q02.asocp.modules.administrator.client.ui.menu.item.DropDownMenu;
 import it.q02.asocp.modules.administrator.client.ui.menu.item.MenuWithIcon;
 import it.q02.asocp.modules.base.client.data.TicketRoll;
 import it.q02.asocp.modules.base.client.ui.EditorStateCallback;
@@ -18,6 +20,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
  */
 public class TicketActivity implements Activity, EditorStateCallback<TicketRoll> {
 
+    private LegalEntityEditor editor = new LegalEntityEditor();
     private TicketView view;
     private EventBus eventBus;
 
@@ -44,10 +47,14 @@ public class TicketActivity implements Activity, EditorStateCallback<TicketRoll>
             this.view.setListener(this);
         }
         acceptsOneWidget.setWidget(this.view);
-        eventBus.fireEvent(new AddMenu(new MenuWithIcon("Создать","create",IconType.PLUS){
+        initMenu(eventBus);
+    }
+
+    private void initMenu(EventBus eventBus) {
+        eventBus.fireEvent(new AddMenu(new MenuWithIcon("Создать", "create", IconType.PLUS) {
             @Override
             public void execute() {
-               view.createNew();
+                view.createNew();
             }
         }));
         eventBus.fireEvent(new AddMenu(new MenuWithIcon("Править","edit",IconType.EDIT){
@@ -62,6 +69,26 @@ public class TicketActivity implements Activity, EditorStateCallback<TicketRoll>
                 Window.alert("delete");
             }
         }));
+        eventBus.fireEvent(new AddMenu(new DropDownMenu("Справочники","editors",
+                new MenuWithIcon("Юр.Лица","legal_entity",IconType.EDIT) {
+            @Override
+            public void execute() {
+                   editor.show();
+            }
+        },
+                new MenuWithIcon("Выдать бабины","give_rolls",IconType.DOWNLOAD) {
+                    @Override
+                    public void execute() {
+
+                    }
+                },
+                new MenuWithIcon("Вернуть бабины","return_rolls",IconType.UPLOAD) {
+                    @Override
+                    public void execute() {
+
+                    }
+                })));
+
         eventBus.fireEvent(new ChangeMenuState(ChangeMenuState.State.DISABLED, new ByIdFilter("edit","delete")));
     }
 
