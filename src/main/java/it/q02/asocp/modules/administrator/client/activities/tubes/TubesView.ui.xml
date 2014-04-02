@@ -13,7 +13,7 @@
             </b:Row>
             <b:Row>
                 <b:Column size="MD_12">
-                    <b:DataGrid ui:field="dataContainer" bordered="true" condensed="true" striped="true" hover="true"
+                    <b:DataGrid ui:field="dataContainer" bordered="true" condensed="true" striped="false" hover="false"
                                 width="100%" height="400px"></b:DataGrid>
                 </b:Column>
             </b:Row>
