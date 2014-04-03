@@ -38,6 +38,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -45,6 +49,35 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UseAbilities.Controls">
+      <HintPath>..\..\Libraries\UseAbilities.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="UseAbilities.DotNet">
+      <HintPath>..\..\Libraries\UseAbilities.DotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="UseAbilities.Extensions">
+      <HintPath>..\..\Libraries\UseAbilities.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UseAbilities.IoC, Version=1.0.1.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\UseAbilities.IoC.dll</HintPath>
+    </Reference>
+    <Reference Include="UseAbilities.MVVM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\UseAbilities.MVVM.dll</HintPath>
+    </Reference>
+    <Reference Include="UseAbilities.System">
+      <HintPath>..\..\Libraries\UseAbilities.System.dll</HintPath>
+    </Reference>
+    <Reference Include="UseAbilities.Visual">
+      <HintPath>..\..\Libraries\UseAbilities.Visual.dll</HintPath>
+    </Reference>
+    <Reference Include="UseAbilities.WPF">
+      <HintPath>..\..\Libraries\UseAbilities.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="UseAbilities.XML">
+      <HintPath>..\..\Libraries\UseAbilities.XML.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -106,16 +139,6 @@
     <Folder Include="Behaviors\" />
     <Folder Include="Converters\" />
     <Folder Include="Models\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\UseAbilities\UseAbilities.IoC\UseAbilities.IoC.csproj">
-      <Project>{B855AE04-A938-472C-BA0A-1A546D5A3FEB}</Project>
-      <Name>UseAbilities.IoC</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\UseAbilities\UseAbilities.MVVM\UseAbilities.MVVM.csproj">
-      <Project>{8AC0BF72-84A5-4E2E-9A85-1DEF2167B51E}</Project>
-      <Name>UseAbilities.MVVM</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
