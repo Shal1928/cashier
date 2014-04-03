@@ -1,5 +1,0 @@
-property_file {
-org.eclipse.jetty.plus.jaas.spi.PropertyFileLoginModule required
-debug="true"
-file="/home/aleksander/Projects/ASoCS/src/other/users";
-      };
