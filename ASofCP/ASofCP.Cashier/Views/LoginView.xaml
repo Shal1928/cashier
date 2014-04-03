@@ -1,10 +1,12 @@
 ﻿<Window x:Class="ASofCP.Cashier.Views.LoginView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:AttachedProperties="clr-namespace:ASofCP.Cashier.AttachedProperties" Title="Представьтесь пожалуйста" 
+        xmlns:AttachedProperties="clr-namespace:ASofCP.Cashier.AttachedProperties" 
+        Title="{Binding Title}" 
         Height="325" Width="525"
         MinHeight="325" MinWidth="525"
-        MaxHeight="325" MaxWidth="525">
+        MaxHeight="325" MaxWidth="525"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -22,7 +24,7 @@
         </Grid.RowDefinitions>
 
 
-        <TextBlock Text="ASofCP модуль «Кассир» 1.0" Margin="0,15,0,2"
+        <TextBlock Text="Представьтесь пожалуйста" Margin="0,15,0,2"
                    HorizontalAlignment="Left"
                    Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" />
         

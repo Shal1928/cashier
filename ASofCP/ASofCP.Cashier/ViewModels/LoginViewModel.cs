@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Security;
 using System.Windows.Input;
+using ASofCP.Cashier.ViewModels.Base;
 using UseAbilities.MVVM.Base;
 using UseAbilities.MVVM.Command;
 
 namespace ASofCP.Cashier.ViewModels
 {
-    public class LoginViewModel : ViewModelBase
+    public class LoginViewModel : ApplicationViewModel
     {
         public LoginViewModel()
         {
