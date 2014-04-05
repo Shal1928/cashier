@@ -18,12 +18,13 @@ namespace ASofCP.Cashier
         private void OnStartup(object sender, StartupEventArgs e)
         {
             //Loader(StaticHelper.IoCcontainer);
-            var startupWindowSeed = (LoginViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(LoginViewModel)));
+            //var startupWindowSeed = (LoginViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(LoginViewModel)));
+            var startupWindowSeed = (MainViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(MainViewModel)));
 
             var relationsViewToViewModel = new Dictionary<Type, Type>
                                          {
-                                            {startupWindowSeed.GetType(), typeof (LoginView)},
-                                            {typeof(MainViewModel), typeof (MainView)}
+                                            {typeof(LoginViewModel), typeof (LoginView)},
+                                            {startupWindowSeed.GetType(), typeof (MainView)}
                                          };
 
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);

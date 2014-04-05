@@ -9,6 +9,8 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
     /// </summary>
     public partial class GroupContentGrid : UserControl
     {
+        protected IList<IGroupContentItem> TopContentItems;
+
         protected bool? IsSub
         {
             get; 
@@ -46,28 +48,24 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
             var groupContentGrid = d as GroupContentGrid;
             if(groupContentGrid == null) return;
 
-            //Если IsSub неопределено используем новые значения или true, если IsSub false используем старые значения
-            var newContentItems = groupContentGrid.IsSub.HasValue ?
-                groupContentGrid.IsSub.Value ? e.NewValue as IList<IGroupContentItem> : e.OldValue as IList<IGroupContentItem> 
-                : e.NewValue as IList<IGroupContentItem>;
-            
+            var newContentItems = e.NewValue as IList<IGroupContentItem>;
             if(newContentItems == null) return;
 
-            groupContentGrid.RootWidget = new Grid();
-
-            var colDef = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-
-            groupContentGrid.RootWidget.ColumnDefinitions.Add(colDef);
-            groupContentGrid.RootWidget.ColumnDefinitions.Add(colDef);
+            groupContentGrid    .RootWidget.Children.Clear();
+            var colW = new GridLength(1, GridUnitType.Star);
+            groupContentGrid.RootWidget.ColumnDefinitions.Add(new ColumnDefinition{Width = colW});
+            groupContentGrid.RootWidget.ColumnDefinitions.Add(new ColumnDefinition { Width = colW });
 
             var curCol = 0;
             var curRow = 0;
             foreach (var contentItem in newContentItems)
             {
-                curCol = curCol > 1 ? 0 : curCol;
+                if(curCol > 1)
+                {
+                    curCol = 0;
+                    curRow++;
+                }
+
                 var rowDef = new RowDefinition
                     {
                         Height = new GridLength(0, GridUnitType.Auto)
@@ -76,17 +74,40 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 
                 var button = new Button
                     {
-                        Content = contentItem.Title
+                        Content = contentItem.Title,
+                        Height = 42,
+                        MinWidth = 170,
+                        Margin = new Thickness(2),
+                        HorizontalAlignment = HorizontalAlignment.Stretch
                     };
-                
+
+                var item = contentItem;
+                button.Click += (sender, bE) =>
+                    {
+                        if(groupContentGrid.IsSub.HasValue && groupContentGrid.IsSub.Value) 
+                            return;
+
+                        groupContentGrid.TopContentItems = groupContentGrid.ContentItems;
+                        groupContentGrid.ContentItems = item.SubItemsCollection;
+                        groupContentGrid.IsSub = true;
+                        groupContentGrid.BackButton.IsEnabled = true;
+                    };
+
                 Grid.SetColumn(button, curCol);
                 Grid.SetRow(button, curRow);
 
+                groupContentGrid.RootWidget.Children.Add(button);
                 curCol++;
-                curRow++;
             }
         }
 
         #endregion 
+
+        private void ButtonClick(object sender, RoutedEventArgs e)
+        {
+            IsSub = false;
+            BackButton.IsEnabled = false;
+            ContentItems = TopContentItems;
+        }
     }
 }
