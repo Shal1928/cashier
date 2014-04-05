@@ -60,14 +60,8 @@
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center"
                     Margin="20,15,0,0" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
 
-            <StackPanel Orientation="Horizontal" Margin="0,0,15,0"
-                        HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Border Background="#ff000000" Margin="0,0,5,0" Width="32" Height="32" />
-                <TextBox Width="250" FontSize="14" />
-            </StackPanel>
-
-            <GroupContentGridParts:GroupContentGrid ContentItems="{Binding CollectionServices}"
-                Margin="0,15,15,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <GroupContentGridParts:GroupContentGrid ContentItems="{Binding CollectionServices}" DefaultTitle="Услуги"
+                Margin="0,0,15,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
             
         </StackPanel>
 

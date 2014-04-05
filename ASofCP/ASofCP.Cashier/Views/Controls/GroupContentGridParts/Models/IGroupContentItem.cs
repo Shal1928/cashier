@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
+namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models
 {
     public interface IGroupContentItem
     {
@@ -11,10 +10,15 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
             set;
         }
 
-        IList<IGroupContentItem> SubItemsCollection
+        GroupContentList SubItemsCollection
         {
             get; 
             set;
+        }
+
+        bool IsFinal
+        {
+            get; 
         }
     }
 }

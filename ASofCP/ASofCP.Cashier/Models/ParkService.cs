@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using ASofCP.Cashier.Views.Controls.GroupContentGridParts;
+﻿using ASofCP.Cashier.Helpers;
+using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
 
 namespace ASofCP.Cashier.Models
 {
@@ -16,7 +16,7 @@ namespace ASofCP.Cashier.Models
             SubItemsCollection = null;
         }
 
-        public ParkService(string title, IList<IGroupContentItem> subItems)
+        public ParkService(string title, GroupContentList subItems)
         {
             Title = title;
             SubItemsCollection = subItems;
@@ -31,10 +31,15 @@ namespace ASofCP.Cashier.Models
             set;
         }
 
-        public IList<IGroupContentItem> SubItemsCollection
+        public GroupContentList SubItemsCollection
         {
             get; 
             set;
+        }
+
+        public bool IsFinal
+        {
+            get { return SubItemsCollection.IsNullOrEmpty(); }
         }
 
         #endregion

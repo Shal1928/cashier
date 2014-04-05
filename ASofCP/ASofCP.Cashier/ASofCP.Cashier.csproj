@@ -89,14 +89,19 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AttachedProperties\PasswordHelper.cs" />
+    <Compile Include="Helpers\CollectionExt.cs" />
     <Compile Include="Models\ParkService.cs" />
     <Compile Include="ViewModels\Base\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Views\Controls\GroupContentGridParts\Converters\EmptyToBoolConverter.cs" />
     <Compile Include="Views\Controls\GroupContentGridParts\GroupContentGrid.xaml.cs">
       <DependentUpon>GroupContentGrid.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\GroupContentGridParts\IGroupContentItem.cs" />
+    <Compile Include="Views\Controls\GroupContentGridParts\GroupContentGridHelper.cs" />
+    <Compile Include="Views\Controls\GroupContentGridParts\Models\GroupSearchResult.cs" />
+    <Compile Include="Views\Controls\GroupContentGridParts\Models\IGroupContentItem.cs" />
+    <Compile Include="Views\Controls\GroupContentGridParts\Models\GroupContentList.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
