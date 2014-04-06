@@ -1,11 +1,13 @@
 ﻿using System.ComponentModel;
 using System.Windows.Data;
+using System.Windows.Input;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Helpers.Test;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Models.Base;
 using ASofCP.Cashier.ViewModels.Base;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
+using UseAbilities.MVVM.Command;
 
 namespace ASofCP.Cashier.ViewModels
 {
@@ -32,6 +34,12 @@ namespace ASofCP.Cashier.ViewModels
             get; 
             set;
         }
+
+        //public virtual ICashVoucherItem SelectedCashVoucher
+        //{
+        //    get; 
+        //    set;
+        //}
 
         private void UpdateResultCashVoucher(CashVoucher<ICashVoucherItem> cashVoucher)
         {
@@ -68,5 +76,20 @@ namespace ASofCP.Cashier.ViewModels
                 ResultCashVoucher.Refresh();
             }
         }
+
+        private ICommand _calculateCommand;
+        public ICommand CalculateCommand
+        {
+            get
+            {
+                return _calculateCommand ?? (_calculateCommand = new RelayCommand(param => OnCalculateCommand(), can => Total > 0));
+            }
+        }
+
+        private void OnCalculateCommand()
+        {
+            //
+        }
+        
     }
 }
