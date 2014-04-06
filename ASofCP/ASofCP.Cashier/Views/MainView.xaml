@@ -12,6 +12,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ResourceDictionaries/ColorDictionary.xaml" />
                 <ResourceDictionary Source="ResourceDictionaries/BaseStyleDictionary.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries/DataGridDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -103,12 +104,12 @@
         </StackPanel>
 
 
-        <DataGrid ItemsSource="{Binding ResultCashVoucher}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+        <DataGrid ItemsSource="{Binding ResultCashVoucher}" Style="{StaticResource CashierDataGridStyle}"
                   Grid.Column="3" Grid.Row="3">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Title}" Header="Наименование" Width="SizeToCells" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Title}" Header="Наименование" Width="2*" IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding Price}" Header="Цена" Width="*" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Count}" Header="Количество" Width="SizeToCells" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Count}" Header="Количество" Width="Auto" IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding Total}" Header="Итого" Width="*" IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>

@@ -1,4 +1,6 @@
-﻿using ASofCP.Cashier.Helpers;
+﻿using System.ComponentModel;
+using System.Windows.Data;
+using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Helpers.Test;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Models.Base;
@@ -12,8 +14,8 @@ namespace ASofCP.Cashier.ViewModels
         public MainViewModel()
         {
             CollectionServices = TestDataHelper.GetParkServices();
-            ResultCashVoucherItem = new CashVoucher<ICashVoucherItem>();
-
+            var resultCashVoucher = new CashVoucher<ICashVoucherItem>();
+            UpdateResultCashVoucher(resultCashVoucher);
         }
 
         public virtual GroupContentList CollectionServices
@@ -24,10 +26,20 @@ namespace ASofCP.Cashier.ViewModels
 
         public virtual double Total { get; set; }
 
-        public virtual CashVoucher<ICashVoucherItem> ResultCashVoucherItem
+        //CashVoucher<ICashVoucherItem> 
+        public virtual ICollectionView ResultCashVoucher
         {
             get; 
             set;
+        }
+
+        private void UpdateResultCashVoucher(CashVoucher<ICashVoucherItem> cashVoucher)
+        {
+            var view = CollectionViewSource.GetDefaultView(cashVoucher);
+            if (view == null) return;
+            view.Filter = null;
+
+            ResultCashVoucher = view;
         }
 
         public virtual ICashVoucherItem SelectedVoucherItem
@@ -49,10 +61,11 @@ namespace ASofCP.Cashier.ViewModels
                 if (_selectedParkService.IsNull() || !_selectedParkService.IsFinal) return;
 
                 ICashVoucherItem item = new CashVoucherItem(_selectedParkService);
-                ResultCashVoucherItem.Add(item);
-                SelectedVoucherItem = ResultCashVoucherItem.Get(item);
-                Total = ResultCashVoucherItem.GetTotal();
-                OnPropertyChanged(()=>ResultCashVoucherItem);
+                var cashVoucherItem = (CashVoucher<ICashVoucherItem>) ResultCashVoucher.SourceCollection;
+                cashVoucherItem.Add(item);
+                SelectedVoucherItem = cashVoucherItem.Get(item);
+                Total = cashVoucherItem.GetTotal();
+                ResultCashVoucher.Refresh();
             }
         }
     }
