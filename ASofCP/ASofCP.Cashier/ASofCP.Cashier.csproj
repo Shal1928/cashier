@@ -89,6 +89,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AttachedProperties\PasswordHelper.cs" />
+    <Compile Include="Converters\PriceToTextConverter.cs" />
     <Compile Include="Helpers\CollectionExt.cs" />
     <Compile Include="Models\ParkService.cs" />
     <Compile Include="ViewModels\Base\ApplicationViewModel.cs" />
@@ -160,7 +161,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Behaviors\" />
-    <Folder Include="Converters\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Views\Images\RubSign.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

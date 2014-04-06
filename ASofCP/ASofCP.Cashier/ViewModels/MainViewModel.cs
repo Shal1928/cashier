@@ -36,6 +36,8 @@ namespace ASofCP.Cashier.ViewModels
                 };
 
             CollectionServices.IsTop = true;
+
+            Total = 0;
         }
 
         public virtual GroupContentList CollectionServices
@@ -44,6 +46,11 @@ namespace ASofCP.Cashier.ViewModels
             set;
         }
 
+        public virtual double Total
+        {
+            get; 
+            set; 
+        }
 
 
     }
