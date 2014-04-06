@@ -13,7 +13,9 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
     public class GroupContentGridHelper
     {
         private readonly GroupContentGrid _entity;
+        // ReSharper disable StaticFieldInGenericType
         private static readonly DispatcherTimer _dispatcherTimer = new DispatcherTimer();
+        // ReSharper restore StaticFieldInGenericType
 
         public GroupContentGridHelper(GroupContentGrid entity)
         {
@@ -27,32 +29,22 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
                 Content = item.Title,
                 Height = 42,
                 MinWidth = 170,
+                FontSize = 14,
                 Margin = new Thickness(2),
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
 
             itemControl.Click += delegate
             {
-                if (_entity.IsSub) return;
+                if (_entity.IsSub && !item.IsFinal) return;
 
-                _entity.IsInternalChange = true;
-                SelectItem(item);
+                _entity.SelectedItem = item;
             };
 
             Grid.SetColumn(itemControl, column);
             Grid.SetRow(itemControl, row);
 
             return itemControl;
-        }
-
-        internal void SelectItem(IGroupContentItem item)
-        {
-            if (!item.SubItemsCollection.IsNullOrEmpty()) _entity.PreviousContentItems = _entity.ContentItems;
-            _entity.ContentItems = item.SubItemsCollection;
-            _entity.SelectedItem = item;
-
-            if (item.SubItemsCollection.IsNullOrEmpty()) return;
-            TitleBlockUpdate(_entity.IsSub, _entity.IsSub ? item.Title : _entity.DefaultTitle);
         }
 
         public void AddRow()
@@ -91,7 +83,7 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
             TitleBlockUpdate(false, _entity.DefaultTitle);
         }
 
-        private void TitleBlockUpdate(bool isSub, string title)
+        internal void TitleBlockUpdate(bool isSub, string title)
         {
             _entity.TitleBlock.Text = title;
             _entity.TitleBlock.TextDecorations = isSub ? TextDecorations.Underline : null;
@@ -107,7 +99,6 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
             if (result != null)
             {
                 _entity.SelectedItem = result.Result;
-                //if (!Equals(PreviousContentItems, result.Group)) PreviousContentItems = result.Group;
                 _entity.SearchBox.Text = String.Empty;
 
                 if (_entity.SelectedItem.SubItemsCollection.NotEmpty()) return;

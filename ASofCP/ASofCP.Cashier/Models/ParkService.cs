@@ -1,18 +1,21 @@
 ﻿using ASofCP.Cashier.Helpers;
+using ASofCP.Cashier.Models.Base;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
 
 namespace ASofCP.Cashier.Models
 {
-    public class ParkService : IGroupContentItem
+    public class ParkService : IGroupContentItem, IPrice
     {
         public ParkService()
         {
             //
         }
 
-        public ParkService(string title)
+
+        public ParkService(string title, double price)
         {
             Title = title;
+            Price = price;
             SubItemsCollection = null;
         }
 
@@ -43,5 +46,36 @@ namespace ASofCP.Cashier.Models
         }
 
         #endregion
+
+
+        #region Implementation of IPrice
+
+        public double Price
+        {
+            get; 
+            set;
+        }
+
+        #endregion
     }
+
+
+//    public class ParkService : ParkService<IGroupContentItem>
+//    {
+//        public ParkService()
+//        {
+//            //
+//        }
+
+//        public ParkService(string title, double price) : base(title, price)
+//        {
+//            //
+//        }
+
+//        public ParkService(string title, GroupContentList<IGroupContentItem> subItems)
+//            : base(title, subItems)
+//        {
+//            //
+//        }
+//    }
 }

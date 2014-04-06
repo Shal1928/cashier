@@ -21,4 +21,9 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models
             get; 
         }
     }
+
+    //public interface IGroupContentItem : IGroupContentItem<IGroupContentItem>
+    //{
+    //    //
+    //}
 }

@@ -106,21 +106,18 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
             var entity = d as GroupContentGrid;
             if (entity == null) return;
 
-            //Не обрабатываем, если изменение создано внтури контрола
-            if(entity.IsInternalChange)
-            {
-                entity.IsInternalChange = false;
-                return;
-            }
-
             var contentItem = e.NewValue as IGroupContentItem;
             if (contentItem == null) return;
 
             //Не обрабатываем если уже является выбранным
-            if(Equals(entity.ContentItems, contentItem.SubItemsCollection)) 
+            if (!contentItem.IsFinal && Equals(entity.ContentItems, contentItem.SubItemsCollection))
                 return;
 
-            _helper.SelectItem(contentItem);
+            if (!contentItem.SubItemsCollection.IsNullOrEmpty()) entity.PreviousContentItems = entity.ContentItems;
+            entity.ContentItems = contentItem.SubItemsCollection;
+
+            if (contentItem.SubItemsCollection.IsNullOrEmpty()) return;
+            _helper.TitleBlockUpdate(entity.IsSub, entity.IsSub ? contentItem.Title : entity.DefaultTitle);
         }
 
         #endregion 

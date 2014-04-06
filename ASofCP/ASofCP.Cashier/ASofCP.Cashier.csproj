@@ -90,7 +90,17 @@
     </ApplicationDefinition>
     <Compile Include="AttachedProperties\PasswordHelper.cs" />
     <Compile Include="Converters\PriceToTextConverter.cs" />
+    <Compile Include="Converters\PriceToWidthConverter.cs" />
     <Compile Include="Helpers\CollectionExt.cs" />
+    <Compile Include="Helpers\DependencyMechHelper.cs" />
+    <Compile Include="Helpers\ObjectExt.cs" />
+    <Compile Include="Helpers\Test\TestConverter.cs" />
+    <Compile Include="Helpers\Test\TestDataHelper.cs" />
+    <Compile Include="Models\Base\CashVoucherItemBase.cs" />
+    <Compile Include="Models\Base\ICashVoucherItem.cs" />
+    <Compile Include="Models\Base\IPrice.cs" />
+    <Compile Include="Models\CashVoucher.cs" />
+    <Compile Include="Models\CashVoucherItem.cs" />
     <Compile Include="Models\ParkService.cs" />
     <Compile Include="ViewModels\Base\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />

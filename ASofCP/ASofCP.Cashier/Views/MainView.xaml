@@ -2,7 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:GroupContentGridParts="clr-namespace:ASofCP.Cashier.Views.Controls.GroupContentGridParts"
-        xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters" Title="{Binding Title}" WindowState="Maximized" 
+        xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
+        xmlns:Test="clr-namespace:ASofCP.Cashier.Helpers.Test" 
+        Title="{Binding Title}" WindowState="Maximized" 
         Width="1024" Height="769" 
         MinWidth="1024" MinHeight="768">
     <Window.Resources>
@@ -17,7 +19,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="0.1*" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
@@ -60,19 +62,21 @@
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center"
                     Margin="20,15,0,0" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
 
-            <GroupContentGridParts:GroupContentGrid ContentItems="{Binding CollectionServices}" DefaultTitle="Услуги"
-                Margin="0,0,15,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+            <GroupContentGridParts:GroupContentGrid ContentItems="{Binding CollectionServices}" SelectedItem="{Binding SelectedParkService, Mode=OneWayToSource}" 
+                                                    DefaultTitle="Услуги" Margin="0,0,15,0" 
+                                                    HorizontalAlignment="Stretch" VerticalAlignment="Top" />
             
         </StackPanel>
 
 
-        <Button Margin="15" Width="500" Height="120"
+        <Button Margin="15" MinWidth="500" Height="120"
+                Width="{Binding ElementName=TotalDisplay, Path=ActualWidth, Converter={Converters:PriceToWidthConverter}}" 
                 HorizontalAlignment="Stretch" VerticalAlignment="Center"
                 Grid.Column="3" Grid.Row="1">
             <Button.Content>
                 <ContentControl>
                     <StackPanel Orientation="Horizontal" Margin="15,0,15,0" HorizontalAlignment="Right">
-                        <TextBlock Text="{Binding Total, Converter={Converters:PriceToTextConverter}}" FontSize="72pt" FontWeight="ExtraBold" Margin="0,-10,0,0" />
+                        <TextBlock x:Name="TotalDisplay" Text="{Binding Total, Converter={Converters:PriceToTextConverter}}" FontSize="72pt" FontWeight="ExtraBold" Margin="0,-10,0,0" />
                         <Image Source="/ASofCP.Cashier;component/Views/Images/RubSign.png" Height="50" Margin="15,20,0,0" />
                     </StackPanel>
                 </ContentControl>
@@ -83,21 +87,30 @@
                     Margin="20,0,15,0" Grid.Column="3" Grid.Row="2">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Услуга:" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
-                <TextBlock Text="Репка" Style="{DynamicResource TitleTextBlockStyle}" />
+                <TextBlock Text="{Binding SelectedVoucherItem.Title}" Style="{DynamicResource TitleTextBlockStyle}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Количество:" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
-                    <TextBox Text="5" Width="50" />
+                    <TextBox Text="{Binding SelectedVoucherItem.Count, Mode=TwoWay}" Width="50" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                     <TextBlock Text="Цена:" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
-                    <TextBox Text="5" Width="150" />
+                    <TextBlock Text="{Binding SelectedVoucherItem.Price, Mode=TwoWay}" Style="{DynamicResource TitleTextBlockStyle}" />
                 </StackPanel>
             </StackPanel>
-            
         </StackPanel>
 
+
+        <DataGrid ItemsSource="{Binding ResultCashVoucher}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                  Grid.Column="3" Grid.Row="3">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Title}" Header="Наименование" Width="SizeToCells" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Price}" Header="Цена" Width="*" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Count}" Header="Количество" Width="SizeToCells" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Total}" Header="Итого" Width="*" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
