@@ -35,7 +35,9 @@ namespace ASofCP.Cashier.Stores
         {
             if (!File.Exists(FileName)) base.Save(new ModuleSettings
             {
-                
+                IP = "localhost",
+                Port = "8080",
+                Id = "id123"
             });
 
             return SerializationUtility.Deserialize<ModuleSettings>(FileName);

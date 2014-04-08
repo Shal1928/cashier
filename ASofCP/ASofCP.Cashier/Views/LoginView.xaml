@@ -1,12 +1,21 @@
 ﻿<Window x:Class="ASofCP.Cashier.Views.LoginView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:AttachedProperties="clr-namespace:ASofCP.Cashier.AttachedProperties" 
+        xmlns:AttachedProperties="clr-namespace:ASofCP.Cashier.AttachedProperties"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         Title="{Binding Title}" 
         Height="325" Width="525"
         MinHeight="325" MinWidth="525"
         MaxHeight="325" MaxWidth="525"
         WindowStartupLocation="CenterScreen">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />

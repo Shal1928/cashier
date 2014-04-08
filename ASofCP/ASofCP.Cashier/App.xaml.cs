@@ -10,6 +10,7 @@ using UseAbilities.IoC.Helpers;
 using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Base;
 using UseAbilities.MVVM.Managers;
+using it.q02.asocp.api.data;
 
 namespace ASofCP.Cashier
 {
@@ -20,14 +21,16 @@ namespace ASofCP.Cashier
     {
         private void OnStartup(object sender, StartupEventArgs e)
         {
-            //Loader(StaticHelper.IoCcontainer);
-            //var startupWindowSeed = (LoginViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(LoginViewModel)));
-            var startupWindowSeed = (MainViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(MainViewModel)));
+            Loader(StaticHelper.IoCcontainer);
+            var startupWindowSeed = (LoginViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(LoginViewModel)));
+            //var startupWindowSeed = (MainViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(MainViewModel)));
 
             var relationsViewToViewModel = new Dictionary<Type, Type>
                                          {
-                                            {typeof(LoginViewModel), typeof (LoginView)},
-                                            {startupWindowSeed.GetType(), typeof (MainView)}
+                                            {startupWindowSeed.GetType(), typeof (LoginView)},
+                                            {typeof(MainViewModel), typeof (MainView)}
+                                            //{typeof(LoginViewModel), typeof (LoginView)},
+                                            //{startupWindowSeed.GetType(), typeof (MainView)}
                                          };
 
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);
@@ -39,7 +42,7 @@ namespace ASofCP.Cashier
         private static void Loader(IoC ioc)
         {
             ioc.RegisterSingleton<IXmlStore<ModuleSettings>, SettingsStore>();
-            //ioc.RegisterSingleton<IFileStore<List<CalendarDay>>, CalendarDayStore>();
+            ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
         }
     }
 
