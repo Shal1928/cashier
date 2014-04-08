@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using ASofCP.Cashier.Models;
+using ASofCP.Cashier.Stores;
 using ASofCP.Cashier.ViewModels;
 using ASofCP.Cashier.Views;
 using UseAbilities.IoC.Core;
 using UseAbilities.IoC.Helpers;
+using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Base;
 using UseAbilities.MVVM.Managers;
 
@@ -33,10 +36,27 @@ namespace ASofCP.Cashier
             startupWindowSeed.Show();
         }
 
-        //private static void Loader(IoC ioc)
-        //{
-        //    ioc.RegisterSingleton<IXmlStore<FactimeSettings>, FactimeSettingsStore>();
-        //    ioc.RegisterSingleton<IFileStore<List<CalendarDay>>, CalendarDayStore>();
-        //}
+        private static void Loader(IoC ioc)
+        {
+            ioc.RegisterSingleton<IXmlStore<ModuleSettings>, SettingsStore>();
+            //ioc.RegisterSingleton<IFileStore<List<CalendarDay>>, CalendarDayStore>();
+        }
     }
+
+
+    //1 Авторизация, 
+    //Открыть смену - серия номер первого билета, цвет на сервер
+    //Получаем инфу о бабине
+    // 1 Услуга 1 билет
+    //Знак сколько осталось
+    //Оплата налом, без нал, сертификат - передаем инфу каким образом оплачено
+    //Билеты печатаем по очереди
+    //Если зажевало? Сообщаем, 
+    //ШК билета: номер серия
+    //Чек открывается: дата открытия/дата закрытия, форма оплаты, Коллекция билетов (серия номер, дата печати) 
+    //Если кончилась бабина показываем открытие новой бабины
+    //2 
+    //Активация бабины
+    //Закрыть смену
+    //Сторнирование по билетам
 }

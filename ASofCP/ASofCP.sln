@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{FA6579
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{06857FC0-B30A-4C12-93CD-20A97D99460B}"
 	ProjectSection(SolutionItems) = preProject
+		..\Libraries\Hessiancsharp.dll = ..\Libraries\Hessiancsharp.dll
 		..\Libraries\Microsoft.Windows.Shell.dll = ..\Libraries\Microsoft.Windows.Shell.dll
 		..\Libraries\System.Windows.Interactivity.dll = ..\Libraries\System.Windows.Interactivity.dll
 		..\Libraries\UseAbilities.Controls.dll = ..\Libraries\UseAbilities.Controls.dll

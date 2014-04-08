@@ -11,7 +11,8 @@
     <RootNamespace>ASofCP.Cashier</RootNamespace>
     <AssemblyName>ASofCP.Cashier</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -36,8 +37,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Hessiancsharp">
+      <HintPath>..\..\Libraries\Hessiancsharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libraries\System.Windows.Interactivity.dll</HintPath>
@@ -92,6 +97,7 @@
     <Compile Include="Converters\PriceToTextConverter.cs" />
     <Compile Include="Converters\PriceToWidthConverter.cs" />
     <Compile Include="Helpers\CollectionExt.cs" />
+    <Compile Include="Helpers\DataManager.cs" />
     <Compile Include="Helpers\DependencyMechHelper.cs" />
     <Compile Include="Helpers\ObjectExt.cs" />
     <Compile Include="Helpers\Test\TestConverter.cs" />
@@ -101,7 +107,15 @@
     <Compile Include="Models\Base\IPrice.cs" />
     <Compile Include="Models\CashVoucher.cs" />
     <Compile Include="Models\CashVoucherItem.cs" />
+    <Compile Include="Models\Contracts\POSInfo.cs" />
+    <Compile Include="Models\Contracts\UserCS.cs" />
+    <Compile Include="Models\ModuleSettings.cs" />
     <Compile Include="Models\ParkService.cs" />
+    <Compile Include="Stores\Base\CHessianStore.cs" />
+    <Compile Include="Stores\Base\FileStore.cs" />
+    <Compile Include="Stores\Base\ServerStore.cs" />
+    <Compile Include="Stores\Base\XMLStore.cs" />
+    <Compile Include="Stores\SettingsStore.cs" />
     <Compile Include="ViewModels\Base\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
@@ -167,6 +181,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -175,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Behaviors\" />
+    <Folder Include="Stores\API\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Views\Images\RubSign.png" />
