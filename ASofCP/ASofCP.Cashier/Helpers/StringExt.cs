@@ -1,9 +1,26 @@
-﻿using System.Text;
+﻿using System;
+using System.Drawing;
+using System.Text;
+using DColor = System.Drawing.Color;
+using MColor = System.Windows.Media.Color;
 
 namespace ASofCP.Cashier.Helpers
 {
     public static class StringExt
     {
+        public static DColor ToDrawingColor(this string colorName)
+        {
+            if (String.IsNullOrWhiteSpace(colorName)) throw new ArgumentException("colorName");
+            return ColorTranslator.FromHtml(colorName);
+        }
+
+        public static MColor ToMediaColor(this string colorName)
+        {
+            if (String.IsNullOrWhiteSpace(colorName)) throw new ArgumentException("colorName");
+            var dColor = ColorTranslator.FromHtml(colorName);
+            return MColor.FromArgb(dColor.A, dColor.R, dColor.G, dColor.B);
+        }
+
         public static string ToUTF8(this string str)
         {
             

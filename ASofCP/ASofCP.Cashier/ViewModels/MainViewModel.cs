@@ -90,6 +90,21 @@ namespace ASofCP.Cashier.ViewModels
         {
             //
         }
-        
+
+        #region LoadedCommand
+        private ICommand _loadedCommand;
+        public ICommand LoadedCommand
+        {
+            get
+            {
+                return _loadedCommand ?? (_loadedCommand = new RelayCommand(param => OnLoadedCommand(), null));
+            }
+        }
+
+        private void OnLoadedCommand()
+        {
+
+        }
+        #endregion
     }
 }
