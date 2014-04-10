@@ -10,6 +10,17 @@
         MaxHeight="325" MaxWidth="525"
         WindowStartupLocation="CenterScreen">
 
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourceDictionaries/ColorDictionary.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries/BaseStyleDictionary.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries/DataTemplateDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
@@ -22,12 +33,19 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
 
+        <Button Content="Сменить пользователя" Visibility="{Binding IsAuthority, Converter={CommonConverters:BoolToVisibilityConverter}}"
+                HorizontalAlignment="Right" Grid.Column="0" Grid.Row="0" Margin="5" />
+        <TextBlock Text="{Binding User}" Visibility="{Binding IsAuthority, Converter={CommonConverters:BoolToVisibilityConverter}}" 
+                   Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Margin="5" />
+        
+
         <Grid Visibility="{Binding IsAuthority, Converter={Converters:AuthorityToVisibilityConverter}}" Margin="25" 
-              Grid.Column="0" Grid.Row="0">
+              Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
@@ -41,7 +59,7 @@
 
             <StackPanel Orientation="Vertical" Margin="0,25,0,10" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1">
                 <TextBlock Text="Кассир" Margin="0,0,0,4" FontWeight="SemiBold" />
-                <ComboBox ItemsSource="{Binding Users}" SelectedIndex="0" Width="425px" Height="42px" FontSize="16" />
+                <ComboBox ItemsSource="{Binding Users}" SelectedValue="{Binding User}" SelectedIndex="-1" Width="425px" Height="42px" FontSize="16" />
             </StackPanel>
 
             <StackPanel Orientation="Vertical" Margin="0,10,0,50" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="2">
@@ -60,7 +78,7 @@
         </Grid>
 
         <Grid Visibility="{Binding IsAuthority, Converter={CommonConverters:BoolToVisibilityConverter}}" Margin="25" 
-              Grid.Column="0" Grid.Row="0">
+              Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
@@ -79,28 +97,22 @@
             <StackPanel Orientation="Horizontal" Margin="0,10,0,10" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1">
                 <StackPanel Orientation="Vertical" Margin="0,0,15,0">
                     <TextBlock Text="Серия" Margin="0,0,0,4" FontWeight="SemiBold" />
-                    <TextBox Width="150px" Height="42px" FontSize="16" />
+                    <TextBox Text="{Binding FirstTicketSeries, UpdateSourceTrigger=PropertyChanged}" Width="150px" Height="42px" FontSize="16" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Номер" Margin="0,0,0,4" FontWeight="SemiBold" />
-                    <TextBox Width="275px" Height="42px" FontSize="16" />
+                    <TextBox Text="{Binding FirstTicketNumber, UpdateSourceTrigger=PropertyChanged}" Width="275px" Height="42px" FontSize="16" />
                 </StackPanel>
             </StackPanel>
             
 
-            <StackPanel Orientation="Vertical" Margin="0,10,0,50" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="2">
+            <StackPanel Orientation="Vertical" Margin="0,10,0,50" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="2">
                 <TextBlock Text="Выберите цвет билетов" Margin="0,0,0,4" FontWeight="SemiBold" />
                 <StackPanel Orientation="Horizontal">
-                    <ComboBox ItemsSource="{Binding Colors}" SelectedIndex="0" Width="275px" Height="42px" Margin="0,0,15,0">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <Rectangle Fill="{Binding Converter={Converters:EngColorNameToBrushConverter}}" 
-                                           Width="273px" Height="38" Margin="1" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding Colors}" SelectedIndex="{Binding TicketColorIndex, UpdateSourceTrigger=PropertyChanged}" Width="275px" Height="42px" Margin="0,0,15,0"
+                              ItemTemplate="{DynamicResource ColorDataTemplate}" />
 
-                    <Button Content="Открыть смену" Command="{Binding EnterCommand}"
+                    <Button Content="Открыть смену" Command="{Binding OpenSessionCommand}"
                             FontSize="16" FontWeight="SemiBold" 
                             Width="150px" Height="42px" VerticalAlignment="Bottom"
                             Grid.Column="0" Grid.Row="2" />

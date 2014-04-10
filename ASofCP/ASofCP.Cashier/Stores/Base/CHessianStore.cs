@@ -1,4 +1,5 @@
 ﻿using System;
+using ASofCP.Cashier.Helpers;
 using UseAbilities.IoC.Stores;
 using hessiancsharp.client;
 
@@ -21,7 +22,7 @@ namespace ASofCP.Cashier.Stores.Base
 
         public T Load()
         {
-            if (String.IsNullOrWhiteSpace(URL)) throw new Exception(String.Format("URL: \"{0}\" сервера не корректен!", URL));
+            if (URL.IsNullOrEmptyOrSpaces()) throw new Exception(String.Format("URL: \"{0}\" сервера не корректен!", URL));
             return (T)_factory.Create(typeof (T), URL);
         }
 

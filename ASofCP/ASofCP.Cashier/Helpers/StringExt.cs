@@ -35,5 +35,10 @@ namespace ASofCP.Cashier.Helpers
             var utfBytes = encoder.GetBytes(str);
             return encoder.GetString(utfBytes, 0, utfBytes.Length);
         }
+
+        public static bool IsNullOrEmptyOrSpaces(this string value)
+        {
+            return String.IsNullOrWhiteSpace(value) || value.IsEmpty();
+        }
     }
 }
