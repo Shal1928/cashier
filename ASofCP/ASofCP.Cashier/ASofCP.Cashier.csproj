@@ -136,6 +136,7 @@
     <Compile Include="Stores\POSInfoStore.cs" />
     <Compile Include="Stores\Base\XMLStore.cs" />
     <Compile Include="Stores\SettingsStore.cs" />
+    <Compile Include="Triggers\EnterUpTrigger.cs" />
     <Compile Include="ViewModels\Base\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
@@ -147,6 +148,8 @@
     <Compile Include="Views\Controls\GroupContentGridParts\Models\GroupSearchResult.cs" />
     <Compile Include="Views\Controls\GroupContentGridParts\Models\IGroupContentItem.cs" />
     <Compile Include="Views\Controls\GroupContentGridParts\Models\GroupContentList.cs" />
+    <Compile Include="Views\Controls\LinkButtonParts\LinkButton.cs" />
+    <Compile Include="Views\Controls\LinkButtonParts\LinkButtonDic.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
@@ -183,6 +186,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ResourceDictionaries\DataTemplateDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\LinkButtonParts\LinkButtonDic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

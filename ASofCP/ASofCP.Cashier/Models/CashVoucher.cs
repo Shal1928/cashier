@@ -59,5 +59,14 @@ namespace ASofCP.Cashier.Models
         {
             return this.FirstOrDefault(i => string.Equals(i.Title, title, StringComparison.OrdinalIgnoreCase));
         }
+
+        public CashVoucher<T> Clone()
+        {
+            var clone = new CashVoucher<T>();
+            foreach (var original in this)
+                clone.Add((T)original.Clone());
+
+            return clone;
+        }
     }
 }

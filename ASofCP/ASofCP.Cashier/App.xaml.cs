@@ -23,22 +23,22 @@ namespace ASofCP.Cashier
         {
             //Loader(StaticHelper.IoCcontainer);
 
-            var startupWindowSeed = (LoginViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(LoginViewModel)));
-
-            var relationsViewToViewModel = new Dictionary<Type, Type>
-                                         {
-                                            {startupWindowSeed.GetType(), typeof (LoginView)},
-                                            {typeof(MainViewModel), typeof (MainView)}
-                                         };
-
-
-            //var startupWindowSeed = (MainViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(MainViewModel)));
+            //var startupWindowSeed = (LoginViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(LoginViewModel)));
 
             //var relationsViewToViewModel = new Dictionary<Type, Type>
             //                             {
-            //                                {typeof(LoginViewModel), typeof (LoginView)},
-            //                                {startupWindowSeed.GetType(), typeof (MainView)}
+            //                                {startupWindowSeed.GetType(), typeof (LoginView)},
+            //                                {typeof(MainViewModel), typeof (MainView)}
             //                             };
+
+
+            var startupWindowSeed = (MainViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(MainViewModel)));
+
+            var relationsViewToViewModel = new Dictionary<Type, Type>
+                                         {
+                                            {typeof(LoginViewModel), typeof (LoginView)},
+                                            {startupWindowSeed.GetType(), typeof (MainView)}
+                                         };
 
 
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);

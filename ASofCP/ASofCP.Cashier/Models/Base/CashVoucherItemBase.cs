@@ -47,6 +47,8 @@
             return Title.GetHashCode();
         }
 
+        public abstract object Clone();
+
         public override bool Equals(object obj)
         {
             if(obj == null || !(obj is ICashVoucherItem)) return false;

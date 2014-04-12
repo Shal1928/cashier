@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Converters="clr-namespace:ASofCP.Cashier.Views.Controls.GroupContentGridParts.Converters"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts" mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="500">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -30,7 +30,7 @@
                  HorizontalAlignment="Stretch" MinWidth="400" VerticalAlignment="Top"
                  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" KeyUp="SearchBoxEnter" />
 
-                <Button x:Name="SearchButton" Content="Поиск" Click="SearchButtonClick"
+                <LinkButtonParts:LinkButton x:Name="SearchButton" Content="Поиск" Click="SearchButtonClick"
                 Width="62" Height="24" IsEnabled="{Binding Text, ElementName=SearchBox, Converter={Converters:EmptyToBoolConverter}}"
                 HorizontalAlignment="Right" VerticalAlignment="Top"
                 Grid.Column="2" Grid.Row="0" />

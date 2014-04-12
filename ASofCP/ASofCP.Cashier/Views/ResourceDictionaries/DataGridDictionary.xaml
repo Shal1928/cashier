@@ -16,7 +16,7 @@
             <Setter Property="Width" Value="500" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="Margin" Value="15,20,0,0" />
+            <Setter Property="Margin" Value="10,10,0,0" />
 
             <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeader}"/>
             <Setter Property="CellStyle" Value="{DynamicResource SimplyCellStyle}"/>

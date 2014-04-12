@@ -9,11 +9,32 @@
     <Color x:Key="HalfDarkGray">#7f555555</Color>
     <Color x:Key="QuarterDarkGray">#3f555555</Color>
 
-    <SolidColorBrush x:Key="MainGraySB" Color="{StaticResource MainGray}" />
+    <Color x:Key="MainGreen">#ff64A96B</Color>
+    <Color x:Key="HalfMainGreen">#7f64A96B</Color>
+    <Color x:Key="QuarterMainGreen">#3f64A96B</Color>
+    
+    <Color x:Key="MainRed">#ffDC143C</Color>
+    <Color x:Key="HalfMainRed">#7fDC143C</Color>
+    <Color x:Key="QuarterMainRed">#3fDC143C</Color>
+
     <SolidColorBrush x:Key="MainBackgroundSB" Color="#ffFFFFFF" />
+    
+    <SolidColorBrush x:Key="MainGraySB" Color="{StaticResource MainGray}" />
+    <SolidColorBrush x:Key="HalfMainGraySB" Color="{StaticResource HalfMainGray}" />
+    <SolidColorBrush x:Key="QuarterMainGraySB" Color="{StaticResource QuarterMainGray}" />
 
     <SolidColorBrush x:Key="DarkGraySB" Color="{StaticResource DarkGray}" />
-    
+    <SolidColorBrush x:Key="HalfDarkGraySB" Color="{StaticResource HalfDarkGray}" />
+    <SolidColorBrush x:Key="QuarterDarkGraySB" Color="{StaticResource QuarterDarkGray}" />
+
+    <SolidColorBrush x:Key="MainGreenSB" Color="{StaticResource MainGreen}" />
+    <SolidColorBrush x:Key="HalfMainGreenSB" Color="{StaticResource HalfMainGreen}" />
+    <SolidColorBrush x:Key="QuarterMainGreenSB" Color="{StaticResource QuarterMainGreen}" />
+
+    <SolidColorBrush x:Key="MainRedSB" Color="{StaticResource MainRed}" />
+    <SolidColorBrush x:Key="HalfMainRedSB" Color="{StaticResource HalfMainRed}" />
+    <SolidColorBrush x:Key="QuarterMainRedSB" Color="{StaticResource QuarterMainRed}" />
+
     <LinearGradientBrush x:Key="MainPanelGB" StartPoint="0.5,0" EndPoint="0.5,1">
         <GradientStop Color="{StaticResource MainGray}" Offset="-0.1"/>
         <GradientStop Color="{StaticResource QuarterMainGray}" Offset="0.2"/>

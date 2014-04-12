@@ -162,5 +162,23 @@ namespace ASofCP.Cashier.ViewModels
             //foreach (var u in ucs)
             //    Users.Add(u.UserDisplayName.ToUTF32());
         }
+
+        private ICommand _logonOffCommand;
+        public ICommand LogonOffCommand
+        {
+            get
+            {
+                return _logonOffCommand ?? (_logonOffCommand = new RelayCommand(param => OnLogonOffCommand(), null));
+            }
+        }
+
+        private void OnLogonOffCommand()
+        {
+            IsAuthority = false;
+            User = null;
+            Password = null;
+        }
+
+        
     }
 }

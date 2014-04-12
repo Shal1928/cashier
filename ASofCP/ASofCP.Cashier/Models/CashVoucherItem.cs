@@ -5,6 +5,8 @@ namespace ASofCP.Cashier.Models
 {
     public sealed class CashVoucherItem : CashVoucherItemBase
     {
+        public static CashVoucherItem Empty = new CashVoucherItem("", 0, 0);
+
         public CashVoucherItem(String title, double price)
         {
             Title = title;
@@ -26,6 +28,12 @@ namespace ASofCP.Cashier.Models
             Title = parkService.Title;
             Price = parkService.Price;
             Count = 1;
+        }
+
+        public override object Clone()
+        {
+            //var item = (CashVoucherItem) MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 }

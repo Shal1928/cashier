@@ -4,7 +4,8 @@
         xmlns:GroupContentGridParts="clr-namespace:ASofCP.Cashier.Views.Controls.GroupContentGridParts"
         xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
         xmlns:Test="clr-namespace:ASofCP.Cashier.Helpers.Test"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" Title="{Binding Title}" WindowState="Maximized" 
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:Triggers="clr-namespace:ASofCP.Cashier.Triggers" Title="{Binding Title}" WindowState="Maximized" 
         Width="1024" Height="769" 
         MinWidth="1024" MinHeight="768">
     <Window.Resources>
@@ -13,6 +14,7 @@
                 <ResourceDictionary Source="ResourceDictionaries/ColorDictionary.xaml" />
                 <ResourceDictionary Source="ResourceDictionaries/BaseStyleDictionary.xaml" />
                 <ResourceDictionary Source="ResourceDictionaries/DataGridDictionary.xaml" />
+                <ResourceDictionary Source="/Views/Controls/LinkButtonParts/LinkButtonDic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -90,8 +92,8 @@
             </Button.Content>
         </Button>
 
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top"
-                    Margin="20,0,15,0" Grid.Column="3" Grid.Row="2">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                        Margin="20,0,15,0" Grid.Column="3" Grid.Row="2">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Услуга:" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
                 <TextBlock Text="{Binding SelectedVoucherItem.Title}" Style="{DynamicResource TitleTextBlockStyle}" />
@@ -100,14 +102,31 @@
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Количество:" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
-                    <TextBox Text="{Binding SelectedVoucherItem.Count, Mode=TwoWay}" Width="50" />
+                    <TextBox Text="{Binding NewCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50">
+                        <i:Interaction.Triggers>
+                            <Triggers:EnterUpTrigger EventName="KeyUp">
+                                <i:InvokeCommandAction Command="{Binding AcceptCommand}" />
+                            </Triggers:EnterUpTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                     <TextBlock Text="Цена:" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
                     <TextBlock Text="{Binding SelectedVoucherItem.Price, Mode=TwoWay}" Style="{DynamicResource TitleTextBlockStyle}" />
                 </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="100,0,0,0">
+                    <Button Content="Принять" Command="{Binding AcceptCommand}" FontSize="16" FontWeight="SemiBold" Style="{DynamicResource GreenLinkButtonStyle}" HorizontalAlignment="Right" Margin="0,0,15,0" />
+                    <Button Content="Удалить" Command="{Binding RemoveCommand}" FontSize="16" FontWeight="SemiBold" Style="{DynamicResource RedLinkButtonStyle}" HorizontalAlignment="Right" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,25,0,0">
+                <Button Content="Отменить последнее действие" Command="{Binding UndoCashVoucherStateCommand}" FontSize="10" FontWeight="SemiBold" Style="{DynamicResource LinkButtonStyle}" HorizontalAlignment="Right" Margin="0,0,15,0" />
+                <Button Content="Вернуть отмененное действие" Command="{Binding RedoCashVoucherStateCommand}" FontSize="10" FontWeight="SemiBold" Style="{DynamicResource LinkButtonStyle}" HorizontalAlignment="Right" Margin="0,0,15,0" />
             </StackPanel>
         </StackPanel>
+
 
 
         <DataGrid ItemsSource="{Binding ResultCashVoucher}" SelectedItem="{Binding SelectedVoucherItem, Mode=TwoWay}"

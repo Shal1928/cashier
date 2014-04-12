@@ -2,7 +2,7 @@
 
 namespace ASofCP.Cashier.Models.Base
 {
-    public interface ICashVoucherItem
+    public interface ICashVoucherItem : ICloneable
     {
         String Title
         {
