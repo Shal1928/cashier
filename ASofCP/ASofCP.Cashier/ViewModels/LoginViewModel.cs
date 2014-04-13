@@ -5,6 +5,7 @@ using System.Windows.Media;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.ViewModels.Base;
 using UseAbilities.IoC.Attributes;
+using UseAbilities.IoC.Helpers;
 using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Base;
 using UseAbilities.MVVM.Command;
@@ -17,8 +18,6 @@ namespace ASofCP.Cashier.ViewModels
     {
         public LoginViewModel()
         {
-            TicketColorIndex = -1;
-
             Users = new ObservableCollection<String>
                 {
                     "Константин Константинович Константинопольский", 
@@ -52,45 +51,13 @@ namespace ASofCP.Cashier.ViewModels
             set;
         }
 
-        public virtual ObservableCollection<string> Colors
-        {
-            get; 
-            set;
-        }
-
         public virtual string User
         {
             get; 
             set;
         }
 
-        public string FirstTicketSeries
-        {
-            get; 
-            set;
-        }
-
-        public string FirstTicketNumber
-        {
-            get; 
-            set;
-        }
-
-        public virtual int TicketColorIndex
-        {
-            get; 
-            set;
-        }
-
-        public string TicketColor
-        {
-            get
-            {
-                if (Colors.IsNullOrEmpty()) return null;
-
-                return Colors.ElementAtOrDefault(TicketColorIndex);
-            }
-        }
+        
 
         private ICommand _enterCommand;
         public ICommand EnterCommand
@@ -103,48 +70,13 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnEnterCommand()
         {
-            //var mainViewModel = new MainViewModel();
-            //mainViewModel.Show();
-            //Close();
-            //Dispose();
-
-
-            IsAuthority = true;
-            Colors = new DispatchObservableCollection<string>
-                {
-                    "Red",
-                    "Green",
-                    "blue",
-                    "Orange",
-                    "Yellow"
-                };
-
-            //TicketColorIndex = -1;
-        }
-
-        private ICommand _openSessionCommand;
-        public ICommand OpenSessionCommand
-        {
-            get
-            {
-                return _openSessionCommand ?? (_openSessionCommand = new RelayCommand(param => OnOpenSessionCommand(), can => ValidateOpenSession()));
-            }
-        }
-
-        private void OnOpenSessionCommand()
-        {
-            var mainViewModel = new MainViewModel();
-            mainViewModel.Show();
+            var mainViewModel = ObserveWrapperHelper.GetInstance().Resolve<MainViewModel>();
+            mainViewModel.OpenSession();
             Close();
             Dispose();
         }
 
-        private bool ValidateOpenSession()
-        {
-            return !FirstTicketNumber.IsNullOrEmptyOrSpaces() 
-                && !FirstTicketSeries.IsNullOrEmptyOrSpaces() 
-                && !TicketColor.IsNullOrEmptyOrSpaces();
-        }
+        
 
         private ICommand _loadedCommand;
         public ICommand LoadedCommand

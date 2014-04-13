@@ -7,24 +7,15 @@ namespace ASofCP.Cashier.Models
     public class ModuleSettings
     {
         [DataMember]
-        public String IP
-        {
-            get;
-            set;
-        }
+        public String IP { get; set; }
 
         [DataMember]
-        public String Port
-        {
-            get;
-            set;
-        }
+        public String Port { get; set; }
 
         [DataMember]
-        public String Id
-        {
-            get;
-            set;
-        }
+        public String Id { get; set; }
+
+        [DataMember]
+        public String PrinterName { get; set; }
     }
 }

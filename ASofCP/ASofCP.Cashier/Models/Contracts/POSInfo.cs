@@ -11,5 +11,14 @@ namespace it.q02.asocp.api.data
 
         public UserCS[] AvailableUsers;
 
+
+        public override string ToString()
+        {
+            return "POSInfo{" +
+                "GUID='" + GUID + '\'' +
+                ", DisplayName='" + DisplayName + '\'' +
+                ", AvailableUsers=" + AvailableUsers +
+                '}';
+        }
     }
 }

@@ -114,22 +114,33 @@
     <Compile Include="Converters\EngColorNameToBrushConverter.cs" />
     <Compile Include="Converters\PriceToTextConverter.cs" />
     <Compile Include="Converters\PriceToWidthConverter.cs" />
+    <Compile Include="Converters\UniversalDecimalDelimetrConverter.cs" />
     <Compile Include="Helpers\CollectionExt.cs" />
     <Compile Include="Helpers\DataManager.cs" />
     <Compile Include="Helpers\DependencyMechHelper.cs" />
     <Compile Include="Helpers\ObjectExt.cs" />
+    <Compile Include="Helpers\ObserveWrapperHelper.cs" />
+    <Compile Include="Helpers\RawPrinterHelper.cs" />
     <Compile Include="Helpers\StringExt.cs" />
     <Compile Include="Helpers\Test\TestConverter.cs" />
     <Compile Include="Helpers\Test\TestDataHelper.cs" />
+    <Compile Include="Helpers\ZebraHelper.cs" />
     <Compile Include="Models\Base\CashVoucherItemBase.cs" />
     <Compile Include="Models\Base\ICashVoucherItem.cs" />
     <Compile Include="Models\Base\IPrice.cs" />
     <Compile Include="Models\CashVoucher.cs" />
     <Compile Include="Models\CashVoucherItem.cs" />
+    <Compile Include="Models\Contracts\AttractionGroupInfo.cs" />
+    <Compile Include="Models\Contracts\AttractionInfo.cs" />
     <Compile Include="Models\Contracts\POSInfo.cs" />
+    <Compile Include="Models\Contracts\RollColor.cs" />
+    <Compile Include="Models\Contracts\RollInfo.cs" />
     <Compile Include="Models\Contracts\UserCS.cs" />
     <Compile Include="Models\ModuleSettings.cs" />
     <Compile Include="Models\ParkService.cs" />
+    <Compile Include="Models\PaymentTypes.cs" />
+    <Compile Include="Models\TicketRoll.cs" />
+    <Compile Include="Stores\API\BaseAPI.cs" />
     <Compile Include="Stores\API\UserAPI.cs" />
     <Compile Include="Stores\Base\CHessianStore.cs" />
     <Compile Include="Stores\Base\FileStore.cs" />
@@ -138,8 +149,18 @@
     <Compile Include="Stores\SettingsStore.cs" />
     <Compile Include="Triggers\EnterUpTrigger.cs" />
     <Compile Include="ViewModels\Base\ApplicationViewModel.cs" />
+    <Compile Include="ViewModels\Base\ChildViewModelBase.cs" />
+    <Compile Include="ViewModels\Base\ResultViewModel.cs" />
+    <Compile Include="ViewModels\ChildViewModels\PaymentViewModel.cs" />
+    <Compile Include="ViewModels\ChildViewModels\RollInfoViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Views\ChildViews\PaymentView.xaml.cs">
+      <DependentUpon>PaymentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChildViews\RollInfoView.xaml.cs">
+      <DependentUpon>RollInfoView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\GroupContentGridParts\Converters\EmptyToBoolConverter.cs" />
     <Compile Include="Views\Controls\GroupContentGridParts\GroupContentGrid.xaml.cs">
       <DependentUpon>GroupContentGrid.xaml</DependentUpon>
@@ -153,6 +174,14 @@
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\ChildViews\PaymentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChildViews\RollInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Controls\GroupContentGridParts\GroupContentGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -246,6 +275,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ModuleSettings.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

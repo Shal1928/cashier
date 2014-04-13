@@ -37,7 +37,8 @@ namespace ASofCP.Cashier.Stores
             {
                 IP = "localhost",
                 Port = "8080",
-                Id = "id123"
+                Id = "id123",
+                PrinterName = "Zebra"
             });
 
             return SerializationUtility.Deserialize<ModuleSettings>(FileName);

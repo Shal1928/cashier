@@ -5,7 +5,8 @@
         xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
         xmlns:Test="clr-namespace:ASofCP.Cashier.Helpers.Test"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:Triggers="clr-namespace:ASofCP.Cashier.Triggers" Title="{Binding Title}" WindowState="Maximized" 
+        xmlns:Triggers="clr-namespace:ASofCP.Cashier.Triggers"
+        xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts" Title="{Binding Title}" WindowState="Maximized" 
         Width="1024" Height="769" 
         MinWidth="1024" MinHeight="768">
     <Window.Resources>
@@ -50,18 +51,18 @@
             <TextBlock Text="№5" Style="{DynamicResource TitleTextBlockStyle}" />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center"
-                    Margin="20,0,15,0" Grid.Column="1" Grid.Row="0">
-            <TextBlock Text="Чек:" Style="{DynamicResource TitleTextBlockStyle}" />
-            <TextBlock Text="74572" Style="{DynamicResource TitleTextBlockStyle}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Margin="0,0,0,0" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4">
+            <TextBlock Text="{Binding CurrentDateTime, StringFormat={}{0:dd.MM.yyyy}}" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
+            <TextBlock Text="{Binding CurrentDateTime, StringFormat={}{0:HH:mm}}" Style="{DynamicResource TitleTextBlockStyle}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"
                     Margin="20,0,15,0" Grid.Column="3" Grid.Row="0">
-            <TextBlock Text="03.04.2014" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
-            <TextBlock Text="19:40" Style="{DynamicResource TitleTextBlockStyle}" />
+            <LinkButtonParts:LinkButton Content="Сменить бабину" Command="{Binding ChangeRollCommand}" FontSize="16" FontWeight="Semibold" Margin="0,0,15,0" />
+            <LinkButtonParts:LinkButton Content="Закрыть смену" Command="{Binding CloseShiftCommand}" FontSize="16" FontWeight="Semibold" Margin="0,0,15,0" />
         </StackPanel>
-
+        
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"
                     Margin="15,0,15,0" Grid.Column="4" Grid.Row="0">
             <Border Background="#ff000000" Width="32" Height="32" />
@@ -139,5 +140,12 @@
                 <DataGridTextColumn Binding="{Binding Total}" Header="Итого" Width="*" IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Margin="20,0,0,15" Grid.Column="0" Grid.Row="4">
+            <TextBlock Text="Билет:" Style="{DynamicResource TitleTextBlockStyle}" />
+            <TextBlock Text="{Binding CurrentTicketSeries}" Margin="5,0,5,0" Style="{DynamicResource TitleTextBlockStyle}" />
+            <TextBlock Text="{Binding CurrentTicketNumber}" Style="{DynamicResource TitleTextBlockStyle}" />
+        </StackPanel>
     </Grid>
 </Window>

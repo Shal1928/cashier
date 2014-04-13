@@ -9,5 +9,13 @@ namespace it.q02.asocp.api.data
         public String Login;
         public String UserDisplayName;
 
+
+        public override string ToString()
+        {
+            return "UserCS{" +
+                "Login='" + Login + '\'' +
+                ", UserDisplayName='" + UserDisplayName + '\'' +
+                '}';
+        }
     }
 }

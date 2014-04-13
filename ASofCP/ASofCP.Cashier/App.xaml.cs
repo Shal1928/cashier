@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
+using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Stores;
 using ASofCP.Cashier.ViewModels;
+using ASofCP.Cashier.ViewModels.ChildViewModels;
 using ASofCP.Cashier.Views;
+using ASofCP.Cashier.Views.ChildViews;
 using UseAbilities.IoC.Core;
 using UseAbilities.IoC.Helpers;
 using UseAbilities.IoC.Stores;
@@ -21,36 +25,28 @@ namespace ASofCP.Cashier
     {
         private void OnStartup(object sender, StartupEventArgs e)
         {
-            //Loader(StaticHelper.IoCcontainer);
-
-            //var startupWindowSeed = (LoginViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(LoginViewModel)));
-
-            //var relationsViewToViewModel = new Dictionary<Type, Type>
-            //                             {
-            //                                {startupWindowSeed.GetType(), typeof (LoginView)},
-            //                                {typeof(MainViewModel), typeof (MainView)}
-            //                             };
-
-
-            var startupWindowSeed = (MainViewModel)StaticHelper.IoCcontainer.Resolve(ObserveWrapper.Wrap(typeof(MainViewModel)));
-
+            Loader(StaticHelper.IoCcontainer);
+            var o = ObserveWrapperHelper.GetInstance();
             var relationsViewToViewModel = new Dictionary<Type, Type>
                                          {
-                                            {typeof(LoginViewModel), typeof (LoginView)},
-                                            {startupWindowSeed.GetType(), typeof (MainView)}
+                                            {o.GetWrappedType<LoginViewModel>(true), typeof (LoginView)},
+                                            {o.GetWrappedType<MainViewModel>(true), typeof (MainView)},
+                                            {o.GetWrappedType<PaymentViewModel>(true), typeof(PaymentView)},
+                                            {o.GetWrappedType<RollInfoViewModel>(true), typeof(RollInfoView)}
                                          };
-
-
+            
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);
             ViewModelManager.ActiveViewModels.CollectionChanged += ViewManager.OnViewModelsCoolectionChanged;
 
+            var startupWindowSeed = o.Resolve<LoginViewModel>();
+            //var startupWindowSeed = o.Resolve<MainViewModel>();
             startupWindowSeed.Show();
         }
 
         private static void Loader(IoC ioc)
         {
-            ioc.RegisterSingleton<IXmlStore<ModuleSettings>, SettingsStore>();
-            ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
+            ioc.RegisterSingleton<IReadStore<ModuleSettings>, SettingsStore>();
+            //ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
         }
     }
 
