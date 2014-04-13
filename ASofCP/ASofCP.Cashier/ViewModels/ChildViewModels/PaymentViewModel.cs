@@ -22,7 +22,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             set
             {
                 _cash = value;
-                Change = _cash > Total ? Total - _cash : 0;
+                Change = _cash > Total ? Math.Round(Total - _cash, 2) : 0;
             }
         }
 
