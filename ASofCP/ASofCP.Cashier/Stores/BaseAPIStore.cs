@@ -3,13 +3,12 @@ using ASofCP.Cashier.Stores.API;
 using ASofCP.Cashier.Stores.Base;
 using UseAbilities.IoC.Attributes;
 using UseAbilities.IoC.Stores;
-using it.q02.asocp.api.data;
 
 namespace ASofCP.Cashier.Stores
 {
-    public class POSInfoStore : CHessianStore<UserAPI>, IReadStore<POSInfo>
+    public class BaseAPIStore : CHessianStore<BaseAPI>
     {
-        public POSInfoStore()
+        public BaseAPIStore()
         {
             //
         }
@@ -21,6 +20,8 @@ namespace ASofCP.Cashier.Stores
             set;
         }
 
+        #region Implementation of IReadStore<POSInfo>
+
         public override string URL
         {
             get
@@ -30,14 +31,6 @@ namespace ASofCP.Cashier.Stores
             }
         }
 
-        public new POSInfo Load()
-        {
-            return base.Load().getPOSInfo();
-        }
-
-        public new POSInfo Load(int key)
-        {
-            throw new System.NotImplementedException();
-        }
+        #endregion
     }
 }

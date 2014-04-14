@@ -62,7 +62,7 @@
 
             <StackPanel Orientation="Vertical" Margin="0,25,0,10" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1">
                 <TextBlock Text="Кассир" Margin="0,0,0,4" FontWeight="SemiBold" />
-                <ComboBox ItemsSource="{Binding Users}" SelectedValue="{Binding User}" SelectedIndex="-1" Width="425px" Height="42px" FontSize="16" />
+                <ComboBox ItemsSource="{Binding Users}" DisplayMemberPath="UserDisplayName" SelectedValue="{Binding User}" SelectedIndex="-1" Width="425px" Height="42px" FontSize="16" />
             </StackPanel>
 
             <StackPanel Orientation="Vertical" Margin="0,10,0,50" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="2">

@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Windows.Media;
 using ASofCP.Cashier.Helpers;
+using ASofCP.Cashier.Stores.API;
+using ASofCP.Cashier.Stores.Base;
 using ASofCP.Cashier.ViewModels.Base;
 using UseAbilities.IoC.Attributes;
 using UseAbilities.IoC.Helpers;
@@ -18,21 +20,28 @@ namespace ASofCP.Cashier.ViewModels
     {
         public LoginViewModel()
         {
-            Users = new ObservableCollection<String>
-                {
-                    "Константин Константинович Константинопольский", 
-                    "Анна Юрьевна Агейман"
-                };
+            //Users = new ObservableCollection<UserCS>
+            //    {
+            //        "Константин Константинович Константинопольский", 
+            //        "Анна Юрьевна Агейман"
+            //    };
         }
 
-        //[InjectedProperty]
-        //public IReadStore<POSInfo> POSInfoStore
-        //{
-        //    get;
-        //    set;
-        //}
+        [InjectedProperty]
+        public IReadStore<POSInfo> POSInfoStore
+        {
+            get;
+            set;
+        }
 
-        public virtual ObservableCollection<String> Users
+        [InjectedProperty]
+        public ISecureReadStore<BaseAPI> BaseAPIStore
+        {
+            get;
+            set;
+        }
+
+        public virtual ObservableCollection<UserCS> Users
         {
             get;
             set;
@@ -51,7 +60,7 @@ namespace ASofCP.Cashier.ViewModels
             set;
         }
 
-        public virtual string User
+        public virtual UserCS User
         {
             get; 
             set;
@@ -70,10 +79,12 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnEnterCommand()
         {
-            var mainViewModel = ObserveWrapperHelper.GetInstance().Resolve<MainViewModel>();
-            mainViewModel.OpenSession();
-            Close();
-            Dispose();
+            BaseAPIStore.Logon(User.Login, Password);
+            bool a = true;
+            //var mainViewModel = ObserveWrapperHelper.GetInstance().Resolve<MainViewModel>();
+            //mainViewModel.OpenSession();
+            //Close();
+            //Dispose();
         }
 
         
@@ -89,10 +100,9 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnLoadedCommand()
         {
-            //var ucs = POSInfoStore.Load().AvailableUsers;
-            //Users = new ObservableCollection<string>();
-            //foreach (var u in ucs)
-            //    Users.Add(u.UserDisplayName.ToUTF32());
+            var posInfo = POSInfoStore.Load();
+            var ucs = POSInfoStore.Load().AvailableUsers;
+            Users = new ObservableCollection<UserCS>(ucs);
         }
 
         private ICommand _logonOffCommand;

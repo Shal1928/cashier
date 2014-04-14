@@ -132,9 +132,12 @@
     <Compile Include="Models\CashVoucherItem.cs" />
     <Compile Include="Models\Contracts\AttractionGroupInfo.cs" />
     <Compile Include="Models\Contracts\AttractionInfo.cs" />
+    <Compile Include="Models\Contracts\Cheque.cs" />
+    <Compile Include="Models\Contracts\ChequeRow.cs" />
     <Compile Include="Models\Contracts\POSInfo.cs" />
     <Compile Include="Models\Contracts\RollColor.cs" />
     <Compile Include="Models\Contracts\RollInfo.cs" />
+    <Compile Include="Models\Contracts\Shift.cs" />
     <Compile Include="Models\Contracts\UserCS.cs" />
     <Compile Include="Models\ModuleSettings.cs" />
     <Compile Include="Models\ParkService.cs" />
@@ -142,8 +145,10 @@
     <Compile Include="Models\TicketRoll.cs" />
     <Compile Include="Stores\API\BaseAPI.cs" />
     <Compile Include="Stores\API\UserAPI.cs" />
+    <Compile Include="Stores\BaseAPIStore.cs" />
     <Compile Include="Stores\Base\CHessianStore.cs" />
     <Compile Include="Stores\Base\FileStore.cs" />
+    <Compile Include="Stores\Base\ISecureReadStore.cs" />
     <Compile Include="Stores\POSInfoStore.cs" />
     <Compile Include="Stores\Base\XMLStore.cs" />
     <Compile Include="Stores\SettingsStore.cs" />

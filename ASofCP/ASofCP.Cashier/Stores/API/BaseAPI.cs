@@ -5,7 +5,6 @@ namespace ASofCP.Cashier.Stores.API
 {
     // ReSharper disable InconsistentNaming
     public interface BaseAPI
-
     {
         /**
      * Возвращает список атракционов
@@ -25,7 +24,7 @@ namespace ASofCP.Cashier.Stores.API
          * @param mask
          * @return
          */
-        //Attraction[] findAttractionBy(String mask);
+        AttractionInfo[] findAttractionBy(String mask);
 
         /**
          * Активирует бабаниу на кассе

@@ -1,21 +1,16 @@
 ﻿using System;
 using ASofCP.Cashier.Helpers;
-using UseAbilities.IoC.Stores;
 using hessiancsharp.client;
 
 namespace ASofCP.Cashier.Stores.Base
 {
-    public class CHessianStore<T> : IReadStore<T>
+    public abstract class CHessianStore<T> : ISecureReadStore<T>
     {
-        private readonly CHessianProxyFactory _factory;
+        private CHessianProxyFactory _factory;
 
-        public string URL
-        {
-            get;
-            set;
-        }
+        public abstract string URL { get; }
 
-        public CHessianStore()
+        protected CHessianStore()
         {
             _factory = new CHessianProxyFactory();
         }
@@ -30,5 +25,14 @@ namespace ASofCP.Cashier.Stores.Base
         {
             throw new NotImplementedException();
         }
+
+        #region Implementation of ISecureReadStore
+
+        public void Logon(string login, string password)
+        {
+            _factory = new CHessianProxyFactory(login, password);
+        }
+
+        #endregion
     }
 }

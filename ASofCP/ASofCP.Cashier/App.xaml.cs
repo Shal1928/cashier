@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Stores;
+using ASofCP.Cashier.Stores.API;
+using ASofCP.Cashier.Stores.Base;
 using ASofCP.Cashier.ViewModels;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
 using ASofCP.Cashier.Views;
@@ -12,7 +13,6 @@ using ASofCP.Cashier.Views.ChildViews;
 using UseAbilities.IoC.Core;
 using UseAbilities.IoC.Helpers;
 using UseAbilities.IoC.Stores;
-using UseAbilities.MVVM.Base;
 using UseAbilities.MVVM.Managers;
 using it.q02.asocp.api.data;
 
@@ -38,15 +38,16 @@ namespace ASofCP.Cashier
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);
             ViewModelManager.ActiveViewModels.CollectionChanged += ViewManager.OnViewModelsCoolectionChanged;
 
-            //var startupWindowSeed = o.Resolve<LoginViewModel>();
-            var startupWindowSeed = o.Resolve<MainViewModel>();
+            var startupWindowSeed = o.Resolve<LoginViewModel>();
+            //var startupWindowSeed = o.Resolve<MainViewModel>();
             startupWindowSeed.Show();
         }
 
         private static void Loader(IoC ioc)
         {
             ioc.RegisterSingleton<IReadStore<ModuleSettings>, SettingsStore>();
-            //ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
+            ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
+            ioc.RegisterSingleton<ISecureReadStore<BaseAPI>, BaseAPIStore>();
         }
     }
 

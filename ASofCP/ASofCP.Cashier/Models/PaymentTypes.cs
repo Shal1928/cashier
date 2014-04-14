@@ -7,8 +7,8 @@ namespace ASofCP.Cashier.Models
         [Description("Наличный")]
         Cash = 0,
         [Description("Безналичный")]
-        Cashless,
+        Cashless = 1,
         [Description("Сертификат")]
-        Certificate
+        Certificate = 2
     }
 }
