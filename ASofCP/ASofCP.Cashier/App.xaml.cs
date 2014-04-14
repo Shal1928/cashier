@@ -38,8 +38,8 @@ namespace ASofCP.Cashier
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);
             ViewModelManager.ActiveViewModels.CollectionChanged += ViewManager.OnViewModelsCoolectionChanged;
 
-            var startupWindowSeed = o.Resolve<LoginViewModel>();
-            //var startupWindowSeed = o.Resolve<MainViewModel>();
+            //var startupWindowSeed = o.Resolve<LoginViewModel>();
+            var startupWindowSeed = o.Resolve<MainViewModel>();
             startupWindowSeed.Show();
         }
 

@@ -117,7 +117,6 @@ namespace ASofCP.Cashier.ViewModels
         }
         #endregion
 
-
         #region CalculateCommand
         private ICommand _calculateCommand;
         public ICommand CalculateCommand
@@ -179,6 +178,7 @@ namespace ASofCP.Cashier.ViewModels
             SelectedVoucherItem.Count = NewCount.Value;
             // ReSharper restore PossibleInvalidOperationException
 
+            CalculateTotal();
             ResultCashVoucher.Refresh();
         }
 
@@ -204,6 +204,7 @@ namespace ASofCP.Cashier.ViewModels
             BackupCashVoucher();
             ((CashVoucher<ICashVoucherItem>) ResultCashVoucher.SourceCollection).Remove(SelectedVoucherItem);
             SelectedVoucherItem = _selectedPreviewVoucherItem;
+            CalculateTotal();
             ResultCashVoucher.Refresh();
         }
 
@@ -360,6 +361,12 @@ namespace ASofCP.Cashier.ViewModels
         {
             if (targetBackupIndex > 0 && targetBackupIndex < 11) return targetBackupIndex;
             return targetBackupIndex <= 0 ? 10 : 1;
+        }
+
+        private void CalculateTotal()
+        {
+            var cashVoucherItem = (CashVoucher<ICashVoucherItem>)ResultCashVoucher.SourceCollection;
+            Total = cashVoucherItem.GetTotal();
         }
 
         private void UpdateResultCashVoucher(CashVoucher<ICashVoucherItem> cashVoucher)
