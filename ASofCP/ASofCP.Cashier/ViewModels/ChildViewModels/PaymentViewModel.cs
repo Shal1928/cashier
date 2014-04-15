@@ -69,7 +69,10 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         }
         #endregion
 
-
+        protected override void OnLoadedCommand()
+        {
+            //
+        }
 
         public event PaymentEventHandler PaymentReached;
         protected virtual void OnPaymentReached(PaymentEventArgs e)

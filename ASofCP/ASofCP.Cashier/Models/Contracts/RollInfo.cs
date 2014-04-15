@@ -1,6 +1,8 @@
 ﻿using System;
 
-namespace ASofCP.Cashier.Models.Contracts
+// ReSharper disable CheckNamespace
+namespace it.q02.asocp.api.data
+// ReSharper restore CheckNamespace
 {
     public class RollInfo
     {
@@ -14,6 +16,7 @@ namespace ASofCP.Cashier.Models.Contracts
 
         public RollColor Color;
 
+        public long TicketsLeft;
 
         public override string ToString()
         {

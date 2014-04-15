@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts"
         xmlns:Models="clr-namespace:ASofCP.Cashier.Models" xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         Title="{Binding Title}" 
         WindowState="Maximized" WindowStyle="None" Topmost="False"
         WindowStartupLocation="CenterScreen"
@@ -18,6 +19,12 @@
         </ResourceDictionary>
     </Window.Resources>
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />

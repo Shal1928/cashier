@@ -2,7 +2,7 @@
 
 namespace ASofCP.Cashier.Models
 {
-    public enum PaymentTypes
+    public enum PaymentTypes : short
     {
         [Description("Наличный")]
         Cash = 0,

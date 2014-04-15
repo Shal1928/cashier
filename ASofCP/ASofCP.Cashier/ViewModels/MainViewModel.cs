@@ -11,10 +11,10 @@ using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Helpers.Test;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Models.Base;
-using ASofCP.Cashier.Models.Contracts;
 using ASofCP.Cashier.ViewModels.Base;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
+using it.q02.asocp.api.data;
 using UseAbilities.IoC.Attributes;
 using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Command;
@@ -25,12 +25,12 @@ namespace ASofCP.Cashier.ViewModels
     {
         private int _backupIndex;
         private Dictionary<int, CashVoucher<ICashVoucherItem>> _backup = new Dictionary<int, CashVoucher<ICashVoucherItem>>();
-
+        private Cheque _cheque = null;
 
         public MainViewModel()
         {
             // ReSharper disable DoNotCallOverridableMethodsInConstructor
-            CollectionServices = TestDataHelper.GetParkServices();
+            //CollectionServices = TestDataHelper.GetParkServices();
             // ReSharper restore DoNotCallOverridableMethodsInConstructor
             var resultCashVoucher = new CashVoucher<ICashVoucherItem>();
             UpdateResultCashVoucher(resultCashVoucher);
@@ -60,6 +60,11 @@ namespace ASofCP.Cashier.ViewModels
         public virtual String CurrentTicketSeries { get; set; }
         public virtual long CurrentTicketNumber { get; set; }
         public virtual DateTime CurrentDateTime { get; set; }
+        public virtual DateTime OpenDate { get; set; }
+        
+        
+
+        public Shift CurrentShift { get; set; }
 
         private RollInfo _currentRollInfo;
         public virtual RollInfo CurrentRollInfo
@@ -105,6 +110,16 @@ namespace ASofCP.Cashier.ViewModels
                 _selectedParkService = value;
                 if (_selectedParkService.IsNull() || !_selectedParkService.IsFinal) return;
 
+                if (_cheque.IsNull())
+                {
+                    OpenDate = DateTime.Now;
+                    _cheque = new Cheque
+                    {
+                        OpenDate = OpenDate,
+                        Shift = CurrentShift
+                    };
+                }
+
                 ICashVoucherItem item = new CashVoucherItem(_selectedParkService);
                 var cashVoucherItem = (CashVoucher<ICashVoucherItem>) ResultCashVoucher.SourceCollection;
                 // ReSharper disable PossibleMultipleEnumeration
@@ -130,18 +145,48 @@ namespace ASofCP.Cashier.ViewModels
         private void OnCalculateCommand()
         {
             var paymentViewModel = ObserveWrapperHelper.GetInstance().Resolve<PaymentViewModel>();
+            var cashVoucher = (CashVoucher<ICashVoucherItem>) ResultCashVoucher.SourceCollection;
+
             paymentViewModel.Total = Total;
             paymentViewModel.Show();
             paymentViewModel.PaymentReached += delegate(object sender, PaymentEventArgs args)
                 {
                     if (!args.PaymentType.HasValue) return;
 
-                    if (!PrintTickets((CashVoucher<ICashVoucherItem>) ResultCashVoucher.SourceCollection)) return;
+                    _cheque.MoneyType = (short)args.PaymentType.Value;
+
+                    if (!PrintTickets(cashVoucher)) return;
+
+                    BaseAPI.createCheque(_cheque);
 
                     UpdateResultCashVoucher(new CashVoucher<ICashVoucherItem>());
                     Total = 0;
                 };
         }
+
+        
+
+        //private List<ChequeRow> ConvertCashVoucherToCheque(CashVoucher<CashVoucherItem> cashVoucher)
+        //{
+        //    var result = new List<ChequeRow>();
+        //    foreach (var cashVoucherItem in cashVoucher)
+        //    {
+        //        result.Add(new ChequeRow
+        //        {
+        //            TicketNumber = CurrentTicketNumber,
+                    
+        //            //Attraction = new AttractionInfo
+        //            //{
+        //            //    Code = "Code1",
+        //            //    DisplayName = cashVoucherItem.Title,
+        //            //    MinPrice = 1,
+        //            //    Price = Convert.ToInt64(cashVoucherItem.Price),
+        //            //    PrintName = cashVoucherItem.Title
+        //            //}
+                    
+        //        });
+        //    }
+        //} 
         #endregion
 
         #region LoadedCommand
@@ -323,8 +368,10 @@ namespace ASofCP.Cashier.ViewModels
 
         public void OpenSession()
         {
+            //TODO: Переопределить Show
             Show();
             var rollInfoViewModel = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
+            rollInfoViewModel.Mode = ChildWindowMode.OpenShift;
             rollInfoViewModel.Show();
             rollInfoViewModel.Closed += delegate(object sender, RollInfoEventArgs args)
             {
@@ -338,6 +385,18 @@ namespace ASofCP.Cashier.ViewModels
                 }
 
                 CurrentRollInfo = args.RollInfo;
+                CurrentShift = args.Shift;
+
+                //TODO: Заполняем аттракционы
+                foreach(var attraction in BaseAPI.getAttractionsFromGroup(null))
+                {
+                    var price = attraction.Price/100;
+                    CollectionServices.Add(new ParkService
+                    {
+                        Price = price,
+                        Title = attraction.DisplayName,
+                    });
+                }
             };
         }
 
@@ -379,17 +438,38 @@ namespace ASofCP.Cashier.ViewModels
             ResultCashVoucher.Refresh();
         }
 
+        private List<ChequeRow> _chequeRows; 
+        private void CreateChequeRow(bool printed, DateTime printDate, string barcode, AttractionInfo attraction)
+        {
+            _chequeRows.Add(new ChequeRow
+            {
+                Printed = printed,
+                PrintDate = printDate,
+                TicketBarCode = barcode,
+                TicketNumber = CurrentTicketNumber,
+                Attraction = attraction,
+                TicketRoll = CurrentRollInfo
+            });
+        }
+
         private bool PrintTickets(IEnumerable<ICashVoucherItem> cashVoucher)
         {
+            _chequeRows = new List<ChequeRow>();
             var settings = SettingsStore.Load();
 
             foreach (var item in cashVoucher.Where(item => item.Count >= 1))
             {
+                var chequeRow = new ChequeRow();
                 String barcode;
                 if(item.Count == 1)
                 {
                     barcode = PrepareBarcode(CurrentTicketNumber);
-                    if (!SendToPrint(settings.PrinterName, item, barcode)) return false;
+                    var printed = SendToPrint(settings.PrinterName, item, barcode);
+                    //TODO:Аттракционы
+                    //chequeRow.Attraction = item
+                    CreateChequeRow(printed, DateTime.Now, barcode, null);
+                    if (!printed) return false;
+                    
                     continue;
                 }
 
@@ -399,10 +479,15 @@ namespace ASofCP.Cashier.ViewModels
                 {
                     i++;
                     barcode = PrepareBarcode(CurrentTicketNumber);
-                    if (!SendToPrint(settings.PrinterName, item, barcode)) return false;
+                    var printed = SendToPrint(settings.PrinterName, item, barcode);
+                    //TODO:Аттракционы
+                    //chequeRow.Attraction = item
+                    CreateChequeRow(printed, DateTime.Now, barcode, null);
+                    if (!printed) return false;
                 } while (item.Count > i);
             }
 
+            _cheque.CloseDate = DateTime.Now;
             return true;
         }
 

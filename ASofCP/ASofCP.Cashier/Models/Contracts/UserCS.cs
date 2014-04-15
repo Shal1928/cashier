@@ -9,6 +9,10 @@ namespace it.q02.asocp.api.data
         public String Login;
         public String UserDisplayName;
 
+        public String DisplayName
+        {
+            get { return UserDisplayName; }
+        }
 
         public override string ToString()
         {

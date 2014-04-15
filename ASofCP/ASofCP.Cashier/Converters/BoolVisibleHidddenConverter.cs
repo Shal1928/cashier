@@ -5,7 +5,7 @@ using UseAbilities.WPF.Converters.Base;
 
 namespace ASofCP.Cashier.Converters
 {
-    public class AuthorityToVisibilityConverter : ConverterBase<AuthorityToVisibilityConverter>
+    public class BoolVisibleHidddenConverter : ConverterBase<BoolVisibleHidddenConverter>
     {
         #region Overrides of ConverterBase<AuthorityToVisibilityConverter>
 
@@ -13,7 +13,7 @@ namespace ASofCP.Cashier.Converters
         {
             if (!(value is bool)) throw new Exception("Value is not bool!");
 
-            return (bool) value ? Visibility.Hidden : Visibility.Visible;
+            return (bool) value ? Visibility.Visible : Visibility.Hidden;
         }
 
         #endregion

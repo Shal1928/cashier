@@ -110,7 +110,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AttachedProperties\PasswordHelper.cs" />
-    <Compile Include="Converters\AuthorityToVisibilityConverter.cs" />
+    <Compile Include="Converters\BoolVisibleHidddenConverter.cs" />
     <Compile Include="Converters\EngColorNameToBrushConverter.cs" />
     <Compile Include="Converters\PriceToTextConverter.cs" />
     <Compile Include="Converters\PriceToWidthConverter.cs" />
@@ -130,6 +130,7 @@
     <Compile Include="Models\Base\IPrice.cs" />
     <Compile Include="Models\CashVoucher.cs" />
     <Compile Include="Models\CashVoucherItem.cs" />
+    <Compile Include="Models\ChildWindowMode.cs" />
     <Compile Include="Models\Contracts\AttractionGroupInfo.cs" />
     <Compile Include="Models\Contracts\AttractionInfo.cs" />
     <Compile Include="Models\Contracts\Cheque.cs" />
@@ -280,9 +281,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="ModuleSettings.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

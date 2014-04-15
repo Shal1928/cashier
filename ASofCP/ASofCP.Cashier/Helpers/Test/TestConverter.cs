@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
 using UseAbilities.WPF.Converters.Base;
 
 namespace ASofCP.Cashier.Helpers.Test

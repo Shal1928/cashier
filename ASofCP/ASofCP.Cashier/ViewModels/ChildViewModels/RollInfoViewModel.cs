@@ -3,8 +3,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using ASofCP.Cashier.Helpers;
-using ASofCP.Cashier.Models.Contracts;
+using ASofCP.Cashier.Models;
 using ASofCP.Cashier.ViewModels.Base;
+using it.q02.asocp.api.data;
 using UseAbilities.MVVM.Command;
 
 namespace ASofCP.Cashier.ViewModels.ChildViewModels
@@ -13,27 +14,40 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
     {
         public RollInfoViewModel()
         {
+            // ReSharper disable DoNotCallOverridableMethodsInConstructor
             TicketColorIndex = -1;
-
-            Prepare("Укажите информацию о вашей смене",
-                    "Первый билет",
-                    "Открыть смену",
-                    true);
-
-            Colors = new ObservableCollection<string>
-                {
-                    "Yellow",
-                    "White",
-                    "Orange",
-                    "Pink"
-                };
+            // ReSharper restore DoNotCallOverridableMethodsInConstructor
         }
 
-        public virtual ObservableCollection<string> Colors { get; set; }
+        public virtual ObservableCollection<RollColor> Colors { get; set; }
         public virtual string MainTitle { get; set; }
         public virtual string TicketTitle { get; set; }
         public virtual string MainButtonTitle { get; set; }
         public virtual bool IsColorNeed { get; set; }
+
+        private ChildWindowMode _mode;
+        public ChildWindowMode Mode
+        {
+            get { return _mode; }
+            set
+            {
+                _mode = value;
+                switch (_mode)
+                {
+                    case ChildWindowMode.OpenShift:
+                        Prepare("Укажите информацию о вашей смене", "Первый билет", "Открыть смену", true);
+                        break;
+                    case ChildWindowMode.CloseShift:
+                        Prepare("Укажите информацию о вашей смене", "Последний напечатанный билет", "Закрыть смену", true);
+                        break;
+                    case ChildWindowMode.ChangeRoll:
+                        Prepare("Укажите информацию о новом рулоне билетов", "Первый билет", "Сменить рулон", true);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
 
         public string FirstTicketSeries{get; set;}
 
@@ -42,7 +56,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         public virtual int TicketColorIndex{get; set;}
 
-        public string TicketColor
+        public RollColor TicketColor
         {
             get
             {
@@ -71,15 +85,27 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         private void OnMainCommand()
         {
-            _rollInfo = new RollInfo()
+            switch (Mode)
             {
-                Series = FirstTicketSeries,
-                NextTicket = FirstTicketNumber,
-                Color = new RollColor
-                {
-                    Color = TicketColor
-                }
-            };
+                case ChildWindowMode.OpenShift:
+                    _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                    _shift = BaseAPI.isShiftOpen() ? BaseAPI.getCurrentShift() : BaseAPI.openShift();
+                    break;
+                case ChildWindowMode.CloseShift:
+                    _rollInfo = null;
+                    _shift = null;
+                    //TODO: Выбрасывать что нибудь, если не получилось
+                    BaseAPI.deactivateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                    if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
+                    break;
+                case ChildWindowMode.ChangeRoll:
+                    _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                    _shift = BaseAPI.getCurrentShift();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             Close();
             Dispose();
         }
@@ -88,9 +114,15 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         {
             return FirstTicketNumber > 0
                 && !FirstTicketSeries.IsNullOrEmptyOrSpaces()
-                && (!TicketColor.IsNullOrEmptyOrSpaces() || !IsColorNeed);
+                && (!TicketColor.IsNull() || !IsColorNeed);
         }
         #endregion
+
+        protected override void OnLoadedCommand()
+        {
+            var colors = BaseAPI.getColors();
+            Colors = new ObservableCollection<RollColor>(colors);
+        }
 
         #region CancelCommand
         private ICommand _cancelCommand;
@@ -105,6 +137,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         private void OnCancelCommand()
         {
             _rollInfo = null;
+            _shift = BaseAPI.getCurrentShift();
             Close();
             Dispose();
         }
@@ -117,10 +150,12 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             if (Closed != null) Closed(this, e);
         }
 
-        private RollInfo _rollInfo; 
+        private RollInfo _rollInfo;
+        private Shift _shift;
+
         public override void Close()
         {
-            OnClose(new RollInfoEventArgs(_rollInfo));
+            OnClose(new RollInfoEventArgs(_rollInfo, _shift));
             base.Close();
         }
     }
@@ -129,11 +164,13 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
     public class RollInfoEventArgs : EventArgs
     {
-        public RollInfoEventArgs(RollInfo rollInfo)
+        public RollInfoEventArgs(RollInfo rollInfo, Shift shift)
         {
             RollInfo = rollInfo;
+            Shift = shift;
         }
 
         public RollInfo RollInfo { get; set; }
+        public Shift Shift { get; set; }
     }
 }

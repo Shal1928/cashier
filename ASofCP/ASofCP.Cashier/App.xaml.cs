@@ -39,15 +39,17 @@ namespace ASofCP.Cashier
             ViewModelManager.ActiveViewModels.CollectionChanged += ViewManager.OnViewModelsCoolectionChanged;
 
             var startupWindowSeed = o.Resolve<LoginViewModel>();
-            //var startupWindowSeed = o.Resolve<MainViewModel>();
             startupWindowSeed.Show();
+            //var startupWindowSeed = o.Resolve<MainViewModel>();
+            //startupWindowSeed.OpenSession();
         }
 
         private static void Loader(IoC ioc)
         {
             ioc.RegisterSingleton<IReadStore<ModuleSettings>, SettingsStore>();
-            ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
             ioc.RegisterSingleton<ISecureReadStore<BaseAPI>, BaseAPIStore>();
+            ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
+            
         }
     }
 

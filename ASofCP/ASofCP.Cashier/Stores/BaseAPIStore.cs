@@ -11,6 +11,7 @@ namespace ASofCP.Cashier.Stores
         public BaseAPIStore()
         {
             //
+            Logon("administrator", "1");
         }
 
         [InjectedProperty]
@@ -20,14 +21,14 @@ namespace ASofCP.Cashier.Stores
             set;
         }
 
-        #region Implementation of IReadStore<POSInfo>
+        #region Implementation of IReadStore<BaseAPI>
 
         public override string URL
         {
             get
             {
                 var settings = SettingsStore.Load();
-                return string.Format("http://{0}:{1}/api/user?st={2}", settings.IP, settings.Port, settings.Id);
+                return string.Format("http://{0}:{1}/api/security?st={2}", settings.IP, settings.Port, settings.Id);
             }
         }
 

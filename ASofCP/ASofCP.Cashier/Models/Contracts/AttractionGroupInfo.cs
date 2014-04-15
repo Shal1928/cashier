@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ASofCP.Cashier.Models.Contracts
+﻿// ReSharper disable CheckNamespace
+namespace it.q02.asocp.api.data
+// ReSharper restore CheckNamespace
 {
     public class AttractionGroupInfo
     {

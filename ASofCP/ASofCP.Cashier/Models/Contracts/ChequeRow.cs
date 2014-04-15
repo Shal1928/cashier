@@ -1,5 +1,4 @@
 ﻿using System;
-using ASofCP.Cashier.Models.Contracts;
 
 // ReSharper disable CheckNamespace
 namespace it.q02.asocp.api.data
