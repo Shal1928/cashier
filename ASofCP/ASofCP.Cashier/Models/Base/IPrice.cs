@@ -5,7 +5,6 @@
         double Price
         {
             get; 
-            set;
         }
     }
 }

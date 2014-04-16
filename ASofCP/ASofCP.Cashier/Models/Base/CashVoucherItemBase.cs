@@ -1,10 +1,14 @@
-﻿namespace ASofCP.Cashier.Models.Base
+﻿using it.q02.asocp.api.data;
+
+namespace ASofCP.Cashier.Models.Base
 {
     public abstract class CashVoucherItemBase : ICashVoucherItem
     {
         #region Implementation of ICashVoucherItem
 
         public virtual string Title { get; set; }
+        public virtual string PrintTitle { get; set; }
+
         public virtual double Price
         {
             get; 
@@ -31,6 +35,8 @@
                 return Price * Count;
             }
         }
+
+        public AttractionInfo AttractionInfo { get; protected set; }
 
         #endregion
 

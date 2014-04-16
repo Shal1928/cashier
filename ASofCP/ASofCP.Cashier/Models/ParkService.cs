@@ -1,6 +1,7 @@
 ﻿using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models.Base;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
+using it.q02.asocp.api.data;
 
 namespace ASofCP.Cashier.Models
 {
@@ -11,27 +12,41 @@ namespace ASofCP.Cashier.Models
             //
         }
 
-
-        public ParkService(string title, double price)
+        public ParkService(AttractionInfo attractionInfo)
         {
-            Title = title;
-            Price = price;
+            AttractionInfo = attractionInfo;
             SubItemsCollection = null;
         }
 
-        public ParkService(string title, GroupContentList subItems)
-        {
-            Title = title;
-            SubItemsCollection = subItems;
-        }
+        //public ParkService(string title, double price)
+        //{
+        //    Title = title;
+        //    Price = price;
+        //    SubItemsCollection = null;
+        //}
+
+        //public ParkService(string title, GroupContentList subItems)
+        //{
+        //    Title = title;
+        //    SubItemsCollection = subItems;
+        //}
 
 
         #region Implementation of IGroupContentItem
 
         public string Title
         {
-            get; 
-            set;
+            get { return AttractionInfo.DisplayName; }
+        }
+
+        public string PrintTitle
+        {
+            get { return AttractionInfo.PrintName; }
+        }
+
+        public string Code
+        {
+            get { return AttractionInfo.Code; }
         }
 
         public GroupContentList SubItemsCollection
@@ -45,6 +60,8 @@ namespace ASofCP.Cashier.Models
             get { return SubItemsCollection.IsNullOrEmpty(); }
         }
 
+        public AttractionInfo AttractionInfo { get; set; }
+
         #endregion
 
 
@@ -52,8 +69,7 @@ namespace ASofCP.Cashier.Models
 
         public double Price
         {
-            get; 
-            set;
+            get { return AttractionInfo.Price/100; }
         }
 
         #endregion

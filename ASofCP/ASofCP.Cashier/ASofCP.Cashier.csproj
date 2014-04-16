@@ -157,10 +157,14 @@
     <Compile Include="ViewModels\Base\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\Base\ChildViewModelBase.cs" />
     <Compile Include="ViewModels\Base\ResultViewModel.cs" />
+    <Compile Include="ViewModels\ChildViewModels\InformationViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\PaymentViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\RollInfoViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Views\ChildViews\InformationView.xaml.cs">
+      <DependentUpon>InformationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ChildViews\PaymentView.xaml.cs">
       <DependentUpon>PaymentView.xaml</DependentUpon>
     </Compile>
@@ -180,6 +184,10 @@
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\ChildViews\InformationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ChildViews\PaymentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

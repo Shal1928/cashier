@@ -17,5 +17,11 @@ namespace ASofCP.Cashier.Models
 
         [DataMember]
         public String PrinterName { get; set; }
+
+        [DataMember]
+        public String PathToTemplate { get; set; }
+
+        [DataMember]
+        public String PathToZpl { get; set; }
     }
 }

@@ -86,8 +86,10 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             }
         }
 
+
         private void OnMainCommand()
         {
+            IsShowErrorMessage = false;
             var isDeactivateSucces = true;
             switch (Mode)
             {

@@ -146,6 +146,11 @@
             <TextBlock Text="Билет:" Style="{DynamicResource TitleTextBlockStyle}" />
             <TextBlock Text="{Binding CurrentTicketSeries}" Margin="5,0,5,0" Style="{DynamicResource TitleTextBlockStyle}" />
             <TextBlock Text="{Binding CurrentTicketNumber}" Style="{DynamicResource TitleTextBlockStyle}" />
+            <!--<TextBlock Text="/" Style="{DynamicResource TitleTextBlockStyle}" />
+            <TextBlock Text="{Binding LeftTicketCount}" Style="{DynamicResource TitleTextBlockStyle}" />-->
         </StackPanel>
+
+        <LinkButtonParts:LinkButton Content="Отправить ZPL шаблон" Command="{Binding SendZPLRollCommand}" FontSize="10" FontWeight="Semibold" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Margin="0,5,0,15" Grid.Column="3" Grid.Row="4" />
     </Grid>
 </Window>

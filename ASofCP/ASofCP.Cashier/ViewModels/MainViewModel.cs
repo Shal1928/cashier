@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,7 +9,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ASofCP.Cashier.Helpers;
-using ASofCP.Cashier.Helpers.Test;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Models.Base;
 using ASofCP.Cashier.ViewModels.Base;
@@ -144,26 +144,43 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnCalculateCommand()
         {
-            var paymentViewModel = ObserveWrapperHelper.GetInstance().Resolve<PaymentViewModel>();
             var cashVoucher = (CashVoucher<ICashVoucherItem>) ResultCashVoucher.SourceCollection;
 
+            var ticketsNeed = CurrentRollInfo.TicketsLeft - cashVoucher.Sum(item => item.Count);
+            if (ticketsNeed < 0)
+            {
+                var informationViewModel = ObserveWrapperHelper.GetInstance().Resolve<InformationViewModel>();
+                informationViewModel.Count = ticketsNeed; //== 0 ? cashVoucher.Sum(item => item.Count) : ticketsNeed;
+                informationViewModel.Show();
+                informationViewModel.Closed += delegate(object senderD, RollInfoEventArgs args)
+                {
+                    if (args != null) CurrentRollInfo = args.RollInfo;
+
+                    ResolvePaymentViewModel(cashVoucher);
+                };
+            }
+            else ResolvePaymentViewModel(cashVoucher);
+        }
+
+        private void ResolvePaymentViewModel(IEnumerable<ICashVoucherItem> cashVoucher)
+        {
+            var paymentViewModel = ObserveWrapperHelper.GetInstance().Resolve<PaymentViewModel>();
             paymentViewModel.Total = Total;
             paymentViewModel.Show();
             paymentViewModel.PaymentReached += delegate(object sender, PaymentEventArgs args)
-                {
-                    if (!args.PaymentType.HasValue) return;
+            {
+                if (!args.PaymentType.HasValue) return;
 
-                    _cheque.MoneyType = (short)args.PaymentType.Value;
+                _cheque.MoneyType = (short)args.PaymentType.Value;
 
-                    if (!PrintTickets(cashVoucher)) return;
+                if (!PrintTickets(cashVoucher)) return;
 
-                    BaseAPI.createCheque(_cheque);
+                BaseAPI.createCheque(_cheque);
 
-                    UpdateResultCashVoucher(new CashVoucher<ICashVoucherItem>());
-                    Total = 0;
-                };
+                UpdateResultCashVoucher(new CashVoucher<ICashVoucherItem>());
+                Total = 0;
+            };
         }
-
         
 
         //private List<ChequeRow> ConvertCashVoucherToCheque(CashVoucher<CashVoucherItem> cashVoucher)
@@ -376,6 +393,24 @@ namespace ASofCP.Cashier.ViewModels
         }
         #endregion
 
+        #region SendZPLRollCommand
+        private ICommand _sendZPLRollCommand;
+        public ICommand SendZPLRollCommand
+        {
+            get
+            {
+                return _sendZPLRollCommand ?? (_sendZPLRollCommand = new RelayCommand(param => OnSendZPLRollCommand(), null));
+            }
+        }
+
+        private void OnSendZPLRollCommand()
+        {
+            var printerName = SettingsStore.Load().PrinterName;
+            var zplPath = SettingsStore.Load().PathToZpl;
+            RawPrinterHelper.SendFileToPrinter(printerName, zplPath);
+        }
+        #endregion
+
         public void OpenSession()
         {
             //TODO: Переопределить Show
@@ -397,16 +432,8 @@ namespace ASofCP.Cashier.ViewModels
                 CurrentRollInfo = args.RollInfo;
                 CurrentShift = args.Shift;
 
-                //TODO: Заполняем аттракционы
-                foreach(var attraction in BaseAPI.getAttractionsFromGroup(null))
-                {
-                    var price = attraction.Price/100;
-                    CollectionServices.Add(new ParkService
-                    {
-                        Price = price,
-                        Title = attraction.DisplayName,
-                    });
-                }
+                foreach (var attraction in BaseAPI.getAttractionsFromGroup(null).OrderBy(i => i.DisplayName))
+                    CollectionServices.Add(new ParkService(attraction));
             };
         }
 
@@ -469,15 +496,12 @@ namespace ASofCP.Cashier.ViewModels
 
             foreach (var item in cashVoucher.Where(item => item.Count >= 1))
             {
-                var chequeRow = new ChequeRow();
                 String barcode;
                 if(item.Count == 1)
                 {
                     barcode = PrepareBarcode(CurrentTicketNumber);
                     var printed = SendToPrint(settings.PrinterName, item, barcode);
-                    //TODO:Аттракционы
-                    //chequeRow.Attraction = item
-                    CreateChequeRow(printed, DateTime.Now, barcode, null);
+                    CreateChequeRow(printed, DateTime.Now, barcode, item.AttractionInfo);
                     if (!printed) return false;
                     
                     continue;
@@ -490,9 +514,7 @@ namespace ASofCP.Cashier.ViewModels
                     i++;
                     barcode = PrepareBarcode(CurrentTicketNumber);
                     var printed = SendToPrint(settings.PrinterName, item, barcode);
-                    //TODO:Аттракционы
-                    //chequeRow.Attraction = item
-                    CreateChequeRow(printed, DateTime.Now, barcode, null);
+                    CreateChequeRow(printed, DateTime.Now, barcode, item.AttractionInfo);
                     if (!printed) return false;
                 } while (item.Count > i);
             }
@@ -512,9 +534,10 @@ namespace ASofCP.Cashier.ViewModels
 
         private bool SendToPrint(String printerName, ICashVoucherItem item, String barcode)
         {
+            var pathToTemplate = SettingsStore.Load().PathToTemplate;
             try
             {
-                RawPrinterHelper.SendStringToPrinter(printerName, ZebraHelper.FillTemplate(CurrentDateTime.Date.ToString("dd.MM.yyyy"), item.Price.ToString(CultureInfo.InvariantCulture), item.Title, "", barcode));
+                RawPrinterHelper.SendStringToPrinter(printerName, ZebraHelper.LoadAndFillTemplate(pathToTemplate, CurrentDateTime.Date.ToString("dd.MM.yyyy"), item.Price.ToString(CultureInfo.InvariantCulture), item.PrintTitle, "", barcode));
             }
             catch (Exception e)
             {

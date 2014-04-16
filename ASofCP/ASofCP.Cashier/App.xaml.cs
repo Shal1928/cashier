@@ -32,16 +32,17 @@ namespace ASofCP.Cashier
                                             {o.GetWrappedType<LoginViewModel>(true), typeof (LoginView)},
                                             {o.GetWrappedType<MainViewModel>(true), typeof (MainView)},
                                             {o.GetWrappedType<PaymentViewModel>(true), typeof(PaymentView)},
-                                            {o.GetWrappedType<RollInfoViewModel>(true), typeof(RollInfoView)}
+                                            {o.GetWrappedType<RollInfoViewModel>(true), typeof(RollInfoView)},
+                                            {o.GetWrappedType<InformationViewModel>(true), typeof(InformationView)}
                                          };
             
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);
             ViewModelManager.ActiveViewModels.CollectionChanged += ViewManager.OnViewModelsCoolectionChanged;
 
-            var startupWindowSeed = o.Resolve<LoginViewModel>();
-            startupWindowSeed.Show();
-            //var startupWindowSeed = o.Resolve<MainViewModel>();
-            //startupWindowSeed.OpenSession();
+            //var startupWindowSeed = o.Resolve<LoginViewModel>();
+            //startupWindowSeed.Show();
+            var startupWindowSeed = o.Resolve<MainViewModel>();
+            startupWindowSeed.OpenSession();
         }
 
         private static void Loader(IoC ioc)

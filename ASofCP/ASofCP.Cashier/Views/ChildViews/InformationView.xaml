@@ -1,0 +1,76 @@
+﻿<Window x:Class="ASofCP.Cashier.Views.ChildViews.InformationView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts"
+        xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
+        xmlns:Models="clr-namespace:ASofCP.Cashier.Models"
+        Title="{Binding Title}" 
+        WindowState="Maximized" WindowStyle="None" Topmost="False"
+        WindowStartupLocation="CenterScreen"
+        Background="#7f000000" AllowsTransparency="True">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Views\ResourceDictionaries/ColorDictionary.xaml" />
+                <ResourceDictionary Source="../../Views\ResourceDictionaries/BaseStyleDictionary.xaml" />
+                <ResourceDictionary Source="/Views/Controls/LinkButtonParts/LinkButtonDic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+
+        <Grid Opacity="1" Background="#ffFFFFFF" Grid.Column="1" Grid.Row="1" Width="500" Height="200" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" FontSize="24" />
+                
+            </StackPanel>
+
+            
+
+            <TextBlock Text="{Binding ErrorMessage}" Style="{DynamicResource FadeInOutStyle}" Visibility="{Binding IsShowErrorMessage, Converter={Converters:BoolVisibleHidddenConverter}}"
+                       FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource MainRedSB}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" 
+                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,5" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="4" Margin="0,0,0,15">
+                <LinkButtonParts:LinkButton Style="{DynamicResource GreenLinkButtonStyle}" Content="Сменить рулон" Command="{Binding ChangeRollCommand}" Margin="0,0,25,0"
+                                        FontSize="16" FontWeight="SemiBold" />
+                <LinkButtonParts:LinkButton Content="Отмена" Command="{Binding CancelCommand}" 
+                                        FontSize="16" FontWeight="SemiBold" />
+            </StackPanel>
+        </Grid>
+
+
+    </Grid>
+</Window>

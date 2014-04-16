@@ -130,7 +130,7 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
         {
             foreach (var item in searchScope)
             {
-                if (String.Equals(query, item.Title, StringComparison.OrdinalIgnoreCase)) return new GroupSearchResult(item, searchScope);
+                if (CheckGroupContentListEq(query, item)) return new GroupSearchResult(item, searchScope);
                 if (item.SubItemsCollection.IsNullOrEmpty()) continue;
 
                 var result = Search(query, item.SubItemsCollection);
@@ -138,6 +138,12 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
             }
 
             return null;
+        }
+
+        private static bool CheckGroupContentListEq(string query, IGroupContentItem item)
+        {
+            return String.Equals(query, item.Title, StringComparison.OrdinalIgnoreCase) ||
+                   String.Equals(query, item.Code, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

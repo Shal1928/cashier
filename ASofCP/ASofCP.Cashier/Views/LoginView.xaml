@@ -75,7 +75,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <TextBlock Text="Не верный логин или пароль!" Style="{DynamicResource FadeInOutStyle}" Visibility="{Binding IsShowInvalidPassword, Converter={Converters:BoolVisibleHidddenConverter}}"
+            <TextBlock Text="Не верный логин или пароль!" Style="{DynamicResource FadeInOutStyle}" Visibility="{Binding IsShowErrorMessage, Converter={Converters:BoolVisibleHidddenConverter}}"
                        FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource MainRedSB}" Grid.Column="0" Grid.Row="3" 
                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,5" />
                 

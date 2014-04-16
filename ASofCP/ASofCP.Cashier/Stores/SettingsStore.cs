@@ -38,7 +38,9 @@ namespace ASofCP.Cashier.Stores
                 IP = "localhost",
                 Port = "8080",
                 Id = "id123",
-                PrinterName = "Zebra"
+                PrinterName = "Zebra",
+                PathToTemplate = "ZebraTemplate.xml",
+                PathToZpl = "ZebraTemplate.zpl"
             });
 
             return SerializationUtility.Deserialize<ModuleSettings>(FileName);

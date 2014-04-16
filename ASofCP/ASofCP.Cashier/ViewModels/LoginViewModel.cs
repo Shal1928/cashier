@@ -36,13 +36,6 @@ namespace ASofCP.Cashier.ViewModels
             set;
         }
 
-        public virtual bool IsAuthority
-        {
-            get; 
-            
-            set;
-        }
-
         public virtual UserCS User
         {
             get; 
@@ -50,7 +43,7 @@ namespace ASofCP.Cashier.ViewModels
         }
 
         public virtual string PosTitle { get; set; }
-        public virtual bool IsShowInvalidPassword { get; set; }
+        public virtual bool IsShowErrorMessage { get; set; }
 
         private ICommand _enterCommand;
         public ICommand EnterCommand
@@ -63,6 +56,7 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnEnterCommand()
         {
+            IsShowErrorMessage = false;
             BaseAPIStore.Logon(User.Login, Password);
             try
             {
@@ -74,7 +68,7 @@ namespace ASofCP.Cashier.ViewModels
             }
             catch (Exception)
             {
-                IsShowInvalidPassword = true;
+                IsShowErrorMessage = true;
             }
         }
 
@@ -112,7 +106,6 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnLogonOffCommand()
         {
-            IsAuthority = false;
             User = null;
             Password = null;
         }

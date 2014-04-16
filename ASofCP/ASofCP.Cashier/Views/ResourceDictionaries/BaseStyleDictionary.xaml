@@ -21,20 +21,16 @@
 
 
     <Storyboard x:Key="ShowStoryBoard">
-        <DoubleAnimation From="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Duration="0:0:5" FillBehavior="Stop" />
-        <DoubleAnimation From="1" To="0" BeginTime="0:0:10" Storyboard.TargetProperty="(UIElement.Opacity)" Duration="0:0:1" FillBehavior="HoldEnd"/>
+        <DoubleAnimation FillBehavior="Stop" From="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Duration="0:0:0.5"/>
+        <DoubleAnimation FillBehavior="HoldEnd" From="1" To="0" BeginTime="0:0:5" Storyboard.TargetProperty="(UIElement.Opacity)" Duration="0:0:1" />
     </Storyboard>
 
-    <Style x:Key="FadeInOutStyle" TargetType="{x:Type FrameworkElement}">
-        <Setter Property="Opacity" Value="1"/>
+    <Style x:Key="FadeInOutStyle" TargetType="{x:Type TextBlock}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type FrameworkElement}}, Path=Visibility}" Value="Visible">
+            <DataTrigger Binding="{Binding IsShowErrorMessage}" Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard Storyboard="{StaticResource ShowStoryBoard}" />
                 </DataTrigger.EnterActions>
-                <DataTrigger.Setters>
-                    <Setter Property="Visibility" Value="Hidden"/>
-                </DataTrigger.Setters>
             </DataTrigger>
         </Style.Triggers>
    </Style>

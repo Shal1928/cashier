@@ -7,8 +7,9 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models
         String Title
         {
             get; 
-            set;
         }
+
+        String Code { get; }
 
         GroupContentList SubItemsCollection
         {
