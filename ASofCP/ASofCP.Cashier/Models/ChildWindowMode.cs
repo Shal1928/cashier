@@ -4,6 +4,7 @@
     {
         OpenShift = 0,
         CloseShift,
-        ChangeRoll
+        ChangeRollDeactivate,
+        ChangeRollActivate
     }
 }

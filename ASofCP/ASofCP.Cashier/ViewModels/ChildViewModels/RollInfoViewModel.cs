@@ -40,8 +40,11 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                     case ChildWindowMode.CloseShift:
                         Prepare("Укажите информацию о вашей смене", "Последний напечатанный билет", "Закрыть смену", true);
                         break;
-                    case ChildWindowMode.ChangeRoll:
-                        Prepare("Укажите информацию о новом рулоне билетов", "Первый билет", "Сменить рулон", true);
+                    case ChildWindowMode.ChangeRollDeactivate:
+                        Prepare("Укажите информацию о текущем рулоне билетов", "Последний напечатанный билет", "Деактивировать ленту", true);
+                        break;
+                    case ChildWindowMode.ChangeRollActivate:
+                        Prepare("Укажите информацию о новом рулоне билетов", "Первый билет", "Активировать ленту", true);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -85,6 +88,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         private void OnMainCommand()
         {
+            var isDeactivateSucces = true;
             switch (Mode)
             {
                 case ChildWindowMode.OpenShift:
@@ -94,16 +98,41 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                 case ChildWindowMode.CloseShift:
                     _rollInfo = null;
                     _shift = null;
-                    //TODO: Выбрасывать что нибудь, если не получилось
-                    BaseAPI.deactivateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                    isDeactivateSucces = BaseAPI.deactivateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
                     if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
                     break;
-                case ChildWindowMode.ChangeRoll:
+                case ChildWindowMode.ChangeRollDeactivate:
+                    isDeactivateSucces = BaseAPI.deactivateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                    _rollInfo = null;
+                    _shift = BaseAPI.getCurrentShift();
+                    break;
+                case ChildWindowMode.ChangeRollActivate:
                     _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
                     _shift = BaseAPI.getCurrentShift();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+
+            if (_rollInfo.IsNull() && Mode != ChildWindowMode.CloseShift && Mode != ChildWindowMode.ChangeRollDeactivate)
+            {
+                ErrorMessage = String.Format("Бабина с параметрами {0} {1} {2} не существует!", FirstTicketSeries, FirstTicketNumber, TicketColor.Color);
+                IsShowErrorMessage = true;
+                return;
+            }
+
+            if (!isDeactivateSucces)
+            {
+                ErrorMessage = String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", FirstTicketSeries, FirstTicketNumber, TicketColor.Color);
+                IsShowErrorMessage = true;
+                return;
+            }
+
+            if (_shift.IsNull() && Mode != ChildWindowMode.CloseShift)
+            {
+                ErrorMessage = String.Format("Смена не определена!");
+                IsShowErrorMessage = true;
+                return;
             }
 
             Close();

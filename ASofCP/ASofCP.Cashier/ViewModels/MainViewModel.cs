@@ -328,13 +328,22 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnChangeRollCommand()
         {
-            var rollInfoViewModel = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-            rollInfoViewModel.Prepare("Укажите информацию о бабине", "Первый билет", "Сменить бабину", true);
-            rollInfoViewModel.Show();
-            rollInfoViewModel.Closed += delegate(object sender, RollInfoEventArgs args)
+            var rollInfoViewModelD = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
+            //rollInfoViewModel.Prepare("Укажите информацию о бабине", "Первый билет", "Сменить бабину", true);
+            rollInfoViewModelD.Mode = ChildWindowMode.ChangeRollDeactivate;
+            rollInfoViewModelD.Show();
+            rollInfoViewModelD.Closed += delegate(object senderD, RollInfoEventArgs argsD)
             {
-                if (args == null || args.RollInfo == null) return;
-                CurrentRollInfo = args.RollInfo;
+                if (argsD == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
+                var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
+                rollInfoViewModelA.Mode = ChildWindowMode.ChangeRollActivate;
+                rollInfoViewModelA.Show();
+                rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
+                {
+                    if (argsA == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
+
+                    CurrentRollInfo = argsA.RollInfo;
+                };
             };
         }
         #endregion
@@ -352,7 +361,8 @@ namespace ASofCP.Cashier.ViewModels
         private void OnCloseShiftCommand()
         {
             var rollInfoViewModel = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-            rollInfoViewModel.Prepare("Укажите информацию о бабине", "Текущий билет", "Закрыть смену", true);
+            //rollInfoViewModel.Prepare("Укажите информацию о бабине", "Текущий билет", "Закрыть смену", true);
+            rollInfoViewModel.Mode = ChildWindowMode.CloseShift;
             rollInfoViewModel.Show();
             rollInfoViewModel.Closed += delegate(object sender, RollInfoEventArgs args)
             {

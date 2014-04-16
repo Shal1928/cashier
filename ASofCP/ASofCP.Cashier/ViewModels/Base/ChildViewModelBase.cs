@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ASofCP.Cashier.ViewModels.Base
+﻿namespace ASofCP.Cashier.ViewModels.Base
 {
     public class ChildViewModelBase : ApplicationViewModel
     {
-
+        public virtual string ErrorMessage { get; set; }
+        public virtual bool IsShowErrorMessage { get; set; }
     }
 }
