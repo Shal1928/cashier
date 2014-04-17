@@ -39,7 +39,6 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Margin="5" >
-            <TextBlock Text="Касса: " Margin="0,0,4,0" FontWeight="SemiBold" />
             <TextBlock Text="{Binding PosTitle}" FontWeight="SemiBold" />
         </StackPanel>
 

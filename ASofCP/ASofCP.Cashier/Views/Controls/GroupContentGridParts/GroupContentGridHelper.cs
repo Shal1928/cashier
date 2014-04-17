@@ -14,7 +14,7 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
     {
         private readonly GroupContentGrid _entity;
         // ReSharper disable StaticFieldInGenericType
-        private static readonly DispatcherTimer _dispatcherTimer = new DispatcherTimer();
+        private static readonly DispatcherTimer DispatcherTimer = new DispatcherTimer();
         // ReSharper restore StaticFieldInGenericType
 
         public GroupContentGridHelper(GroupContentGrid entity)
@@ -116,13 +116,13 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
             _entity.SearchResult.Text = searchResult;
             _entity.SearchResult.Visibility = Visibility.Visible;
 
-            _dispatcherTimer.Tick += delegate
+            DispatcherTimer.Tick += delegate
             {
                 _entity.SearchResult.Visibility = Visibility.Hidden;
-                _dispatcherTimer.Stop();
+                DispatcherTimer.Stop();
             };
-            _dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 7000);
-            _dispatcherTimer.Start();
+            DispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 7000);
+            DispatcherTimer.Start();
             _entity.SearchBox.Text = String.Empty;
         }
 

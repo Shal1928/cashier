@@ -11,7 +11,7 @@ namespace ASofCP.Cashier.Stores
         public BaseAPIStore()
         {
             //
-            Logon("administrator", "1");
+            //Logon("administrator", "1");
         }
 
         [InjectedProperty]

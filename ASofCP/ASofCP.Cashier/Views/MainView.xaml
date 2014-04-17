@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:GroupContentGridParts="clr-namespace:ASofCP.Cashier.Views.Controls.GroupContentGridParts"
         xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
-        xmlns:Test="clr-namespace:ASofCP.Cashier.Helpers.Test"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:Triggers="clr-namespace:ASofCP.Cashier.Triggers"
         xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts" Title="{Binding Title}" WindowState="Maximized" 
@@ -28,8 +27,8 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="0.5*" />
             <ColumnDefinition Width="0.1*" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
@@ -47,8 +46,8 @@
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center"
                     Margin="20,0,15,0" Grid.Column="0" Grid.Row="0">
-            <TextBlock Text="Касса:" Style="{DynamicResource TitleTextBlockStyle}" />
-            <TextBlock Text="№5" Style="{DynamicResource TitleTextBlockStyle}" />
+            <TextBlock Text="{Binding PosTitle}" Style="{DynamicResource TitleTextBlockStyle}" Margin="0,0,15,0" />
+            <TextBlock Text="{Binding User}" Style="{DynamicResource TitleTextBlockStyle}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -69,8 +68,8 @@
         </StackPanel>
 
 
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                    Margin="20,15,0,0" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                    Margin="20,15,0,0" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="3">
 
             <GroupContentGridParts:GroupContentGrid ContentItems="{Binding CollectionServices}" SelectedItem="{Binding SelectedParkService, Mode=OneWayToSource}" 
                                                     DefaultTitle="Услуги" Margin="0,0,15,0" 
@@ -79,19 +78,23 @@
         </StackPanel>
 
 
-        <Button Command="{Binding CalculateCommand}" Margin="15" MinWidth="500" Height="120"
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="3" Grid.Row="1">
+            <TextBlock Text="{Binding RightErrorMessage}" Style="{DynamicResource FadeInOutStyle}" Visibility="{Binding IsShowErrorMessage, Converter={Converters:BoolVisibleHidddenConverter}}"
+                       FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource MainRedSB}" 
+                       HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" />
+            <Button Command="{Binding CalculateCommand}" Margin="15,5,15,15" MinWidth="500" Height="120"
                 Width="{Binding ElementName=TotalDisplay, Path=ActualWidth, Converter={Converters:PriceToWidthConverter}}" 
-                HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                Grid.Column="3" Grid.Row="1">
-            <Button.Content>
-                <ContentControl>
-                    <StackPanel Orientation="Horizontal" Margin="15,0,15,0" HorizontalAlignment="Right">
-                        <TextBlock x:Name="TotalDisplay" Text="{Binding Total, Converter={Converters:PriceToTextConverter}}" FontSize="72pt" FontWeight="ExtraBold" Margin="0,-10,0,0" />
-                        <Image Source="/ASofCP.Cashier;component/Views/Images/RubSign.png" Height="50" Margin="15,20,0,0" />
-                    </StackPanel>
-                </ContentControl>
-            </Button.Content>
-        </Button>
+                HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <Button.Content>
+                    <ContentControl>
+                        <StackPanel Orientation="Horizontal" Margin="15,0,15,0" HorizontalAlignment="Right">
+                            <TextBlock x:Name="TotalDisplay" Text="{Binding Total, Converter={Converters:PriceToTextConverter}}" FontSize="72pt" FontWeight="ExtraBold" Margin="0,-10,0,0" />
+                            <Image Source="/ASofCP.Cashier;component/Views/Images/RubSign.png" Height="50" Margin="15,20,0,0" />
+                        </StackPanel>
+                    </ContentControl>
+                </Button.Content>
+            </Button>
+        </StackPanel>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                         Margin="20,0,15,0" Grid.Column="3" Grid.Row="2">

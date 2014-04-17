@@ -62,6 +62,7 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 
         private static void OnContentItemsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            //Показывать ошибку
             var entity = d as GroupContentGrid;
             if(entity == null) return;
 

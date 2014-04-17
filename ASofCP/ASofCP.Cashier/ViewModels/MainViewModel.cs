@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Models.Base;
+using ASofCP.Cashier.Stores;
 using ASofCP.Cashier.ViewModels.Base;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
@@ -47,11 +48,7 @@ namespace ASofCP.Cashier.ViewModels
         }
 
         [InjectedProperty]
-        public IReadStore<ModuleSettings> SettingsStore
-        {
-            get;
-            set;
-        }
+        public IReadStore<ModuleSettings> SettingsStore{get;set;}
 
         public virtual GroupContentList CollectionServices { get; set; }
         public virtual double Total { get; set; }
@@ -61,8 +58,10 @@ namespace ASofCP.Cashier.ViewModels
         public virtual long CurrentTicketNumber { get; set; }
         public virtual DateTime CurrentDateTime { get; set; }
         public virtual DateTime OpenDate { get; set; }
-        
-        
+        public virtual bool IsShowErrorMessage { get; set; }
+        public virtual String RightErrorMessage { get; set; }
+        public virtual string PosTitle { get; set; }
+        public virtual string User { get; set; }
 
         public Shift CurrentShift { get; set; }
 
@@ -431,9 +430,14 @@ namespace ASofCP.Cashier.ViewModels
 
                 CurrentRollInfo = args.RollInfo;
                 CurrentShift = args.Shift;
+                User = CurrentShift.CashierName;
 
-                foreach (var attraction in BaseAPI.getAttractionsFromGroup(null).OrderBy(i => i.DisplayName))
-                    CollectionServices.Add(new ParkService(attraction));
+                var collectionServices = new GroupContentList();
+                var attractions = BaseAPI.getAttractionsFromGroup(new AttractionGroupInfo());
+                if (attractions.IsNullOrEmpty()) return;
+                collectionServices.AddRange(attractions.OrderBy(i => i.DisplayName).Select(attraction => new ParkService(attraction)));
+
+                CollectionServices = collectionServices;
             };
         }
 
