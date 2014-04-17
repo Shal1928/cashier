@@ -5,13 +5,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Threading;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Models.Base;
-using ASofCP.Cashier.Stores;
 using ASofCP.Cashier.ViewModels.Base;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
@@ -26,7 +27,7 @@ namespace ASofCP.Cashier.ViewModels
     {
         private int _backupIndex;
         private Dictionary<int, CashVoucher<ICashVoucherItem>> _backup = new Dictionary<int, CashVoucher<ICashVoucherItem>>();
-        private Cheque _cheque = null;
+        private Cheque _cheque;
 
         public MainViewModel()
         {
@@ -62,6 +63,7 @@ namespace ASofCP.Cashier.ViewModels
         public virtual String RightErrorMessage { get; set; }
         public virtual string PosTitle { get; set; }
         public virtual string User { get; set; }
+        public virtual long TicketsLeft { get; set; }
 
         public Shift CurrentShift { get; set; }
 
@@ -75,6 +77,7 @@ namespace ASofCP.Cashier.ViewModels
                 if (value.IsNull()) return;
                 CurrentTicketSeries = value.Series;
                 CurrentTicketNumber = value.NextTicket;
+                TicketsLeft = value.TicketsLeft;
             }
         }
 
@@ -122,7 +125,12 @@ namespace ASofCP.Cashier.ViewModels
                 ICashVoucherItem item = new CashVoucherItem(_selectedParkService);
                 var cashVoucherItem = (CashVoucher<ICashVoucherItem>) ResultCashVoucher.SourceCollection;
                 // ReSharper disable PossibleMultipleEnumeration
+                var currentOrder = ResultCashVoucher.CurrentItem.IsNull() ? 0 : ((ICashVoucherItem)ResultCashVoucher.CurrentItem).Order;
+                item.Order = currentOrder + 1;
                 cashVoucherItem.Add(item);
+                ResultCashVoucher.SortDescriptions.Clear();
+                ResultCashVoucher.SortDescriptions.Add(new SortDescription("Order", ListSortDirection.Descending));
+                ResultCashVoucher.MoveCurrentToLast();
                 SelectedVoucherItem = cashVoucherItem.Get(item);
                 Total = cashVoucherItem.GetTotal();
                 // ReSharper restore PossibleMultipleEnumeration
@@ -148,12 +156,13 @@ namespace ASofCP.Cashier.ViewModels
             var ticketsNeed = CurrentRollInfo.TicketsLeft - cashVoucher.Sum(item => item.Count);
             if (ticketsNeed < 0)
             {
+                if(!DeactivateCurrentRoll()) return;
                 var informationViewModel = ObserveWrapperHelper.GetInstance().Resolve<InformationViewModel>();
                 informationViewModel.Count = ticketsNeed; //== 0 ? cashVoucher.Sum(item => item.Count) : ticketsNeed;
                 informationViewModel.Show();
                 informationViewModel.Closed += delegate(object senderD, RollInfoEventArgs args)
                 {
-                    if (args != null) CurrentRollInfo = args.RollInfo;
+                    if (args != null) CurrentRollInfo = args.RollInfo ?? CurrentRollInfo;
 
                     ResolvePaymentViewModel(cashVoucher);
                 };
@@ -173,36 +182,16 @@ namespace ASofCP.Cashier.ViewModels
                 _cheque.MoneyType = (short)args.PaymentType.Value;
 
                 if (!PrintTickets(cashVoucher)) return;
-
+                
                 BaseAPI.createCheque(_cheque);
 
                 UpdateResultCashVoucher(new CashVoucher<ICashVoucherItem>());
                 Total = 0;
+                _cheque = null;
             };
         }
         
 
-        //private List<ChequeRow> ConvertCashVoucherToCheque(CashVoucher<CashVoucherItem> cashVoucher)
-        //{
-        //    var result = new List<ChequeRow>();
-        //    foreach (var cashVoucherItem in cashVoucher)
-        //    {
-        //        result.Add(new ChequeRow
-        //        {
-        //            TicketNumber = CurrentTicketNumber,
-                    
-        //            //Attraction = new AttractionInfo
-        //            //{
-        //            //    Code = "Code1",
-        //            //    DisplayName = cashVoucherItem.Title,
-        //            //    MinPrice = 1,
-        //            //    Price = Convert.ToInt64(cashVoucherItem.Price),
-        //            //    PrintName = cashVoucherItem.Title
-        //            //}
-                    
-        //        });
-        //    }
-        //} 
         #endregion
 
         #region LoadedCommand
@@ -342,24 +331,37 @@ namespace ASofCP.Cashier.ViewModels
             }
         }
 
+        private bool DeactivateCurrentRoll()
+        {
+            if (BaseAPI.deactivateTicketRoll(CurrentTicketSeries, CurrentTicketNumber, CurrentRollInfo.Color))
+                return true;
+
+            RightErrorMessage = String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentTicketNumber, CurrentTicketSeries, CurrentRollInfo.Color.Color);
+            IsShowErrorMessage = true;
+            return false;
+        }
+
         private void OnChangeRollCommand()
         {
-            var rollInfoViewModelD = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
+            IsShowErrorMessage = false;
+            //var rollInfoViewModelD = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
             //rollInfoViewModel.Prepare("Укажите информацию о бабине", "Первый билет", "Сменить бабину", true);
-            rollInfoViewModelD.Mode = ChildWindowMode.ChangeRollDeactivate;
-            rollInfoViewModelD.Show();
-            rollInfoViewModelD.Closed += delegate(object senderD, RollInfoEventArgs argsD)
-            {
-                if (argsD == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
-                var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-                rollInfoViewModelA.Mode = ChildWindowMode.ChangeRollActivate;
-                rollInfoViewModelA.Show();
-                rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
-                {
-                    if (argsA == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
+            //rollInfoViewModelD.Mode = ChildWindowMode.ChangeRollDeactivate;
+            //rollInfoViewModelD.Show();
+            //rollInfoViewModelD.Closed += delegate(object senderD, RollInfoEventArgs argsD)
+            //{
+                //if (argsD == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
+            //};
 
-                    CurrentRollInfo = argsA.RollInfo;
-                };
+            if (!DeactivateCurrentRoll()) return;
+
+            var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
+            rollInfoViewModelA.Mode = ChildWindowMode.ChangeRoll;
+            rollInfoViewModelA.Show();
+            rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
+            {
+                if (argsA == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
+                CurrentRollInfo = argsA.RollInfo ?? CurrentRollInfo;
             };
         }
         #endregion
@@ -469,7 +471,7 @@ namespace ASofCP.Cashier.ViewModels
             Total = cashVoucherItem.GetTotal();
         }
 
-        private void UpdateResultCashVoucher(CashVoucher<ICashVoucherItem> cashVoucher)
+        private void UpdateResultCashVoucher(IEnumerable cashVoucher)
         {
             var view = CollectionViewSource.GetDefaultView(cashVoucher);
             if (view == null) return;
@@ -506,6 +508,8 @@ namespace ASofCP.Cashier.ViewModels
                     barcode = PrepareBarcode(CurrentTicketNumber);
                     var printed = SendToPrint(settings.PrinterName, item, barcode);
                     CreateChequeRow(printed, DateTime.Now, barcode, item.AttractionInfo);
+                    
+                    
                     if (!printed) return false;
                     
                     continue;
@@ -519,6 +523,9 @@ namespace ASofCP.Cashier.ViewModels
                     barcode = PrepareBarcode(CurrentTicketNumber);
                     var printed = SendToPrint(settings.PrinterName, item, barcode);
                     CreateChequeRow(printed, DateTime.Now, barcode, item.AttractionInfo);
+
+
+
                     if (!printed) return false;
                 } while (item.Count > i);
             }
@@ -538,6 +545,7 @@ namespace ASofCP.Cashier.ViewModels
 
         private bool SendToPrint(String printerName, ICashVoucherItem item, String barcode)
         {
+            IsShowErrorMessage = false;
             var pathToTemplate = SettingsStore.Load().PathToTemplate;
             try
             {
@@ -551,6 +559,55 @@ namespace ASofCP.Cashier.ViewModels
             finally
             {
                 CurrentTicketNumber++;
+                TicketsLeft--;
+            }
+
+            if (TicketsLeft <= 25)
+            {
+                RightErrorMessage = String.Format("Заканчиваются билеты! Осталось: {0}", TicketsLeft);
+                IsShowErrorMessage = true;
+            }
+
+            return TicketsLeft > 0 || NeedChangeRoll();
+        }
+
+        private bool NeedChangeRoll()
+        {
+            if (!BaseAPI.deactivateTicketRoll(CurrentTicketSeries, CurrentTicketNumber, CurrentRollInfo.Color))
+            {
+                RightErrorMessage = String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentTicketNumber, CurrentTicketSeries, CurrentRollInfo.Color.Color);
+                IsShowErrorMessage = true;
+                return false;
+            }
+
+            var asyncChangingRoll = new AsyncChangingRoll(BeginChangingRoll);
+            var result = asyncChangingRoll.BeginInvoke(null, null);
+
+            while (result.IsCompleted == false)
+                Thread.Sleep(1000);
+
+            return asyncChangingRoll.EndInvoke(result);
+        }
+
+        public delegate bool AsyncChangingRoll();
+
+        bool _isChangingRollCompleted;
+        public bool BeginChangingRoll()
+        {
+            _isChangingRollCompleted = false;
+            var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
+            rollInfoViewModelA.Mode = ChildWindowMode.NeedNewRoll;
+            rollInfoViewModelA.Show();
+            rollInfoViewModelA.Closed += delegate(object sender, RollInfoEventArgs args)
+            {
+                if (args == null || args.RollInfo.IsNull()) throw new NullReferenceException("Информация о смене и бабине не определена!");
+                CurrentRollInfo = args.RollInfo;
+                _isChangingRollCompleted = true;
+            };
+
+            while (_isChangingRollCompleted == false)
+            {
+                //
             }
 
             return true;

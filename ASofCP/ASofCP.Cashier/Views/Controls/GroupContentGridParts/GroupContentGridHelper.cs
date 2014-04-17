@@ -92,7 +92,7 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 
         internal void Search(String query)
         {
-            var result = Search(query, _entity.TopContentItems);
+            var result = Search(query, _entity.TopContentItems ?? _entity.ContentItems);
 
             String searchResult;
             Brush resultBrush;

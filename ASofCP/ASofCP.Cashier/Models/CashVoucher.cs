@@ -28,6 +28,7 @@ namespace ASofCP.Cashier.Models
             foreach (var i in this.Where(i => Equals(i, item)))
             {
                 i.Count += item.Count;
+                i.Order = item.Order;
                 break;
             }
         }

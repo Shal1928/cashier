@@ -25,15 +25,14 @@
 
             <TextBlock x:Name="SearchResult" FontSize="14" FontWeight="DemiBold" Visibility="Hidden" Margin="0,0,0,10" HorizontalAlignment="Left" />
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <TextBox x:Name="SearchBox" FontSize="14" Margin="0,0,10,0"
-                 HorizontalAlignment="Stretch" MinWidth="400" VerticalAlignment="Top"
-                 Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" KeyUp="SearchBoxEnter" />
+                 HorizontalAlignment="Stretch" MinWidth="300" VerticalAlignment="Top"
+                 KeyUp="SearchBoxEnter" />
 
                 <LinkButtonParts:LinkButton x:Name="SearchButton" Content="Поиск" Click="SearchButtonClick"
                 Width="62" Height="24" IsEnabled="{Binding Text, ElementName=SearchBox, Converter={Converters:EmptyToBoolConverter}}"
-                HorizontalAlignment="Right" VerticalAlignment="Top"
-                Grid.Column="2" Grid.Row="0" />
+                HorizontalAlignment="Right" VerticalAlignment="Top" />
             </StackPanel>
         </StackPanel>
         
@@ -45,25 +44,16 @@
                 HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,15,0,15"
                 Grid.Column="0" Grid.Row="1" />-->
 
+        <!--<LinkButtonParts:LinkButton x:Name="TitleBlock" MouseLeftButtonDown="BackButtonClick" Cursor="Hand"
+                   FontSize="18"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Grid.Column="1" Grid.Row="1"  Margin="0,15,0,15" />-->
         <TextBlock x:Name="TitleBlock" MouseLeftButtonDown="BackButtonClick" Cursor="Hand"
                    FontSize="18"
                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Grid.Column="1" Grid.Row="1"  Margin="0,15,0,15">
-            <!--<TextBlock.Style>
-                <Style>
-                    <Style.Triggers>
-                        <Trigger Property="TextBlock.Text" Value="{Binding DefaultTitle, RelativeSource={RelativeSource AncestorType={x:Type GroupContentGridParts:GroupContentGrid}}}">
-                            <Setter Property="TextBlock.TextDecorations" Value="Normal" />
-                        </Trigger>
-                        <Trigger Property="TextBlock.Text" Value="{Binding DefaultTitle, RelativeSource={RelativeSource AncestorType={x:Type GroupContentGridParts:GroupContentGrid}}}">
-                            <Setter Property="TextBlock.TextDecorations" Value="Underline" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>-->
-        </TextBlock>
-
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden"
+                   Grid.Column="1" Grid.Row="1"  Margin="0,15,0,15" />
+        
+        <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Hidden"
                       Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Stretch">
             <Grid x:Name="RootWidget">
                 <Grid.ColumnDefinitions>

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.ViewModels.Base;
+using hessiancsharp.io;
 using UseAbilities.IoC.Attributes;
 using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Command;
@@ -14,7 +15,7 @@ namespace ASofCP.Cashier.ViewModels
     {
         public LoginViewModel()
         {
-            //
+            IsShowAll = true;
         }
 
         [InjectedProperty]
@@ -44,6 +45,8 @@ namespace ASofCP.Cashier.ViewModels
 
         public virtual string PosTitle { get; set; }
         public virtual bool IsShowErrorMessage { get; set; }
+        public virtual string ErrorMessage { get; set; }
+        public virtual bool IsShowAll { get; set; }
 
         private ICommand _enterCommand;
         public ICommand EnterCommand
@@ -67,8 +70,9 @@ namespace ASofCP.Cashier.ViewModels
                 Close();
                 Dispose();
             }
-            catch (Exception)
+            catch (CHessianException)
             {
+                ErrorMessage = "Не верный логин или пароль!";
                 IsShowErrorMessage = true;
             }
         }
@@ -78,20 +82,34 @@ namespace ASofCP.Cashier.ViewModels
             return User.NotNull() && !Password.IsNullOrEmpty();
         }
 
-        
 
-        //private ICommand _loadedCommand;
-        //public ICommand LoadedCommand
-        //{
-        //    get
-        //    {
-        //        return _loadedCommand ?? (_loadedCommand = new RelayCommand(param => OnLoadedCommand(), null));
-        //    }
-        //}
+
+        private ICommand _loadedCommand;
+        public ICommand LoadedCommand
+        {
+            get
+            {
+                return _loadedCommand ?? (_loadedCommand = new RelayCommand(param => OnLoadedCommand(), null));
+            }
+        }
 
         protected override void OnLoadedCommand()
         {
-            var posInfo = POSInfoStore.Load();
+            IsShowAll = true;
+            IsShowErrorMessage = false;
+            POSInfo posInfo;
+            try
+            {
+                posInfo = POSInfoStore.Load();
+            }
+            catch (Exception e)
+            {
+                IsShowAll = false;
+                ErrorMessage = e.Message;
+                IsShowErrorMessage = true;
+                return;
+            }
+            
             PosTitle = posInfo.DisplayName;
             Users = new ObservableCollection<UserCS>(POSInfoStore.Load().AvailableUsers);
         }

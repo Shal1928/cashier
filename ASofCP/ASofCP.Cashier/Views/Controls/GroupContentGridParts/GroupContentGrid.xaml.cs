@@ -114,10 +114,16 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
             if (!contentItem.IsFinal && Equals(entity.ContentItems, contentItem.SubItemsCollection))
                 return;
 
-            if (!contentItem.SubItemsCollection.IsNullOrEmpty()) entity.PreviousContentItems = entity.ContentItems;
-            entity.ContentItems = contentItem.SubItemsCollection;
-
             if (contentItem.SubItemsCollection.IsNullOrEmpty()) return;
+            entity.PreviousContentItems = entity.ContentItems;
+            entity.ContentItems = contentItem.SubItemsCollection;
+            //if (!contentItem.SubItemsCollection.IsNullOrEmpty())
+            //{
+            //    entity.PreviousContentItems = entity.ContentItems;
+            //    entity.ContentItems = contentItem.SubItemsCollection;
+            //}
+
+           
             _helper.TitleBlockUpdate(entity.IsSub, entity.IsSub ? contentItem.Title : entity.DefaultTitle);
         }
 
@@ -156,6 +162,8 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 
         private void SearchButtonClick(object sender, RoutedEventArgs e)
         {
+            if (String.IsNullOrWhiteSpace(SearchBox.Text)) return;
+            
             _helper.Search(SearchBox.Text);
         }
 

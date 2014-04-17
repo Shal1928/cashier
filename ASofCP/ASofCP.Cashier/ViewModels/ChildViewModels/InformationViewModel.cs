@@ -31,23 +31,15 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         private void OnChangeRollCommand()
         {
-            var rollInfoViewModelD = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-            rollInfoViewModelD.Mode = ChildWindowMode.ChangeRollDeactivate;
-            rollInfoViewModelD.Show();
-            rollInfoViewModelD.Closed += delegate(object senderD, RollInfoEventArgs argsD)
+            var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
+            rollInfoViewModelA.Mode = ChildWindowMode.ChangeRoll;
+            rollInfoViewModelA.Show();
+            rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
             {
-                if (argsD == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
-                var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-                rollInfoViewModelA.Mode = ChildWindowMode.ChangeRollActivate;
-                rollInfoViewModelA.Show();
-                rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
-                {
-                    if (argsA == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
-
-                    _rollInfoEventArgs = argsA;
-                    Close();
-                    Dispose();
-                };
+                if (argsA == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
+                _rollInfoEventArgs = argsA;
+                Close();
+                Dispose();
             };
         }
         #endregion

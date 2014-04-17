@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:Triggers="clr-namespace:ASofCP.Cashier.Triggers"
         xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts" Title="{Binding Title}" WindowState="Maximized" 
-        Width="1024" Height="769" 
+        Width="1024" Height="768" 
         MinWidth="1024" MinHeight="768">
     <Window.Resources>
         <ResourceDictionary>
@@ -29,7 +29,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.5*" />
             <ColumnDefinition Width="0.5*" />
-            <ColumnDefinition Width="0.1*" />
+            <ColumnDefinition Width="0.025*" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
@@ -45,40 +45,46 @@
                 Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Height="55px" />
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center"
-                    Margin="20,0,15,0" Grid.Column="0" Grid.Row="0">
+                    Margin="5,0,15,0" Grid.Column="0" Grid.Row="0">
             <TextBlock Text="{Binding PosTitle}" Style="{DynamicResource TitleTextBlockStyle}" Margin="0,0,15,0" />
             <TextBlock Text="{Binding User}" Style="{DynamicResource TitleTextBlockStyle}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Margin="0,0,0,0" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4">
+                    Margin="0,0,0,0" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5">
             <TextBlock Text="{Binding CurrentDateTime, StringFormat={}{0:dd.MM.yyyy}}" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
             <TextBlock Text="{Binding CurrentDateTime, StringFormat={}{0:HH:mm}}" Style="{DynamicResource TitleTextBlockStyle}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"
-                    Margin="20,0,15,0" Grid.Column="3" Grid.Row="0">
+                    Margin="0,0,75,0" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="2">
             <LinkButtonParts:LinkButton Content="Сменить бабину" Command="{Binding ChangeRollCommand}" FontSize="16" FontWeight="Semibold" Margin="0,0,15,0" />
             <LinkButtonParts:LinkButton Content="Закрыть смену" Command="{Binding CloseShiftCommand}" FontSize="16" FontWeight="Semibold" Margin="0,0,15,0" />
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"
                     Margin="15,0,15,0" Grid.Column="4" Grid.Row="0">
-            <Border Background="#ff000000" Width="32" Height="32" />
+            <Image Source="/ASofCP.Cashier;component/Views/Images/Settings26.png" Height="26" Width="26" Margin="3">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDown">
+                        <i:InvokeCommandAction Command="{Binding SettingsCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Image>
         </StackPanel>
 
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                    Margin="20,15,0,0" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="3">
+                    Margin="5,15,0,0" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="3">
 
             <GroupContentGridParts:GroupContentGrid ContentItems="{Binding CollectionServices}" SelectedItem="{Binding SelectedParkService, Mode=OneWayToSource}" 
-                                                    DefaultTitle="Услуги" Margin="0,0,15,0" 
+                                                    DefaultTitle="Услуги" Margin="0,0,15,0" Height="610" MaxHeight="610" MinWidth="400"
                                                     HorizontalAlignment="Stretch" VerticalAlignment="Top" />
             
         </StackPanel>
 
 
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="3" Grid.Row="1">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="2">
             <TextBlock Text="{Binding RightErrorMessage}" Style="{DynamicResource FadeInOutStyle}" Visibility="{Binding IsShowErrorMessage, Converter={Converters:BoolVisibleHidddenConverter}}"
                        FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource MainRedSB}" 
                        HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" />
@@ -97,7 +103,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                        Margin="20,0,15,0" Grid.Column="3" Grid.Row="2">
+                        Margin="20,0,15,0" Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Услуга:" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
                 <TextBlock Text="{Binding SelectedVoucherItem.Title}" Style="{DynamicResource TitleTextBlockStyle}" />
@@ -135,7 +141,7 @@
 
         <DataGrid ItemsSource="{Binding ResultCashVoucher}" SelectedItem="{Binding SelectedVoucherItem, Mode=TwoWay}"
                   Style="{StaticResource CashierDataGridStyle}"
-                  Grid.Column="3" Grid.Row="3">
+                  Grid.Column="3" Grid.Row="3" Grid.ColumnSpan="2">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Title}" Header="Наименование" Width="2*" IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding Price}" Header="Цена" Width="*" IsReadOnly="True" />
@@ -154,6 +160,6 @@
         </StackPanel>
 
         <LinkButtonParts:LinkButton Content="Отправить ZPL шаблон" Command="{Binding SendZPLRollCommand}" FontSize="10" FontWeight="Semibold" HorizontalAlignment="Right" VerticalAlignment="Center"
-                    Margin="0,5,0,15" Grid.Column="3" Grid.Row="4" />
+                    Margin="0,5,0,15" Grid.Column="4" Grid.Row="4" />
     </Grid>
 </Window>
