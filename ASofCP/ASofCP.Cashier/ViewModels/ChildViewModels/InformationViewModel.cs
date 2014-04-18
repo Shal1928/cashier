@@ -3,6 +3,7 @@ using System.Windows.Input;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.ViewModels.Base;
+using it.q02.asocp.api.data;
 using UseAbilities.MVVM.Command;
 
 namespace ASofCP.Cashier.ViewModels.ChildViewModels
@@ -18,6 +19,9 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         }
 
         public long Count { get; set; }
+        public string CurrentTicketSeries { get; set; }
+        public long CurrentTicketNumber { get; set; }
+        public RollColor CurrentTicketColor { get; set; }
 
         #region ChangeRollCommand
         private ICommand _changeRollCommand;
@@ -33,6 +37,9 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         {
             var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
             rollInfoViewModelA.Mode = ChildWindowMode.ChangeRoll;
+            rollInfoViewModelA.CurrentTicketSeries = CurrentTicketSeries;
+            rollInfoViewModelA.CurrentTicketNumber = CurrentTicketNumber;
+            rollInfoViewModelA.CurrentTicketColor = CurrentTicketColor;
             rollInfoViewModelA.Show();
             rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
             {

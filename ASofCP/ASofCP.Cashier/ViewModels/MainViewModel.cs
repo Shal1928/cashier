@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -156,9 +155,11 @@ namespace ASofCP.Cashier.ViewModels
             var ticketsNeed = CurrentRollInfo.TicketsLeft - cashVoucher.Sum(item => item.Count);
             if (ticketsNeed < 0)
             {
-                if(!DeactivateCurrentRoll()) return;
                 var informationViewModel = ObserveWrapperHelper.GetInstance().Resolve<InformationViewModel>();
                 informationViewModel.Count = ticketsNeed; //== 0 ? cashVoucher.Sum(item => item.Count) : ticketsNeed;
+                informationViewModel.CurrentTicketSeries = CurrentTicketSeries;
+                informationViewModel.CurrentTicketNumber = CurrentTicketNumber;
+                informationViewModel.CurrentTicketColor = CurrentRollInfo.Color;
                 informationViewModel.Show();
                 informationViewModel.Closed += delegate(object senderD, RollInfoEventArgs args)
                 {
@@ -331,16 +332,6 @@ namespace ASofCP.Cashier.ViewModels
             }
         }
 
-        private bool DeactivateCurrentRoll()
-        {
-            if (BaseAPI.deactivateTicketRoll(CurrentTicketSeries, CurrentTicketNumber, CurrentRollInfo.Color))
-                return true;
-
-            RightErrorMessage = String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentTicketNumber, CurrentTicketSeries, CurrentRollInfo.Color.Color);
-            IsShowErrorMessage = true;
-            return false;
-        }
-
         private void OnChangeRollCommand()
         {
             IsShowErrorMessage = false;
@@ -353,10 +344,11 @@ namespace ASofCP.Cashier.ViewModels
                 //if (argsD == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
             //};
 
-            if (!DeactivateCurrentRoll()) return;
-
             var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
             rollInfoViewModelA.Mode = ChildWindowMode.ChangeRoll;
+            rollInfoViewModelA.CurrentTicketSeries = CurrentTicketSeries;
+            rollInfoViewModelA.CurrentTicketNumber = CurrentTicketNumber;
+            rollInfoViewModelA.CurrentTicketColor = CurrentRollInfo.Color;
             rollInfoViewModelA.Show();
             rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
             {
@@ -573,13 +565,6 @@ namespace ASofCP.Cashier.ViewModels
 
         private bool NeedChangeRoll()
         {
-            if (!BaseAPI.deactivateTicketRoll(CurrentTicketSeries, CurrentTicketNumber, CurrentRollInfo.Color))
-            {
-                RightErrorMessage = String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentTicketNumber, CurrentTicketSeries, CurrentRollInfo.Color.Color);
-                IsShowErrorMessage = true;
-                return false;
-            }
-
             var asyncChangingRoll = new AsyncChangingRoll(BeginChangingRoll);
             var result = asyncChangingRoll.BeginInvoke(null, null);
 
@@ -597,6 +582,9 @@ namespace ASofCP.Cashier.ViewModels
             _isChangingRollCompleted = false;
             var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
             rollInfoViewModelA.Mode = ChildWindowMode.NeedNewRoll;
+            rollInfoViewModelA.CurrentTicketSeries = CurrentTicketSeries;
+            rollInfoViewModelA.CurrentTicketNumber = CurrentTicketNumber;
+            rollInfoViewModelA.CurrentTicketColor = CurrentRollInfo.Color;
             rollInfoViewModelA.Show();
             rollInfoViewModelA.Closed += delegate(object sender, RollInfoEventArgs args)
             {
