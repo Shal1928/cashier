@@ -27,6 +27,7 @@ namespace ASofCP.Cashier.ViewModels
         private int _backupIndex;
         private Dictionary<int, CashVoucher<ICashVoucherItem>> _backup = new Dictionary<int, CashVoucher<ICashVoucherItem>>();
         private Cheque _cheque;
+        private int _currentOrder;
 
         public MainViewModel()
         {
@@ -124,11 +125,9 @@ namespace ASofCP.Cashier.ViewModels
                 ICashVoucherItem item = new CashVoucherItem(_selectedParkService);
                 var cashVoucherItem = (CashVoucher<ICashVoucherItem>) ResultCashVoucher.SourceCollection;
                 // ReSharper disable PossibleMultipleEnumeration
-                var currentOrder = ResultCashVoucher.CurrentItem.IsNull() ? 0 : ((ICashVoucherItem)ResultCashVoucher.CurrentItem).Order;
-                item.Order = currentOrder + 1;
+                _currentOrder++;
+                item.Order = _currentOrder;
                 cashVoucherItem.Add(item);
-                ResultCashVoucher.SortDescriptions.Clear();
-                ResultCashVoucher.SortDescriptions.Add(new SortDescription("Order", ListSortDirection.Descending));
                 ResultCashVoucher.MoveCurrentToLast();
                 SelectedVoucherItem = cashVoucherItem.Get(item);
                 Total = cashVoucherItem.GetTotal();
@@ -173,6 +172,7 @@ namespace ASofCP.Cashier.ViewModels
 
         private void ResolvePaymentViewModel(IEnumerable<ICashVoucherItem> cashVoucher)
         {
+            IsShowErrorMessage = false;
             var paymentViewModel = ObserveWrapperHelper.GetInstance().Resolve<PaymentViewModel>();
             paymentViewModel.Total = Total;
             paymentViewModel.Show();
@@ -182,13 +182,19 @@ namespace ASofCP.Cashier.ViewModels
 
                 _cheque.MoneyType = (short)args.PaymentType.Value;
 
-                if (!PrintTickets(cashVoucher)) return;
+                if (!PrintTickets(cashVoucher))
+                {
+                    IsShowErrorMessage = true;
+                    RightErrorMessage = "Печать завершилась неудачей!";
+                    return;
+                };
                 
                 BaseAPI.createCheque(_cheque);
 
                 UpdateResultCashVoucher(new CashVoucher<ICashVoucherItem>());
                 Total = 0;
                 _cheque = null;
+                _currentOrder = 0;
             };
         }
         
@@ -470,6 +476,8 @@ namespace ASofCP.Cashier.ViewModels
             view.Filter = null;
 
             ResultCashVoucher = view;
+            if (ResultCashVoucher.SortDescriptions.IsEmpty())
+                ResultCashVoucher.SortDescriptions.Add(new SortDescription("Order", ListSortDirection.Descending));
             ResultCashVoucher.Refresh();
         }
 
