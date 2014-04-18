@@ -6,8 +6,8 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:Triggers="clr-namespace:ASofCP.Cashier.Triggers"
         xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts" Title="{Binding Title}" WindowState="Maximized" 
-        Width="1024" Height="768" 
-        MinWidth="1024" MinHeight="768">
+        Width="1024" Height="728" 
+        MinWidth="1024" MinHeight="728">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
