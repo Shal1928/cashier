@@ -33,21 +33,30 @@ namespace ASofCP.Cashier
                                             {o.GetWrappedType<MainViewModel>(true), typeof (MainView)},
                                             {o.GetWrappedType<PaymentViewModel>(true), typeof(PaymentView)},
                                             {o.GetWrappedType<RollInfoViewModel>(true), typeof(RollInfoView)},
-                                            {o.GetWrappedType<InformationViewModel>(true), typeof(InformationView)}
+                                            {o.GetWrappedType<InformationViewModel>(true), typeof(InformationView)},
+                                            {o.GetWrappedType<SettingsViewModel>(true), typeof(SettingsView)}
                                          };
             
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);
             ViewModelManager.ActiveViewModels.CollectionChanged += ViewManager.OnViewModelsCoolectionChanged;
 
-            var startupWindowSeed = o.Resolve<LoginViewModel>();
-            startupWindowSeed.Show();
-            //var startupWindowSeed = o.Resolve<MainViewModel>();
-            //startupWindowSeed.OpenSession();
+            DebugHelper.IsDebug = !true;
+
+            if (DebugHelper.IsDebug)
+            {
+                var startupWindowSeed = o.Resolve<MainViewModel>();
+                startupWindowSeed.OpenSession();
+            }
+            else
+            {
+                var startupWindowSeed = o.Resolve<LoginViewModel>();
+                startupWindowSeed.Show();
+            }
         }
 
         private static void Loader(IoC ioc)
         {
-            ioc.RegisterSingleton<IReadStore<ModuleSettings>, SettingsStore>();
+            ioc.RegisterSingleton<IStore<ModuleSettings>, SettingsStore>();
             ioc.RegisterSingleton<ISecureReadStore<BaseAPI>, BaseAPIStore>();
             ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
             

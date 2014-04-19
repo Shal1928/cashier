@@ -6,6 +6,11 @@ namespace ASofCP.Cashier.Converters
 {
     public class PriceToWidthConverter : ConverterBase<PriceToWidthConverter>
     {
+        public PriceToWidthConverter()
+        {
+            //
+        }
+
         #region Overrides of ConverterBase<PriceToWidthConverter>
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)

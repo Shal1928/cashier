@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -22,7 +21,7 @@ using UseAbilities.MVVM.Command;
 
 namespace ASofCP.Cashier.ViewModels
 {
-    public class MainViewModel : ApplicationViewModel
+    public class MainViewModel : UtilViewModel
     {
         private int _backupIndex;
         private Dictionary<int, CashVoucher<ICashVoucherItem>> _backup = new Dictionary<int, CashVoucher<ICashVoucherItem>>();
@@ -47,7 +46,7 @@ namespace ASofCP.Cashier.ViewModels
         }
 
         [InjectedProperty]
-        public IReadStore<ModuleSettings> SettingsStore{get;set;}
+        public IStore<ModuleSettings> SettingsStore { get; set; }
 
         public virtual GroupContentList CollectionServices { get; set; }
         public virtual double Total { get; set; }
@@ -185,7 +184,7 @@ namespace ASofCP.Cashier.ViewModels
                     IsShowErrorMessage = true;
                     RightErrorMessage = "Печать завершилась неудачей!";
                     return;
-                };
+                }
                 
                 BaseAPI.createCheque(_cheque);
 
@@ -200,16 +199,7 @@ namespace ASofCP.Cashier.ViewModels
         #endregion
 
         #region LoadedCommand
-        private ICommand _loadedCommand;
-        public ICommand LoadedCommand
-        {
-            get
-            {
-                return _loadedCommand ?? (_loadedCommand = new RelayCommand(param => OnLoadedCommand(), null));
-            }
-        }
-
-        private void OnLoadedCommand()
+        protected override void OnLoadedCommand()
         {
             //
         }
@@ -390,24 +380,6 @@ namespace ASofCP.Cashier.ViewModels
         }
         #endregion
 
-        #region SendZPLRollCommand
-        private ICommand _sendZPLRollCommand;
-        public ICommand SendZPLRollCommand
-        {
-            get
-            {
-                return _sendZPLRollCommand ?? (_sendZPLRollCommand = new RelayCommand(param => OnSendZPLRollCommand(), null));
-            }
-        }
-
-        private void OnSendZPLRollCommand()
-        {
-            var printerName = SettingsStore.Load().PrinterName;
-            var zplPath = SettingsStore.Load().PathToZpl;
-            RawPrinterHelper.SendFileToPrinter(printerName, zplPath);
-        }
-        #endregion
-
         public void OpenSession()
         {
             //TODO: Переопределить Show
@@ -551,7 +523,8 @@ namespace ASofCP.Cashier.ViewModels
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                IsShowErrorMessage = true;
+                RightErrorMessage = e.Message;
                 return false;
             }
             finally
@@ -607,5 +580,11 @@ namespace ASofCP.Cashier.ViewModels
             return true;
         }
         #endregion
+
+        protected override void OnSettingsCommand()
+        {
+            var settingsVM = ObserveWrapperHelper.GetInstance().Resolve<SettingsViewModel>();
+            settingsVM.Show();
+        }
     }
 }

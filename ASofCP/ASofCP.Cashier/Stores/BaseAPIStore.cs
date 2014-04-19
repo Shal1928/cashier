@@ -1,4 +1,5 @@
-﻿using ASofCP.Cashier.Models;
+﻿using ASofCP.Cashier.Helpers;
+using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Stores.API;
 using ASofCP.Cashier.Stores.Base;
 using UseAbilities.IoC.Attributes;
@@ -11,11 +12,12 @@ namespace ASofCP.Cashier.Stores
         public BaseAPIStore()
         {
             //
-            //Logon("administrator", "1");
+            if (!DebugHelper.IsDebug) return;
+            Logon("administrator", "1");
         }
 
         [InjectedProperty]
-        public IReadStore<ModuleSettings> SettingsStore
+        public IStore<ModuleSettings> SettingsStore
         {
             get;
             set;

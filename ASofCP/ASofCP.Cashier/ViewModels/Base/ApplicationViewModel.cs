@@ -8,7 +8,7 @@ using UseAbilities.MVVM.Command;
 
 namespace ASofCP.Cashier.ViewModels.Base
 {
-    public class ApplicationViewModel : ViewModelBase
+    public abstract class ApplicationViewModel : ViewModelBase
     {
         public String Title
         {
@@ -33,9 +33,6 @@ namespace ASofCP.Cashier.ViewModels.Base
             }
         }
 
-        protected virtual void OnLoadedCommand()
-        {
-            //
-        }
+        protected abstract void OnLoadedCommand();
     }
 }

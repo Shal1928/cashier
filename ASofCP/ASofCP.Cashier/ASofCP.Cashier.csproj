@@ -51,6 +51,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Cashier16i.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hessiancsharp">
       <HintPath>..\..\Libraries\Hessiancsharp.dll</HintPath>
@@ -118,6 +121,7 @@
     <Compile Include="Converters\UniversalDecimalDelimetrConverter.cs" />
     <Compile Include="Helpers\CollectionExt.cs" />
     <Compile Include="Helpers\DataManager.cs" />
+    <Compile Include="Helpers\DebugHelper.cs" />
     <Compile Include="Helpers\DependencyMechHelper.cs" />
     <Compile Include="Helpers\ObjectExt.cs" />
     <Compile Include="Helpers\ObserveWrapperHelper.cs" />
@@ -158,9 +162,11 @@
     <Compile Include="ViewModels\Base\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\Base\ChildViewModelBase.cs" />
     <Compile Include="ViewModels\Base\ResultViewModel.cs" />
+    <Compile Include="ViewModels\Base\UtilViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\InformationViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\PaymentViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\RollInfoViewModel.cs" />
+    <Compile Include="ViewModels\ChildViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\ChildViews\InformationView.xaml.cs">
@@ -172,6 +178,9 @@
     <Compile Include="Views\ChildViews\RollInfoView.xaml.cs">
       <DependentUpon>RollInfoView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ChildViews\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\GroupContentGridParts\Converters\EmptyToBoolConverter.cs" />
     <Compile Include="Views\Controls\GroupContentGridParts\GroupContentGrid.xaml.cs">
       <DependentUpon>GroupContentGrid.xaml</DependentUpon>
@@ -182,6 +191,11 @@
     <Compile Include="Views\Controls\GroupContentGridParts\Models\GroupContentList.cs" />
     <Compile Include="Views\Controls\LinkButtonParts\LinkButton.cs" />
     <Compile Include="Views\Controls\LinkButtonParts\LinkButtonDic.cs" />
+    <Compile Include="Views\Images\MainResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MainResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
@@ -194,6 +208,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ChildViews\RollInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChildViews\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -256,6 +274,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\Images\MainResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MainResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -293,6 +315,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Views\Images\Settings26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Views\Images\CashRegister128.png" />
+    <Resource Include="Views\Images\CashRegister16.png" />
+    <Resource Include="Views\Images\CashRegister256.png" />
+    <Resource Include="Views\Images\CashRegister32.png" />
+    <Resource Include="Views\Images\CashRegister48.png" />
+    <Resource Include="Views\Images\CashRegister512.png" />
+    <Resource Include="Views\Images\CashRegister64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Cashier16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Cashier16i.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

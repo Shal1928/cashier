@@ -15,7 +15,7 @@ namespace ASofCP.Cashier.Stores
         }
 
         [InjectedProperty]
-        public IReadStore<ModuleSettings> SettingsStore
+        public IStore<ModuleSettings> SettingsStore
         {
             get;
             set;

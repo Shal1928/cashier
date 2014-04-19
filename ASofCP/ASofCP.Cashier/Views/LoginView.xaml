@@ -43,6 +43,16 @@
             <TextBlock Text="{Binding PosTitle}" FontWeight="SemiBold" />
         </StackPanel>
 
+        <Image Source="/ASofCP.Cashier;component/Views/Images/Settings26.png" Style="{DynamicResource MouseHoverBehaviorStyle}"
+                   HorizontalAlignment="Right" VerticalAlignment="Top"
+                   Grid.Column="0" Grid.Row="0" Height="26" Width="26" Margin="5">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDown">
+                    <i:InvokeCommandAction Command="{Binding SettingsCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Image>
+
         <Grid Margin="25" Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -55,7 +65,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="Представьтесь пожалуйста" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0" Visibility="{Binding IsShowAll, Converter={Converters:BoolVisibleHidddenConverter}}" />
-
+            
             <StackPanel Orientation="Vertical" Margin="0,25,0,10" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" Visibility="{Binding IsShowAll, Converter={Converters:BoolVisibleHidddenConverter}}">
                 <TextBlock Text="Кассир" Margin="0,0,0,4" FontWeight="SemiBold" />
                 <ComboBox ItemsSource="{Binding Users}" DisplayMemberPath="DisplayName" SelectedValue="{Binding User}" SelectedIndex="-1" Width="425px" Height="42px" FontSize="16" />

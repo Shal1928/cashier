@@ -81,5 +81,10 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             OnClose(_rollInfoEventArgs);
             base.Close();
         }
+
+        protected override void OnLoadedCommand()
+        {
+            //
+        }
     }
 }

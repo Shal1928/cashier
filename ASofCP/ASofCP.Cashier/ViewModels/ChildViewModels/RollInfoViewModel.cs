@@ -12,17 +12,19 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 {
     public class RollInfoViewModel : ChildViewModelBase
     {
+        // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public RollInfoViewModel()
         {
-            // ReSharper disable DoNotCallOverridableMethodsInConstructor
+            
             TicketColorIndex = -1;
-            // ReSharper restore DoNotCallOverridableMethodsInConstructor
-
-            //FirstTicketSeries = "КС";
-            //FirstTicketNumber = 303854;
-            //TicketColorIndex = 0;
             IsShowAll = true;
+
+            //if (!DebugHelper.IsDebug) return;
+            FirstTicketSeries = "КС";
+            FirstTicketNumber = 303854;
+            TicketColorIndex = 0;
         }
+        // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
         public virtual ObservableCollection<RollColor> Colors { get; set; }
         public virtual string MainTitle { get; set; }

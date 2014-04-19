@@ -2,7 +2,7 @@
 
 namespace ASofCP.Cashier.ViewModels.Base
 {
-    public class ResultViewModel : ApplicationViewModel
+    public abstract class ResultViewModel : ApplicationViewModel
     {
         public virtual Result Result { get; set; }
 

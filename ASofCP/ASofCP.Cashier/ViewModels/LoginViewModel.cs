@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.ViewModels.Base;
+using ASofCP.Cashier.ViewModels.ChildViewModels;
 using hessiancsharp.io;
 using UseAbilities.IoC.Attributes;
 using UseAbilities.IoC.Stores;
@@ -11,12 +12,14 @@ using it.q02.asocp.api.data;
 
 namespace ASofCP.Cashier.ViewModels
 {
-    public class LoginViewModel : ApplicationViewModel
+    public class LoginViewModel : UtilViewModel
     {
+        // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public LoginViewModel()
         {
             IsShowAll = true;
         }
+        // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
         [InjectedProperty]
         public IReadStore<POSInfo> POSInfoStore
@@ -129,6 +132,10 @@ namespace ASofCP.Cashier.ViewModels
             Password = null;
         }
 
-        
+        protected override void OnSettingsCommand()
+        {
+            var settingsVM = ObserveWrapperHelper.GetInstance().Resolve<SettingsViewModel>();
+            settingsVM.Show();
+        }
     }
 }
