@@ -44,6 +44,7 @@ namespace ASofCP.Cashier.ViewModels
                 {
                     CurrentDateTime = DateTime.Now;
                 };
+
             dispatcherTimer.Interval = new TimeSpan(0, 1, 0);
             dispatcherTimer.Start();
         }
@@ -155,7 +156,7 @@ namespace ASofCP.Cashier.ViewModels
             if (ticketsNeed < 0)
             {
                 var informationViewModel = ObserveWrapperHelper.GetInstance().Resolve<InformationViewModel>();
-                informationViewModel.Count = ticketsNeed; //== 0 ? cashVoucher.Sum(item => item.Count) : ticketsNeed;
+                informationViewModel.Count = ticketsNeed;
                 informationViewModel.CurrentTicketSeries = CurrentTicketSeries;
                 informationViewModel.CurrentTicketNumber = CurrentTicketNumber;
                 informationViewModel.CurrentTicketColor = CurrentRollInfo.Color;
