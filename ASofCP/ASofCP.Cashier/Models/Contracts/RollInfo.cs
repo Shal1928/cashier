@@ -6,6 +6,8 @@ namespace it.q02.asocp.api.data
 {
     public class RollInfo
     {
+        public long Id;
+
         public String Series;
 
         public long NextTicket;

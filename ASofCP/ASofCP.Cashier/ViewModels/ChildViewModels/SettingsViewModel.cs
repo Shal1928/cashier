@@ -10,7 +10,7 @@ using UseAbilities.MVVM.Command;
 
 namespace ASofCP.Cashier.ViewModels.ChildViewModels
 {
-    public class SettingsViewModel : ChildViewModelBase
+    public class SettingsViewModel : ResultViewModel
     {
         private bool _isLoadComplete;
 
@@ -81,6 +81,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         {
             if (SettingsStore.IsNull()) return;
             SettingsStore.Save(Settings);
+            Result = Result.Yes;
             Close();
             Dispose();
         }
@@ -93,6 +94,8 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         }
 
 
+        
+
         private ICommand _cancelCommand;
         public ICommand CancelCommand
         {
@@ -104,6 +107,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         private void OnCancelCommand()
         {
+            Result = Result.Cancel;
             Close();
             Dispose();
         }

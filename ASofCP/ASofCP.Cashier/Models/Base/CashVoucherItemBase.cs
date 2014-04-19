@@ -36,6 +36,8 @@ namespace ASofCP.Cashier.Models.Base
             }
         }
 
+        public bool IsPrinted { get; set; }
+
         public int Order { get; set; }
 
         public AttractionInfo AttractionInfo { get; protected set; }

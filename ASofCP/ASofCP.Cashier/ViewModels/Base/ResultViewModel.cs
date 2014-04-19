@@ -2,7 +2,7 @@
 
 namespace ASofCP.Cashier.ViewModels.Base
 {
-    public abstract class ResultViewModel : ApplicationViewModel
+    public abstract class ResultViewModel : ChildViewModelBase
     {
         public virtual Result Result { get; set; }
 
@@ -18,8 +18,6 @@ namespace ASofCP.Cashier.ViewModels.Base
             base.Close();
         }
     }
-
-
 
     public class ResultEventArgs : EventArgs
     {

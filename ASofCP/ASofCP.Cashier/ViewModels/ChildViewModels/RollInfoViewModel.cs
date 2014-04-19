@@ -19,7 +19,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             TicketColorIndex = -1;
             IsShowAll = true;
 
-            //if (!DebugHelper.IsDebug) return;
+            if (!DebugHelper.IsDebug) return;
             FirstTicketSeries = "КС";
             FirstTicketNumber = 303854;
             TicketColorIndex = 0;

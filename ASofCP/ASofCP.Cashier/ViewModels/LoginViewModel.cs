@@ -5,6 +5,7 @@ using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.ViewModels.Base;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
 using hessiancsharp.io;
+using Microsoft.Win32;
 using UseAbilities.IoC.Attributes;
 using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Command;
@@ -136,6 +137,13 @@ namespace ASofCP.Cashier.ViewModels
         {
             var settingsVM = ObserveWrapperHelper.GetInstance().Resolve<SettingsViewModel>();
             settingsVM.Show();
+            settingsVM.CloseEventHandler += delegate(object sender, ResultEventArgs args)
+            {
+                if(args==null) return;
+
+                if (args.Result == Result.Yes) OnLoadedCommand();
+                
+            };
         }
     }
 }

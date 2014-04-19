@@ -148,7 +148,7 @@
     <Compile Include="Models\ModuleSettings.cs" />
     <Compile Include="Models\ParkService.cs" />
     <Compile Include="Models\PaymentTypes.cs" />
-    <Compile Include="Models\TicketRoll.cs" />
+    <Compile Include="Models\PrintResult.cs" />
     <Compile Include="Stores\API\BaseAPI.cs" />
     <Compile Include="Stores\API\UserAPI.cs" />
     <Compile Include="Stores\BaseAPIStore.cs" />

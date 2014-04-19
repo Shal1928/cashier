@@ -40,7 +40,9 @@ namespace ASofCP.Cashier
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);
             ViewModelManager.ActiveViewModels.CollectionChanged += ViewManager.OnViewModelsCoolectionChanged;
 
-            DebugHelper.IsDebug = !true;
+            var debugValue = !true;
+            DebugHelper.IsDebug = debugValue;
+            DebugHelper.IsPrintEnabled = !debugValue;
 
             if (DebugHelper.IsDebug)
             {
