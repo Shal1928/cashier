@@ -122,14 +122,14 @@ namespace ASofCP.Cashier.ViewModels
 
                 ICashVoucherItem item = new CashVoucherItem(_selectedParkService);
                 var cashVoucherItem = (CashVoucher<ICashVoucherItem>) ResultCashVoucher.SourceCollection;
-                // ReSharper disable PossibleMultipleEnumeration
+
                 _currentOrder++;
                 item.Order = _currentOrder;
                 cashVoucherItem.Add(item);
                 ResultCashVoucher.MoveCurrentToLast();
                 SelectedVoucherItem = cashVoucherItem.Get(item);
                 Total = cashVoucherItem.GetTotal();
-                // ReSharper restore PossibleMultipleEnumeration
+
                 ResultCashVoucher.Refresh();
             }
         }
@@ -211,7 +211,7 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnLoadedCommand()
         {
-
+            //
         }
         #endregion
 
