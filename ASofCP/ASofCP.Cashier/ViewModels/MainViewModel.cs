@@ -31,9 +31,6 @@ namespace ASofCP.Cashier.ViewModels
 
         public MainViewModel()
         {
-            // ReSharper disable DoNotCallOverridableMethodsInConstructor
-            //CollectionServices = TestDataHelper.GetParkServices();
-            // ReSharper restore DoNotCallOverridableMethodsInConstructor
             var resultCashVoucher = new CashVoucher<ICashVoucherItem>();
             UpdateResultCashVoucher(resultCashVoucher);
             // ReSharper disable DoNotCallOverridableMethodsInConstructor
