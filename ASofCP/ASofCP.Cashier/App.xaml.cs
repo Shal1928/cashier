@@ -26,7 +26,7 @@ namespace ASofCP.Cashier
     /// </summary>
     public partial class App
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(typeof(App));
 
         private void OnStartup(object sender, StartupEventArgs e)
         {

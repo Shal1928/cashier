@@ -30,7 +30,7 @@ namespace ASofCP.Cashier.ViewModels
         private Cheque _cheque;
         private int _currentOrder;
 
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(typeof(MainViewModel));
 
         // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public MainViewModel()
