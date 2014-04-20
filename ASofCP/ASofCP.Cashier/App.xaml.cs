@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Windows;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
@@ -10,12 +11,14 @@ using ASofCP.Cashier.ViewModels;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
 using ASofCP.Cashier.Views;
 using ASofCP.Cashier.Views.ChildViews;
+using log4net;
 using UseAbilities.IoC.Core;
 using UseAbilities.IoC.Helpers;
 using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Managers;
 using it.q02.asocp.api.data;
 
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 namespace ASofCP.Cashier
 {
     /// <summary>
@@ -23,8 +26,11 @@ namespace ASofCP.Cashier
     /// </summary>
     public partial class App : Application
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         private void OnStartup(object sender, StartupEventArgs e)
         {
+            Log.Info("Касса запущена");
             Loader(StaticHelper.IoCcontainer);
             var o = ObserveWrapperHelper.GetInstance();
             var relationsViewToViewModel = new Dictionary<Type, Type>
@@ -40,9 +46,11 @@ namespace ASofCP.Cashier
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);
             ViewModelManager.ActiveViewModels.CollectionChanged += ViewManager.OnViewModelsCoolectionChanged;
 
-            var debugValue = true;
+            var debugValue = !true;
             DebugHelper.IsDebug = debugValue;
             DebugHelper.IsPrintEnabled = !debugValue;
+            if (DebugHelper.IsDebug) Log.Info("Режим отладки активирован");
+            if (!DebugHelper.IsPrintEnabled) Log.Info("Вывод на принтер отключен");
 
             if (DebugHelper.IsDebug)
             {
@@ -61,7 +69,6 @@ namespace ASofCP.Cashier
             ioc.RegisterSingleton<IStore<ModuleSettings>, SettingsStore>();
             ioc.RegisterSingleton<ISecureReadStore<BaseAPI>, BaseAPIStore>();
             ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
-            
         }
     }
 
