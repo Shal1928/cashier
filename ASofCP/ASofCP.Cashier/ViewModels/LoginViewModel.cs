@@ -70,6 +70,7 @@ namespace ASofCP.Cashier.ViewModels
                 BaseAPI.isShiftOpen();
                 var mainViewModel = ObserveWrapperHelper.GetInstance().Resolve<MainViewModel>();
                 mainViewModel.PosTitle = PosTitle;
+                mainViewModel.User = User.UserDisplayName;
                 mainViewModel.OpenSession();
                 Close();
                 Dispose();

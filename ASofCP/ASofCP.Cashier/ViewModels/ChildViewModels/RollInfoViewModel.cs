@@ -21,7 +21,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
             if (!DebugHelper.IsDebug) return;
             FirstTicketSeries = "КС";
-            FirstTicketNumber = 303870;
+            FirstTicketNumber = 303880;
             TicketColorIndex = 0;
         }
         // ReSharper restore DoNotCallOverridableMethodsInConstructor
@@ -171,7 +171,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         private bool DeactivateRoll()
         {
             IsShowErrorMessage = false;
-            if (BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
+            if (!CurrentRollInfo.IsActiveOnStation || BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
             {
                 IsShowAll = true;
                 return true;

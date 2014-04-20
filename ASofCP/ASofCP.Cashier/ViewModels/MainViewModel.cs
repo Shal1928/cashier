@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -14,6 +15,7 @@ using ASofCP.Cashier.ViewModels.Base;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
 using it.q02.asocp.api.data;
+using log4net;
 using UseAbilities.IoC.Attributes;
 using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Command;
@@ -27,6 +29,8 @@ namespace ASofCP.Cashier.ViewModels
         private Dictionary<int, CashVoucher<ICashVoucherItem>> _backup = new Dictionary<int, CashVoucher<ICashVoucherItem>>();
         private Cheque _cheque;
         private int _currentOrder;
+
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public MainViewModel()
@@ -155,14 +159,6 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnCalculateCommand()
         {
-            //IsShowErrorMessage = false;
-            //if (CurrentRollInfo == null || !CurrentRollInfo.IsActiveOnStation)
-            //{
-            //    RightErrorMessage = "Бабина с билетами не определена или не активировна!";
-            //    IsShowErrorMessage = true;
-            //    return;
-            //}
-
             _cashVoucherToPrint = (CashVoucher<ICashVoucherItem>)ResultCashVoucher.SourceCollection;
 
             var ticketsNeed = Math.Abs(TicketsLeft - _cashVoucherToPrint.Sum(item => item.Count));
@@ -408,10 +404,10 @@ namespace ASofCP.Cashier.ViewModels
 
                 CurrentRollInfo = args.RollInfo;
                 CurrentShift = args.Shift;
-                User = CurrentShift.CashierName;
                 OnPropertyChanged(() => CurrentTicketNumber);
                 OnPropertyChanged(() => CurrentTicketSeries);
                 OnPropertyChanged(() => TicketsLeft);
+                Log.Debug(String.Format("Рулон {0} {1} {2} активирован", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
 
                 var collectionServices = new GroupContentList();
                 var attractions = BaseAPI.getAttractionsFromGroup(new AttractionGroupInfo());
@@ -419,6 +415,8 @@ namespace ASofCP.Cashier.ViewModels
                 collectionServices.AddRange(attractions.OrderBy(i => i.DisplayName).Select(attraction => new ParkService(attraction)));
 
                 CollectionServices = collectionServices;
+
+                Log.Debug("Смена открыта");
             };
         }
 
@@ -474,13 +472,16 @@ namespace ASofCP.Cashier.ViewModels
                 Attraction = attraction,
                 TicketRoll = CurrentRollInfo
             });
+            Log.Debug(String.Format("Напечатана позиция чека {0} {1} {2} ", attraction.DisplayName, CurrentTicketNumber - 1, CurrentRollInfo.NextTicket));
         }
 
         private void CloseCheque()
         {
             _cheque.CloseDate = DateTime.Now;
             _cheque.Rows = _chequeRows.ToArray();
+            Log.Debug(String.Format("Чек закрыт {0}", CurrentTicketNumber - 1));
             BaseAPI.createCheque(_cheque);
+            
 
             UpdateResultCashVoucher(new CashVoucher<ICashVoucherItem>());
             Total = 0;
@@ -516,7 +517,10 @@ namespace ASofCP.Cashier.ViewModels
             var barcode = PrepareBarcode(CurrentTicketNumber);
             var printed = SendToPrint(printerName, item, barcode);
             CreateChequeRow(printed.IsSuccess, DateTime.Now, barcode, item.AttractionInfo);
-            item.IsPrinted = printed.IsSuccess;
+            if (item.Count > 1) item.Count--;
+            else item.IsPrinted = printed.IsSuccess;
+
+            Log.Debug(String.Format("Результат печати Успешно: {0} Ошибка: {1}  Требовалась смена: {2}", printed.IsSuccess, printed.HasError, printed.IsNeedNewTicketRoll));
 
             if (!printed.IsNeedNewTicketRoll) return !printed.HasError;
             
@@ -573,6 +577,9 @@ namespace ASofCP.Cashier.ViewModels
             {
                 if (args == null || args.RollInfo.IsNull()) throw new NullReferenceException("Информация о смене и бабине не определена!");
                 CurrentRollInfo = args.RollInfo;
+                OnPropertyChanged(() => CurrentTicketNumber);
+                OnPropertyChanged(() => CurrentTicketSeries);
+                OnPropertyChanged(() => TicketsLeft);
                 PrintTickets(); 
             };
         }

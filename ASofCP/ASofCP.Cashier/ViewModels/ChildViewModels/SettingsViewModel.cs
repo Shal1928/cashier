@@ -19,6 +19,8 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         public ModuleSettings Settings { get; set; }
 
+        public virtual String SettingsPassword { get; set; }
+
         public virtual String IP
         {
             get { return Settings.NotNull() ? Settings.IP : String.Empty; } 
@@ -88,6 +90,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         private bool ValidateSaveCommand()
         {
+            if (!Equals(SettingsPassword, "please save")) return false;
             if (SettingsStore.IsNull()) return false;
             var originalSettings = SettingsStore.Load();
             return !Equals(Settings, originalSettings);
