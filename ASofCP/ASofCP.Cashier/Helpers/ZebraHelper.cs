@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace ASofCP.Cashier.Helpers
 {
@@ -13,8 +14,27 @@ namespace ASofCP.Cashier.Helpers
 
         public static string LoadAndFillTemplate(String templatePath, String date, String price, String title, String description, String barcode)
         {
-            var stream = new StreamReader(templatePath);
-            var template = stream.ReadToEnd();
+            String template;
+            using (var fsSource = new FileStream(templatePath, FileMode.Open, FileAccess.Read))
+            {
+                // Read the source file into a byte array. 
+                var bytes = new byte[fsSource.Length];
+                var numBytesToRead = (int) fsSource.Length;
+                var numBytesRead = 0;
+                while (numBytesToRead > 0)
+                {
+                    // Read may return anything from 0 to numBytesToRead. 
+                    var n = fsSource.Read(bytes, numBytesRead, numBytesToRead);
+
+                    // Break when the end of the file is reached. 
+                    if (n == 0) break;
+
+                    numBytesRead += n;
+                    numBytesToRead -= n;
+                }
+                var uniEncoding = Encoding.UTF8;
+                template = uniEncoding.GetString(bytes);
+            }
 
             template = template.Replace("{0}", date);
             template = template.Replace("{1}", price);

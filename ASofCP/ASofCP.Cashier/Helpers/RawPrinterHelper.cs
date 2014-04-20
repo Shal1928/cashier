@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ASofCP.Cashier.Helpers
 {
@@ -109,17 +110,26 @@ namespace ASofCP.Cashier.Helpers
 
         public static bool SendStringToPrinter(string szPrinterName, string szString)
         {
-            IntPtr pBytes;
-            Int32 dwCount;
-            // How many characters are in the string?
-            dwCount = szString.Length;
-            // Assume that the printer is expecting ANSI text, and then convert
-            // the string to ANSI text.
-            pBytes = Marshal.StringToCoTaskMemAnsi(szString);
-            // Send the converted ANSI string to the printer.
-            SendBytesToPrinter(szPrinterName, pBytes, dwCount);
-            Marshal.FreeCoTaskMem(pBytes);
-            return true;
+            //IntPtr pBytes;
+            //Int32 dwCount;
+            //// How many characters are in the string?
+            //dwCount = szString.Length;
+            
+            //// Assume that the printer is expecting ANSI text, and then convert
+            //// the string to ANSI text.
+            //pBytes = Marshal.StringToCoTaskMemAnsi(szString);
+            //// Send the converted ANSI string to the printer.
+            const string tempTicket = "TempTicket.xml";
+            using (var fileStream = new FileStream(tempTicket, FileMode.Create))
+            {
+                var uniEncoding = Encoding.UTF8;
+                fileStream.Write(uniEncoding.GetBytes(szString), 0, uniEncoding.GetByteCount(szString));
+            }
+
+
+            //SendBytesToPrinter(szPrinterName, pBytes, dwCount);
+            //Marshal.FreeCoTaskMem(pBytes);
+            return SendFileToPrinter(szPrinterName, tempTicket);
         }
     }
 }

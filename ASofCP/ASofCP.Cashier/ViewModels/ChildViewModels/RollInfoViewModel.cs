@@ -21,7 +21,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
             if (!DebugHelper.IsDebug) return;
             FirstTicketSeries = "КС";
-            FirstTicketNumber = 303854;
+            FirstTicketNumber = 303868;
             TicketColorIndex = 0;
         }
         // ReSharper restore DoNotCallOverridableMethodsInConstructor

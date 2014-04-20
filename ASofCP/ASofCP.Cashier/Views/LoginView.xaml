@@ -5,10 +5,11 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
         xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts"
+        xmlns:SquareButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.SquareButtonParts"
         Title="{Binding Title}" 
-        Height="350" Width="525"
-        MinHeight="350" MinWidth="525"
-        MaxHeight="350" MaxWidth="525"
+        Height="375" Width="525"
+        MinHeight="375" MinWidth="525"
+        MaxHeight="375" MaxWidth="525"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -60,27 +61,27 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="0.7*" />
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Представьтесь пожалуйста" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0" Visibility="{Binding IsShowAll, Converter={Converters:BoolVisibleHidddenConverter}}" />
-            
-            <StackPanel Orientation="Vertical" Margin="0,25,0,10" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" Visibility="{Binding IsShowAll, Converter={Converters:BoolVisibleHidddenConverter}}">
+            <TextBlock Text="Представьтесь пожалуйста" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0" Visibility="{Binding IsShowAll, Converter={Converters:BoolVisibleColapsedConverter}}" />
+
+            <StackPanel Orientation="Vertical" Margin="0,25,0,10" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" Visibility="{Binding IsShowAll, Converter={Converters:BoolVisibleColapsedConverter}}">
                 <TextBlock Text="Кассир" Margin="0,0,0,4" FontWeight="SemiBold" />
                 <ComboBox ItemsSource="{Binding Users}" DisplayMemberPath="DisplayName" SelectedValue="{Binding User}" SelectedIndex="-1" Width="425px" Height="42px" FontSize="16" />
             </StackPanel>
 
             <LinkButtonParts:LinkButton Content="Попробовать подключиться еще раз" Command="{Binding LoadedCommand}" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1" Visibility="{Binding IsShowAll, Converter={Converters:InvertBoolVisibleHidddenConverter}}" />
-            
-            <StackPanel Orientation="Vertical" Margin="0,10,0,0" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="2" Visibility="{Binding IsShowAll, Converter={Converters:BoolVisibleHidddenConverter}}">
+
+            <StackPanel Orientation="Vertical" Margin="0,10,0,0" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="2" Visibility="{Binding IsShowAll, Converter={Converters:BoolVisibleColapsedConverter}}">
                 <TextBlock Text="Пароль" Margin="0,0,0,4" FontWeight="SemiBold" />
                 <StackPanel Orientation="Horizontal">
                     <PasswordBox AttachedProperties:PasswordHelper.Attach="True"
                              AttachedProperties:PasswordHelper.Password="{Binding Password, Mode=TwoWay}"
                              Width="310px" FontSize="16" Margin="0,0,15,0" />
 
-                    <Button Content="Войти" Command="{Binding EnterCommand}"
+                    <SquareButtonParts:SquareButton Content="Войти" Command="{Binding EnterCommand}"
                             FontSize="16" FontWeight="SemiBold" 
                             Width="101" Height="42"
                             VerticalAlignment="Center" HorizontalAlignment="Right" />

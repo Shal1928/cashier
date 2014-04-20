@@ -113,6 +113,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AttachedProperties\PasswordHelper.cs" />
+    <Compile Include="Converters\BoolToOpacityConverter.cs" />
+    <Compile Include="Converters\BoolVisibleColapsedConverter.cs" />
     <Compile Include="Converters\BoolVisibleHidddenConverter.cs" />
     <Compile Include="Converters\EngColorNameToBrushConverter.cs" />
     <Compile Include="Converters\InvertBoolVisibleHidddenConverter.cs" />
@@ -191,6 +193,8 @@
     <Compile Include="Views\Controls\GroupContentGridParts\Models\GroupContentList.cs" />
     <Compile Include="Views\Controls\LinkButtonParts\LinkButton.cs" />
     <Compile Include="Views\Controls\LinkButtonParts\LinkButtonDic.cs" />
+    <Compile Include="Views\Controls\SquareButtonParts\SquareButton.cs" />
+    <Compile Include="Views\Controls\SquareButtonParts\SquareButtonDic.cs" />
     <Compile Include="Views\Images\MainResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -216,6 +220,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\GroupContentGridParts\GroupContentGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\SquareButtonParts\SquareButtonDic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

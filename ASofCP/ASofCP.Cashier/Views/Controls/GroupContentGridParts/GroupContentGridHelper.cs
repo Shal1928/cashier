@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
 using ASofCP.Cashier.Helpers;
+using ASofCP.Cashier.Views.Controls.SquareButtonParts;
 
 namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 {
@@ -24,14 +25,19 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 
         public Button CreateItemControl(IGroupContentItem item, int column, int row)
         {
-            var itemControl = new Button
+            //var squareButtonDic = new ResourceDictionary
+            //{
+            //    Source = new Uri(@"UseAbilities.Visual;component/Styles/Controls/Buttons/SquareButtonStyle.xaml", UriKind.RelativeOrAbsolute)
+            //};
+            var itemControl = new SquareButton
             {
                 Content = item.Title,
                 Height = 42,
                 MinWidth = 170,
                 FontSize = 14,
                 Margin = new Thickness(2),
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                
             };
 
             itemControl.Click += delegate

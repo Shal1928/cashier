@@ -465,29 +465,17 @@ namespace ASofCP.Cashier.ViewModels
             Total = 0;
             _cheque = null;
             _currentOrder = 0;
+            _cashVoucherToPrint = null;
         }
 
         private void PrintTickets()
         {
             var settings = SettingsStore.Load();
-
             foreach (var item in _cashVoucherToPrint.Where(item => item.Count >= 1 && !item.IsPrinted))
             {
-                String barcode;
                 if(item.Count == 1)
                 {
-                    barcode = PrepareBarcode(CurrentTicketNumber);
-                    var printed = SendToPrint(settings.PrinterName, item, barcode);
-                    CreateChequeRow(printed.IsSuccess, DateTime.Now, barcode, item.AttractionInfo);
-                    item.IsPrinted = printed.IsSuccess;
-
-                    if (printed.IsNeedNewTicketRoll)
-                    {
-                        NeedChangeRoll();
-                        return;
-                    }
-                    if (printed.HasError) return;
-                    
+                    if (!ProcessingPrint(settings.PrinterName, item)) return;
                     continue;
                 }
 
@@ -495,22 +483,24 @@ namespace ASofCP.Cashier.ViewModels
                 do
                 {
                     i++;
-                    barcode = PrepareBarcode(CurrentTicketNumber);
-                    var printed = SendToPrint(settings.PrinterName, item, barcode);
-                    CreateChequeRow(printed.IsSuccess, DateTime.Now, barcode, item.AttractionInfo);
-
-
-
-                    if (printed.IsNeedNewTicketRoll)
-                    {
-                        NeedChangeRoll();
-                        return;
-                    }
-                    if (printed.HasError) return;
+                    if (!ProcessingPrint(settings.PrinterName, item)) return;
                 } while (item.Count > i);
             }
 
             if(_cashVoucherToPrint.All(item=> item.IsPrinted)) CloseCheque();
+        }
+
+        private bool ProcessingPrint(string printerName, ICashVoucherItem item)
+        {
+            var barcode = PrepareBarcode(CurrentTicketNumber);
+            var printed = SendToPrint(printerName, item, barcode);
+            CreateChequeRow(printed.IsSuccess, DateTime.Now, barcode, item.AttractionInfo);
+            item.IsPrinted = printed.IsSuccess;
+
+            if (!printed.IsNeedNewTicketRoll) return !printed.HasError;
+            
+            NeedChangeRoll();
+            return false;
         }
 
         private static String PrepareBarcode(long num)

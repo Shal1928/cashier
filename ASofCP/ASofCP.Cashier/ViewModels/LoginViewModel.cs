@@ -5,7 +5,6 @@ using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.ViewModels.Base;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
 using hessiancsharp.io;
-using Microsoft.Win32;
 using UseAbilities.IoC.Attributes;
 using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Command;
@@ -99,6 +98,12 @@ namespace ASofCP.Cashier.ViewModels
 
         protected override void OnLoadedCommand()
         {
+            //var template = ZebraHelper.LoadAndFillTemplate("ZebraRu.xml", DateTime.Now.Date.ToString("dd.MM.yyyy"), "5.0", "ПринтTitle", "", "111");
+            //var fileStream = new FileStream("Out.xml", FileMode.Create);
+            //var uniEncoding = Encoding.UTF8;
+            //fileStream.Write(uniEncoding.GetBytes(template), 0, uniEncoding.GetByteCount(template));
+            //fileStream.Close();
+
             IsShowAll = true;
             IsShowErrorMessage = false;
             POSInfo posInfo;
