@@ -24,12 +24,14 @@ namespace ASofCP.Cashier
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private void OnStartup(object sender, StartupEventArgs e)
         {
+            SingleInstanceHelper.Make();
+
             Log.Info("Касса запущена");
             Loader(StaticHelper.IoCcontainer);
             var o = ObserveWrapperHelper.GetInstance();
