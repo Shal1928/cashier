@@ -21,7 +21,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
             if (!DebugHelper.IsDebug) return;
             FirstTicketSeries = "КС";
-            FirstTicketNumber = 303868;
+            FirstTicketNumber = 303870;
             TicketColorIndex = 0;
         }
         // ReSharper restore DoNotCallOverridableMethodsInConstructor
@@ -34,9 +34,10 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         public virtual bool IsCanCanceld { get; set; }
         public virtual bool IsShowAll { get; set; }
 
-        public string CurrentTicketSeries { get; set; }
-        public long CurrentTicketNumber { get; set; }
-        public RollColor CurrentTicketColor { get; set; }
+        //public string CurrentTicketSeries { get; set; }
+        //public long CurrentTicketNumber { get; set; }
+        //public RollColor CurrentTicketColor { get; set; }
+        public RollInfo CurrentRollInfo { get; set; }
 
         private ChildWindowMode _mode;
         public ChildWindowMode Mode
@@ -117,13 +118,13 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                     _shift = BaseAPI.isShiftOpen() ? BaseAPI.getCurrentShift() : BaseAPI.openShift();
                     break;
                 case ChildWindowMode.CloseShift:
+                    if (!DeactivateRoll()) return;
+                    if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
                     _rollInfo = null;
                     _shift = null;
-                    if (!DeactivateRoll(FirstTicketSeries, FirstTicketNumber, TicketColor)) return;
-                    if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
                     break;
                 case ChildWindowMode.NeedNewRoll:
-                    if (!DeactivateRoll(CurrentTicketSeries, CurrentTicketNumber, CurrentTicketColor)) return;
+                    if (!CloseRoll()) return;
                     _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
                     _shift = BaseAPI.getCurrentShift();
                     break;
@@ -133,7 +134,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                 //    _shift = BaseAPI.getCurrentShift();
                 //    break;
                 case ChildWindowMode.ChangeRoll:
-                    if (!DeactivateRoll(CurrentTicketSeries, CurrentTicketNumber, CurrentTicketColor)) return;
+                    if (!DeactivateRoll()) return;
                     _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
                     _shift = BaseAPI.getCurrentShift();
                     break;
@@ -167,21 +168,32 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         }
         #endregion
 
-        private bool DeactivateRoll(String series, long number, RollColor color)
+        private bool DeactivateRoll()
         {
-            CurrentTicketSeries = series;
-            CurrentTicketNumber = number;
-            CurrentTicketColor = color;
-
             IsShowErrorMessage = false;
-            if (BaseAPI.deactivateTicketRoll(series, number, color))
+            if (BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
             {
                 IsShowAll = true;
                 return true;
             }
 
             IsShowAll = false;
-            ErrorMessage = String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", series, number, color.Color);
+            ErrorMessage = String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+            IsShowErrorMessage = true;
+            return false;
+        }
+
+        private bool CloseRoll()
+        {
+            IsShowErrorMessage = false;
+            if (BaseAPI.closeTicketRoll(CurrentRollInfo))
+            {
+                IsShowAll = true;
+                return true;
+            }
+
+            IsShowAll = false;
+            ErrorMessage = String.Format("Закрыть ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
             IsShowErrorMessage = true;
             return false;
         }
@@ -198,7 +210,8 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         private void OnDeactivateCommand()
         {
-            DeactivateRoll(CurrentTicketSeries, CurrentTicketNumber, CurrentTicketColor);
+            if (Mode == ChildWindowMode.NeedNewRoll) CloseRoll();
+            else DeactivateRoll();
         }
         #endregion
 

@@ -6,7 +6,7 @@
         xmlns:converters="clr-namespace:ASofCP.Cashier.Converters"
         xmlns:SquareButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.SquareButtonParts"
         Title="{Binding Title}" 
-        WindowState="Maximized" WindowStyle="None" Topmost="False"
+        WindowState="Maximized" WindowStyle="None" Topmost="{Binding Topmost}"
         WindowStartupLocation="CenterScreen"
         Background="#7f000000" AllowsTransparency="True">
     <Window.Resources>
@@ -40,7 +40,7 @@
 
 
         <Grid Opacity="1" Background="#ffFFFFFF"
-              Width="500" Height="350" 
+              Width="525" Height="350" 
               HorizontalAlignment="Center" VerticalAlignment="Center"
               Grid.Column="1" Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -86,7 +86,7 @@
             </StackPanel>
 
             <SquareButtonParts:SquareButton Content="{Binding MainButtonTitle}" Command="{Binding MainCommand}" Visibility="{Binding IsShowAll, Converter={converters:BoolVisibleHidddenConverter}}"
-                            FontSize="16" FontWeight="SemiBold" Grid.Column="3" Grid.Row="2" Margin="0,32,10,13"
+                            FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource DarkGraySB}"  Grid.Column="3" Grid.Row="2" Margin="0,32,10,13"
                             MinWidth="150px" Height="42px" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
 
             <LinkButtonParts:LinkButton Content="Попробовать деактивировать еще раз" Command="{Binding DeactivateCommand}" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="4" Visibility="{Binding IsShowAll, Converter={converters:InvertBoolVisibleHidddenConverter}}" />

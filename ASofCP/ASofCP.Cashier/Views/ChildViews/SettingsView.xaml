@@ -5,7 +5,7 @@
         xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
         xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts"
         Title="{Binding Title}" 
-        WindowState="Maximized" WindowStyle="None" Topmost="False"
+        WindowState="Maximized" WindowStyle="None" Topmost="{Binding Topmost}"
         WindowStartupLocation="CenterScreen"
         Background="#7f000000" AllowsTransparency="True">
     <Window.Resources>

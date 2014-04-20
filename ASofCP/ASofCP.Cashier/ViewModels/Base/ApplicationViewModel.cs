@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Stores.API;
 using ASofCP.Cashier.Stores.Base;
 using UseAbilities.IoC.Attributes;
@@ -13,6 +14,11 @@ namespace ASofCP.Cashier.ViewModels.Base
         public String Title
         {
             get { return "ASofCP модуль «Кассир» 1.0"; }
+        }
+
+        public bool Topmost
+        {
+            get { return !DebugHelper.IsDebug; }
         }
 
         [InjectedProperty]

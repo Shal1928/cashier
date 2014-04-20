@@ -19,9 +19,8 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         }
 
         public long Count { get; set; }
-        public string CurrentTicketSeries { get; set; }
-        public long CurrentTicketNumber { get; set; }
-        public RollColor CurrentTicketColor { get; set; }
+
+        public RollInfo CurrentRollInfo { get; set; }
 
         #region ChangeRollCommand
         private ICommand _changeRollCommand;
@@ -37,9 +36,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         {
             var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
             rollInfoViewModelA.Mode = ChildWindowMode.ChangeRoll;
-            rollInfoViewModelA.CurrentTicketSeries = CurrentTicketSeries;
-            rollInfoViewModelA.CurrentTicketNumber = CurrentTicketNumber;
-            rollInfoViewModelA.CurrentTicketColor = CurrentTicketColor;
+            rollInfoViewModelA.CurrentRollInfo = CurrentRollInfo;
             rollInfoViewModelA.Show();
             rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
             {

@@ -28,13 +28,13 @@ namespace ASofCP.Cashier.ViewModels
         private Cheque _cheque;
         private int _currentOrder;
 
+        // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public MainViewModel()
         {
             var resultCashVoucher = new CashVoucher<ICashVoucherItem>();
             UpdateResultCashVoucher(resultCashVoucher);
-            // ReSharper disable DoNotCallOverridableMethodsInConstructor
+            
             CurrentDateTime = DateTime.Now;
-            // ReSharper restore DoNotCallOverridableMethodsInConstructor
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += delegate
                 {
@@ -44,6 +44,7 @@ namespace ASofCP.Cashier.ViewModels
             dispatcherTimer.Interval = new TimeSpan(0, 1, 0);
             dispatcherTimer.Start();
         }
+        // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
         [InjectedProperty]
         public IStore<ModuleSettings> SettingsStore { get; set; }
@@ -143,12 +144,25 @@ namespace ASofCP.Cashier.ViewModels
         {
             get
             {
-                return _calculateCommand ?? (_calculateCommand = new RelayCommand(param => OnCalculateCommand(), can => Total > 0));
+                return _calculateCommand ?? (_calculateCommand = new RelayCommand(param => OnCalculateCommand(), can => ValidateCalculateCommand()));
             }
+        }
+
+        private bool ValidateCalculateCommand()
+        {
+            return Total > 0 && CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation;
         }
 
         private void OnCalculateCommand()
         {
+            //IsShowErrorMessage = false;
+            //if (CurrentRollInfo == null || !CurrentRollInfo.IsActiveOnStation)
+            //{
+            //    RightErrorMessage = "Бабина с билетами не определена или не активировна!";
+            //    IsShowErrorMessage = true;
+            //    return;
+            //}
+
             _cashVoucherToPrint = (CashVoucher<ICashVoucherItem>)ResultCashVoucher.SourceCollection;
 
             var ticketsNeed = Math.Abs(TicketsLeft - _cashVoucherToPrint.Sum(item => item.Count));
@@ -156,9 +170,7 @@ namespace ASofCP.Cashier.ViewModels
             {
                 var informationViewModel = ObserveWrapperHelper.GetInstance().Resolve<InformationViewModel>();
                 informationViewModel.Count = ticketsNeed;
-                informationViewModel.CurrentTicketSeries = CurrentTicketSeries;
-                informationViewModel.CurrentTicketNumber = CurrentTicketNumber;
-                informationViewModel.CurrentTicketColor = CurrentRollInfo.Color;
+                informationViewModel.CurrentRollInfo = CurrentRollInfo;
                 informationViewModel.Show();
                 informationViewModel.Closed += delegate(object senderD, RollInfoEventArgs args)
                 {
@@ -314,7 +326,7 @@ namespace ASofCP.Cashier.ViewModels
         {
             get
             {
-                return _changeRollCommand ?? (_changeRollCommand = new RelayCommand(param => OnChangeRollCommand(), null));
+                return _changeRollCommand ?? (_changeRollCommand = new RelayCommand(param => OnChangeRollCommand(), can => ValidateChangeRollCommand()));
             }
         }
 
@@ -324,9 +336,7 @@ namespace ASofCP.Cashier.ViewModels
 
             var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
             rollInfoViewModelA.Mode = ChildWindowMode.ChangeRoll;
-            rollInfoViewModelA.CurrentTicketSeries = CurrentTicketSeries;
-            rollInfoViewModelA.CurrentTicketNumber = CurrentTicketNumber;
-            rollInfoViewModelA.CurrentTicketColor = CurrentRollInfo.Color;
+            rollInfoViewModelA.CurrentRollInfo = CurrentRollInfo;
             rollInfoViewModelA.Show();
             rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
             {
@@ -337,6 +347,11 @@ namespace ASofCP.Cashier.ViewModels
                 OnPropertyChanged(() => TicketsLeft);
             };
         }
+
+        private bool ValidateChangeRollCommand()
+        {
+            return CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation;
+        }
         #endregion
 
         #region CloseShiftCommand
@@ -345,19 +360,19 @@ namespace ASofCP.Cashier.ViewModels
         {
             get
             {
-                return _closeShiftCommand ?? (_closeShiftCommand = new RelayCommand(param => OnCloseShiftCommand(), null));
+                return _closeShiftCommand ?? (_closeShiftCommand = new RelayCommand(param => OnCloseShiftCommand(), can => ValidateCloseShiftCommand()));
             }
         }
 
         private void OnCloseShiftCommand()
         {
             var rollInfoViewModel = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-            //rollInfoViewModel.Prepare("Укажите информацию о бабине", "Текущий билет", "Закрыть смену", true);
             rollInfoViewModel.Mode = ChildWindowMode.CloseShift;
+            rollInfoViewModel.CurrentRollInfo = CurrentRollInfo;
             rollInfoViewModel.Show();
             rollInfoViewModel.Closed += delegate(object sender, RollInfoEventArgs args)
             {
-                if (args == null || args.RollInfo == null) return;
+                if (args == null) return;
 
                 var loginViewModel = ObserveWrapperHelper.GetInstance().Resolve<LoginViewModel>();
                 loginViewModel.Show();
@@ -365,6 +380,12 @@ namespace ASofCP.Cashier.ViewModels
                 Dispose();
             };
         }
+
+        private bool ValidateCloseShiftCommand()
+        {
+            return CurrentShift != null && CurrentShift.Active && CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation;
+        }
+
         #endregion
 
         public void OpenSession()
@@ -546,9 +567,7 @@ namespace ASofCP.Cashier.ViewModels
         {
             var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
             rollInfoViewModelA.Mode = ChildWindowMode.NeedNewRoll;
-            rollInfoViewModelA.CurrentTicketSeries = CurrentTicketSeries;
-            rollInfoViewModelA.CurrentTicketNumber = CurrentTicketNumber - 1;
-            rollInfoViewModelA.CurrentTicketColor = CurrentRollInfo.Color;
+            rollInfoViewModelA.CurrentRollInfo = CurrentRollInfo;
             rollInfoViewModelA.Show();
             rollInfoViewModelA.Closed += delegate(object sender, RollInfoEventArgs args)
             {

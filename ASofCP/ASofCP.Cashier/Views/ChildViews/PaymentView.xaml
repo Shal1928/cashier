@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:SquareButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.SquareButtonParts"
         Title="{Binding Title}" 
-        WindowState="Maximized" WindowStyle="None" Topmost="False"
+        WindowState="Maximized" WindowStyle="None" Topmost="{Binding Topmost}"
         WindowStartupLocation="CenterScreen"
         Background="#7f000000" AllowsTransparency="True">
 
@@ -72,14 +72,14 @@
                 </StackPanel>
 
                 <SquareButtonParts:SquareButton Content="Оплатить" Command="{Binding CashPayCommand}" CommandParameter="{x:Static Models:PaymentTypes.Cash}" 
-                        FontSize="16" FontWeight="SemiBold" Margin="25,0,0,0" Width="100" Height="42" />
+                        FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource DarkGraySB}" Margin="25,0,0,0" Width="100" Height="42" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Center">
                 <SquareButtonParts:SquareButton Content="Расчет сертификатом" Command="{Binding PayCommand}" CommandParameter="{x:Static Models:PaymentTypes.Certificate}" 
-                        FontSize="16" FontWeight="SemiBold" Margin="0,0,25,0" Width="180" Height="42" />
+                        FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource DarkGraySB}" Margin="0,0,25,0" Width="180" Height="42" />
                 <SquareButtonParts:SquareButton Content="Безналичный расчет" Command="{Binding PayCommand}" CommandParameter="{x:Static Models:PaymentTypes.Cashless}" 
-                        FontSize="16" FontWeight="SemiBold" Width="180" Height="42" />
+                        FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource DarkGraySB}" Width="180" Height="42" />
             </StackPanel>
 
             <TextBlock Text="{Binding ErrorMessage}" Style="{DynamicResource FadeInOutStyle}" Visibility="{Binding IsShowErrorMessage, Converter={Converters:BoolVisibleHidddenConverter}}"

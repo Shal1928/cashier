@@ -16,8 +16,9 @@ namespace ASofCP.Cashier.Stores.API
 
         bool deactivateTicketRoll(String series, long nextTicket, RollColor color);
 
+        bool closeTicketRoll(RollInfo info);
+
         RollColor[] getColors();
-        //List<RollColor> getColors();
 
         bool isShiftOpen();
 
