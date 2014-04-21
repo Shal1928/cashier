@@ -35,6 +35,15 @@ namespace ASofCP.Cashier.ViewModels
         // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public MainViewModel()
         {
+            AppDomain.CurrentDomain.ProcessExit += delegate
+            {
+                if(BaseAPI == null) return;
+                if (CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation)
+                    if (!BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color)) 
+                        Log.Fatal(String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
+                if(BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
+            };
+
             var resultCashVoucher = new CashVoucher<ICashVoucherItem>();
             UpdateResultCashVoucher(resultCashVoucher);
             
@@ -501,12 +510,10 @@ namespace ASofCP.Cashier.ViewModels
                     continue;
                 }
 
-                var i = 0;
                 do
                 {
-                    i++;
                     if (!ProcessingPrint(settings.PrinterName, item)) return;
-                } while (item.Count > i);
+                } while (!item.IsPrinted);
             }
 
             if(_cashVoucherToPrint.All(item=> item.IsPrinted)) CloseCheque();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Remoting.Channels;
 using System.Windows;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
