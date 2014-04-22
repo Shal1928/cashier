@@ -172,5 +172,3 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
-ASofCP/.HistoryData/LocalHistory/
-Common/Log4Net/log4net.xml
