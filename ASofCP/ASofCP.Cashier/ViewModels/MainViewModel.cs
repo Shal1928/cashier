@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
+using System.Text;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -16,6 +16,7 @@ using ASofCP.Cashier.ViewModels.ChildViewModels;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
 using it.q02.asocp.api.data;
 using log4net;
+using UseAbilities.Extensions.EnumExt;
 using UseAbilities.IoC.Attributes;
 using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Command;
@@ -37,10 +38,15 @@ namespace ASofCP.Cashier.ViewModels
         {
             AppDomain.CurrentDomain.ProcessExit += delegate
             {
-                if(BaseAPI == null) return;
+                if (BaseAPI == null)
+                {
+                    Log.Debug("BaseAPI не определен. Возможно смена не будет закрыта, а лента билетов деактивирована!");
+                    return;
+                }
                 if (CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation)
                     if (!BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color)) 
                         Log.Fatal(String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
+                    else Log.Debug(String.Format("Лента билетов {0} {1} {2} деактивирована.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
                 if(BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
             };
 
@@ -187,6 +193,16 @@ namespace ASofCP.Cashier.ViewModels
             else ResolvePaymentViewModel();
         }
 
+        private static void PrintCashVoucherToLog(IEnumerable<ICashVoucherItem> cashVoucher)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("На печать отправлен чек");
+            foreach (var item in cashVoucher)
+                sb.AppendLine(String.Format("\"{0}\" X {1} = {2}", item.Title, item.Count, item.Price));
+            
+            Log.Debug(sb);
+        }
+
         private void ResolvePaymentViewModel()
         {
             IsShowErrorMessage = false;
@@ -198,8 +214,10 @@ namespace ASofCP.Cashier.ViewModels
                 if (!args.PaymentType.HasValue) return;
 
                 _cheque.MoneyType = (short)args.PaymentType.Value;
+                Log.Debug(String.Format("Чек оплачен {0}.", args.PaymentType.Value.DescriptionOf()));
                 _chequeRows = new List<ChequeRow>();
 
+                PrintCashVoucherToLog(_cashVoucherToPrint);
                 PrintTickets();
             };
         }
@@ -346,11 +364,29 @@ namespace ASofCP.Cashier.ViewModels
             rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
             {
                 if (argsA == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
+                var isChange = !Equals(CurrentRollInfo, argsA.RollInfo);
                 CurrentRollInfo = argsA.RollInfo ?? CurrentRollInfo;
+                ChangeRollInfoToLog(CurrentRollInfo, isChange);
                 OnPropertyChanged(() => CurrentTicketNumber);
                 OnPropertyChanged(() => CurrentTicketSeries);
                 OnPropertyChanged(() => TicketsLeft);
             };
+        }
+
+        private static void ChangeRollInfoToLog(RollInfo r, bool isChange)
+        {
+            if (r.IsNull())
+            {
+                Log.Warn("Лента билетов не определена!");
+                return;    
+            }
+
+            var sb = new StringBuilder();
+            var firstPart = isChange ? "Произошла смена ленты билетов" : "Текущая лента билетов";
+            sb.AppendLine(firstPart);
+            sb.AppendLine(String.Format("{0} {1} {2}", r.Series, r.NextTicket, r.Color.Color));
+            sb.AppendLine(String.Format("Состояние: {0}; Осталось билетов: {1};", r.IsActiveOnStation ? "Активирована" : "Деактивирована", r.TicketsLeft));
+            Log.Debug(sb);
         }
 
         private bool ValidateChangeRollCommand()
@@ -378,6 +414,8 @@ namespace ASofCP.Cashier.ViewModels
             rollInfoViewModel.Closed += delegate(object sender, RollInfoEventArgs args)
             {
                 if (args == null) return;
+                ChangeRollInfoToLog(CurrentRollInfo, false);
+                Log.Debug(String.Format("Смена закрыта {0} – {1} {2}", CurrentShift.OpenDate, CurrentShift.CloseDate, CurrentShift.CashierName));
 
                 var loginViewModel = ObserveWrapperHelper.GetInstance().Resolve<LoginViewModel>();
                 loginViewModel.Show();
@@ -416,7 +454,7 @@ namespace ASofCP.Cashier.ViewModels
                 OnPropertyChanged(() => CurrentTicketNumber);
                 OnPropertyChanged(() => CurrentTicketSeries);
                 OnPropertyChanged(() => TicketsLeft);
-                Log.Debug(String.Format("Рулон {0} {1} {2} активирован", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
+                ChangeRollInfoToLog(CurrentRollInfo, false);
 
                 var collectionServices = new GroupContentList();
                 var attractions = BaseAPI.getAttractionsFromGroup(new AttractionGroupInfo());
@@ -425,7 +463,7 @@ namespace ASofCP.Cashier.ViewModels
 
                 CollectionServices = collectionServices;
 
-                Log.Debug("Смена открыта");
+                Log.Debug(String.Format("Смена открыта {0} {1}", CurrentShift.OpenDate, CurrentShift.CashierName));
             };
         }
 
@@ -488,15 +526,46 @@ namespace ASofCP.Cashier.ViewModels
         {
             _cheque.CloseDate = DateTime.Now;
             _cheque.Rows = _chequeRows.ToArray();
-            Log.Debug(String.Format("Чек закрыт {0}", CurrentTicketNumber - 1));
             BaseAPI.createCheque(_cheque);
-            
+            ChequeToLog(_cheque);
 
             UpdateResultCashVoucher(new CashVoucher<ICashVoucherItem>());
             Total = 0;
             _cheque = null;
             _currentOrder = 0;
             _cashVoucherToPrint = null;
+        }
+
+        private static void ChequeToLog(Cheque c)
+        {
+            if (c.IsNull())
+            {
+                Log.Warn("Чек не определен!");
+                return;
+            }
+            
+            var sb = new StringBuilder();
+            sb.AppendLine("Чек закрыт");
+            sb.AppendLine(String.Format("{0} – {1}", c.OpenDate, c.CloseDate));
+            string paymentType;
+            switch (c.MoneyType)
+            {
+                case 0: paymentType = "Наличные"; break;
+                case 1: paymentType = "Безналичный расчет"; break;
+                case 2: paymentType = "Сертификат"; break;
+                default: paymentType = "Неопознаный тип оплаты"; break;
+            }
+            sb.AppendLine(String.Format("{0} – {1}; {2}", c.MoneyType, c.CloseDate, paymentType));
+            sb.AppendLine(String.Format("Смена открыта {0} {1}", c.Shift.OpenDate, c.Shift.CashierName));
+            sb.AppendLine(String.Format("Позиции чека:"));
+            foreach (var row in c.Rows)
+            {
+                sb.AppendLine(String.Format("Напечатано {0}; {1} {2} {3}", row.PrintDate, row.TicketNumber, row.TicketBarCode, row.TicketRoll.Color.Color));
+                sb.AppendLine(String.Format("\"{0}\" {1} = {2}", row.Attraction.DisplayName, row.Attraction.Code, row.Attraction.Price));
+                sb.AppendLine("---");
+            }
+
+            Log.Debug(sb);
         }
 
         private void PrintTickets()
@@ -574,6 +643,26 @@ namespace ASofCP.Cashier.ViewModels
             return TicketsLeft > 0 ? PrintResult.Success : PrintResult.SuccessAndNeedNewTicketRoll;
         }
 
+        private void PrintTroubleToLog(Exception e)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Во время печати возникли проблемы!");
+            sb.AppendLine(e.Message);
+            sb.AppendLine(e.StackTrace);
+
+            if (_cashVoucherToPrint.IsNullOrEmpty())
+            {
+                Log.Fatal(sb);
+                return;
+            }
+
+            sb.AppendLine("Не напечатанными остались следующие позиции:");
+            foreach (var item in _cashVoucherToPrint.Where(item => item.Count >= 1 && !item.IsPrinted))
+                sb.AppendLine(String.Format("\"{0}\" X {1} = {2}", item.Title, item.Count, item.Price));
+
+            Log.Fatal(sb);
+        }
+
         private void NeedChangeRoll()
         {
             var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
@@ -584,6 +673,7 @@ namespace ASofCP.Cashier.ViewModels
             {
                 if (args == null || args.RollInfo.IsNull()) throw new NullReferenceException("Информация о смене и бабине не определена!");
                 CurrentRollInfo = args.RollInfo;
+                ChangeRollInfoToLog(CurrentRollInfo, true);
                 OnPropertyChanged(() => CurrentTicketNumber);
                 OnPropertyChanged(() => CurrentTicketSeries);
                 OnPropertyChanged(() => TicketsLeft);

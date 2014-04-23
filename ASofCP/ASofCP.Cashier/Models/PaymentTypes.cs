@@ -4,11 +4,11 @@ namespace ASofCP.Cashier.Models
 {
     public enum PaymentTypes : short
     {
-        [Description("Наличный")]
+        [Description("наличными")]
         Cash = 0,
-        [Description("Безналичный")]
+        [Description("безналом")]
         Cashless = 1,
-        [Description("Сертификат")]
+        [Description("сертификатом")]
         Certificate = 2
     }
 }

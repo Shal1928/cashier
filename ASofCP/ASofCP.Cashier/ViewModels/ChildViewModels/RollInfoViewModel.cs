@@ -233,7 +233,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         private void OnCancelCommand()
         {
-            _rollInfo = null;
+            _rollInfo = CurrentRollInfo;
             _shift = BaseAPI.getCurrentShift();
             Close();
             Dispose();
