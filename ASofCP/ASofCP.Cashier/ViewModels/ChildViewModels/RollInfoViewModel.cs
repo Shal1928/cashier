@@ -15,14 +15,14 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public RollInfoViewModel()
         {
-            
             TicketColorIndex = -1;
             IsShowAll = true;
 
-            if (!DebugHelper.IsDebug) return;
-            FirstTicketSeries = "КС";
-            FirstTicketNumber = 303880;
+            #if DEBUG
+            FirstTicketSeries = "RC";
+            FirstTicketNumber = 16;
             TicketColorIndex = 0;
+            #endif
         }
         // ReSharper restore DoNotCallOverridableMethodsInConstructor
 

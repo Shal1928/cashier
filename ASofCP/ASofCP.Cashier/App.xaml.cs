@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.Remoting.Channels;
 using System.Windows;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
@@ -49,22 +47,25 @@ namespace ASofCP.Cashier
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);
             ViewModelManager.ActiveViewModels.CollectionChanged += ViewManager.OnViewModelsCoolectionChanged;
 
-            var debugValue = !true;
-            DebugHelper.IsDebug = debugValue;
-            DebugHelper.IsPrintEnabled = !debugValue;
-            if (DebugHelper.IsDebug) Log.Info("Режим отладки активирован");
-            if (!DebugHelper.IsPrintEnabled) Log.Info("Вывод на принтер отключен");
+            #if LOGIN_DEBUG && PRINT_DEBUG
+            Log.Warn("Запущено в режиме полной отладки!");
+            #elif LOGIN_DEBUG
+            Log.Warn("Запущено в режиме отладки авторизации!");
+            #elif PRINT_DEBUG
+            Log.Warn("Запущено в режиме отладки печати!");
+            #elif DEBUG
+            Log.Warn("Запущено в режиме отладки!");
+            #else
+            Log.Info("Запущено в продуктивном режиме.");
+            #endif
 
-            if (DebugHelper.IsDebug)
-            {
-                var startupWindowSeed = o.Resolve<MainViewModel>();
-                startupWindowSeed.OpenSession();
-            }
-            else
-            {
-                var startupWindowSeed = o.Resolve<LoginViewModel>();
-                startupWindowSeed.Show();
-            }
+            #if DEBUG && !LOGIN_DEBUG
+            var startupWindowSeed = o.Resolve<MainViewModel>();
+            startupWindowSeed.OpenSession();
+            #else
+            var startupWindowSeed = o.Resolve<LoginViewModel>();
+            startupWindowSeed.Show();
+            #endif
         }
 
         private static void Loader(IoC ioc)

@@ -616,11 +616,12 @@ namespace ASofCP.Cashier.ViewModels
         private PrintResult SendToPrint(String printerName, ICashVoucherItem item, String barcode)
         {
             IsShowErrorMessage = false;
-            var pathToTemplate = SettingsStore.Load().PathToTemplate;
             try
             {
-                if (DebugHelper.IsPrintEnabled)
-                    RawPrinterHelper.SendStringToPrinter(printerName, ZebraHelper.LoadAndFillTemplate(pathToTemplate, CurrentDateTime.Date.ToString("dd.MM.yyyy"), item.Price.ToString(CultureInfo.InvariantCulture), item.PrintTitle, "", barcode));
+                #if !DEBUG || PRINT_DEBUG
+                var pathToTemplate = SettingsStore.Load().PathToTemplate;
+                RawPrinterHelper.SendStringToPrinter(printerName, ZebraHelper.LoadAndFillTemplate(pathToTemplate, CurrentDateTime.Date.ToString("dd.MM.yyyy"), item.Price.ToString(CultureInfo.InvariantCulture), item.PrintTitle, "", barcode));
+                #endif
             }
             catch (Exception e)
             {

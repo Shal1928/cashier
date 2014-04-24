@@ -1,5 +1,4 @@
-﻿using ASofCP.Cashier.Helpers;
-using ASofCP.Cashier.Models;
+﻿using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Stores.API;
 using ASofCP.Cashier.Stores.Base;
 using UseAbilities.IoC.Attributes;
@@ -11,9 +10,9 @@ namespace ASofCP.Cashier.Stores
     {
         public BaseAPIStore()
         {
-            //
-            if (!DebugHelper.IsDebug) return;
+            #if DEBUG && !LOGIN_DEBUG
             Logon("administrator", "1");
+            #endif
         }
 
         [InjectedProperty]

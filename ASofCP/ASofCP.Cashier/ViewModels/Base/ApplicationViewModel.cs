@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows.Input;
-using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Stores.API;
 using ASofCP.Cashier.Stores.Base;
 using UseAbilities.IoC.Attributes;
@@ -14,12 +13,34 @@ namespace ASofCP.Cashier.ViewModels.Base
     {
         public String Title
         {
-            get { return String.Format("ASofCP модуль «Кассир» {0}", Assembly.GetExecutingAssembly().GetName().Version); }
+            get
+            {
+                #if LOGIN_DEBUG && PRINT_DEBUG
+                const string mode = " [Режим полной отладки]";
+                #elif LOGIN_DEBUG
+                const string mode = " [Режим отладки авторизации]";
+                #elif PRINT_DEBUG
+                const string mode = " [Режим отладки печати]";
+                #elif DEBUG
+                const string mode = " [Режим отладки]";
+                #else
+                const string mode = "";
+                #endif
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                return String.Format("ASofCP модуль «Кассир» {0}{1}", version, mode);
+            }
         }
 
         public bool Topmost
         {
-            get { return !DebugHelper.IsDebug; }
+            get
+            {
+                #if DEBUG
+                return false;
+                #else
+                return true;
+                #endif
+            }
         }
 
         [InjectedProperty]
