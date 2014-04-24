@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Windows.Input;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Stores.API;
@@ -13,7 +14,7 @@ namespace ASofCP.Cashier.ViewModels.Base
     {
         public String Title
         {
-            get { return "ASofCP модуль «Кассир» 1.0"; }
+            get { return String.Format("ASofCP модуль «Кассир» {0}", Assembly.GetExecutingAssembly().GetName().Version); }
         }
 
         public bool Topmost
