@@ -44,9 +44,9 @@ namespace ASofCP.Cashier.ViewModels
                     return;
                 }
                 if (CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation)
-                    if (!BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color)) 
-                        Log.Fatal(String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
-                    else Log.Debug(String.Format("Лента билетов {0} {1} {2} деактивирована.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
+                    if (!BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
+                        Log.Fatal("Деактивировать ленту билетов {0} {1} {2} не получилось!".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
+                    else Log.Debug("Лента билетов {0} {1} {2} деактивирована.".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
                 if(BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
             };
 
@@ -67,6 +67,8 @@ namespace ASofCP.Cashier.ViewModels
 
         [InjectedProperty]
         public IStore<ModuleSettings> SettingsStore { get; set; }
+        private ModuleSettings Settings { get { return SettingsStore != null ? SettingsStore.Load() : null; } }
+        private string PrinterName {get { return Settings != null ? Settings.PrinterName : string.Empty; }}
 
         public virtual GroupContentList CollectionServices { get; set; }
         public virtual double Total { get; set; }
@@ -198,7 +200,7 @@ namespace ASofCP.Cashier.ViewModels
             var sb = new StringBuilder();
             sb.AppendLine("На печать отправлен чек");
             foreach (var item in cashVoucher)
-                sb.AppendLine(String.Format("\"{0}\" X {1} = {2}", item.Title, item.Count, item.Price));
+                sb.AppendLine("\"{0}\" X {1} = {2}".F(item.Title, item.Count, item.Price));
             
             Log.Debug(sb);
         }
@@ -206,6 +208,16 @@ namespace ASofCP.Cashier.ViewModels
         private void ResolvePaymentViewModel()
         {
             IsShowErrorMessage = false;
+
+            if (!PrinterDeviceHelper.IsPlug(PrinterName))
+            {
+                var message = "Принтер {0} не подключен!".F(PrinterName);
+                Log.Debug(message);
+                RightErrorMessage = message;
+                IsShowErrorMessage = true;
+                return;
+            }
+
             var paymentViewModel = ObserveWrapperHelper.GetInstance().Resolve<PaymentViewModel>();
             paymentViewModel.Total = Total;
             paymentViewModel.Show();
@@ -214,11 +226,11 @@ namespace ASofCP.Cashier.ViewModels
                 if (!args.PaymentType.HasValue) return;
 
                 _cheque.MoneyType = (short)args.PaymentType.Value;
-                Log.Debug(String.Format("Чек оплачен {0}.", args.PaymentType.Value.DescriptionOf()));
+                Log.Debug("Чек оплачен {0}.".F(args.PaymentType.Value.DescriptionOf()));
                 _chequeRows = new List<ChequeRow>();
 
                 PrintCashVoucherToLog(_cashVoucherToPrint);
-                PrintTickets();
+                PrintTickets(PrinterName);
             };
         }
         
@@ -384,8 +396,8 @@ namespace ASofCP.Cashier.ViewModels
             var sb = new StringBuilder();
             var firstPart = isChange ? "Произошла смена ленты билетов" : "Текущая лента билетов";
             sb.AppendLine(firstPart);
-            sb.AppendLine(String.Format("{0} {1} {2}", r.Series, r.NextTicket, r.Color.Color));
-            sb.AppendLine(String.Format("Состояние: {0}; Осталось билетов: {1};", r.IsActiveOnStation ? "Активирована" : "Деактивирована", r.TicketsLeft));
+            sb.AppendLine("{0} {1} {2}".F(r.Series, r.NextTicket, r.Color.Color));
+            sb.AppendLine("Состояние: {0}; Осталось билетов: {1};".F(r.IsActiveOnStation ? "Активирована" : "Деактивирована", r.TicketsLeft));
             Log.Debug(sb);
         }
 
@@ -415,7 +427,7 @@ namespace ASofCP.Cashier.ViewModels
             {
                 if (args == null) return;
                 ChangeRollInfoToLog(CurrentRollInfo, false);
-                Log.Debug(String.Format("Смена закрыта {0} – {1} {2}", CurrentShift.OpenDate, CurrentShift.CloseDate, CurrentShift.CashierName));
+                Log.Debug("Смена закрыта {0} – {1} {2}".F(CurrentShift.OpenDate, CurrentShift.CloseDate, CurrentShift.CashierName));
 
                 var loginViewModel = ObserveWrapperHelper.GetInstance().Resolve<LoginViewModel>();
                 loginViewModel.Show();
@@ -463,7 +475,7 @@ namespace ASofCP.Cashier.ViewModels
 
                 CollectionServices = collectionServices;
 
-                Log.Debug(String.Format("Смена открыта {0} {1}", CurrentShift.OpenDate, CurrentShift.CashierName));
+                Log.Debug("Смена открыта {0} {1}".F(CurrentShift.OpenDate, CurrentShift.CashierName));
             };
         }
 
@@ -519,7 +531,7 @@ namespace ASofCP.Cashier.ViewModels
                 Attraction = attraction,
                 TicketRoll = CurrentRollInfo
             });
-            Log.Debug(String.Format("Напечатана позиция чека {0} {1} {2} ", attraction.DisplayName, CurrentTicketNumber - 1, CurrentRollInfo.NextTicket));
+            Log.Debug("Напечатана позиция чека {0} {1} {2} ".F(attraction.DisplayName, CurrentTicketNumber - 1, CurrentRollInfo.NextTicket));
         }
 
         private void CloseCheque()
@@ -546,7 +558,7 @@ namespace ASofCP.Cashier.ViewModels
             
             var sb = new StringBuilder();
             sb.AppendLine("Чек закрыт");
-            sb.AppendLine(String.Format("{0} – {1}", c.OpenDate, c.CloseDate));
+            sb.AppendLine("{0} – {1}".F(c.OpenDate, c.CloseDate));
             string paymentType;
             switch (c.MoneyType)
             {
@@ -555,33 +567,32 @@ namespace ASofCP.Cashier.ViewModels
                 case 2: paymentType = "Сертификат"; break;
                 default: paymentType = "Неопознаный тип оплаты"; break;
             }
-            sb.AppendLine(String.Format("{0} – {1}; {2}", c.MoneyType, c.CloseDate, paymentType));
-            sb.AppendLine(String.Format("Смена открыта {0} {1}", c.Shift.OpenDate, c.Shift.CashierName));
-            sb.AppendLine(String.Format("Позиции чека:"));
+            sb.AppendLine("{0} – {1}; {2}".F(c.MoneyType, c.CloseDate, paymentType));
+            sb.AppendLine("Смена открыта {0} {1}".F(c.Shift.OpenDate, c.Shift.CashierName));
+            sb.AppendLine("Позиции чека:");
             foreach (var row in c.Rows)
             {
-                sb.AppendLine(String.Format("Напечатано {0}; {1} {2} {3}", row.PrintDate, row.TicketNumber, row.TicketBarCode, row.TicketRoll.Color.Color));
-                sb.AppendLine(String.Format("\"{0}\" {1} = {2}", row.Attraction.DisplayName, row.Attraction.Code, row.Attraction.Price));
+                sb.AppendLine("Напечатано {0}; {1} {2} {3}".F(row.PrintDate, row.TicketNumber, row.TicketBarCode, row.TicketRoll.Color.Color));
+                sb.AppendLine("\"{0}\" {1} = {2}".F(row.Attraction.DisplayName, row.Attraction.Code, row.Attraction.Price));
                 sb.AppendLine("---");
             }
 
             Log.Debug(sb);
         }
 
-        private void PrintTickets()
+        private void PrintTickets(string printerName)
         {
-            var settings = SettingsStore.Load();
             foreach (var item in _cashVoucherToPrint.Where(item => item.Count >= 1 && !item.IsPrinted))
             {
                 if(item.Count == 1)
                 {
-                    if (!ProcessingPrint(settings.PrinterName, item)) return;
+                    if (!ProcessingPrint(printerName, item)) return;
                     continue;
                 }
 
                 do
                 {
-                    if (!ProcessingPrint(settings.PrinterName, item)) return;
+                    if (!ProcessingPrint(printerName, item)) return;
                 } while (!item.IsPrinted);
             }
 
@@ -596,7 +607,7 @@ namespace ASofCP.Cashier.ViewModels
             if (item.Count > 1) item.Count--;
             else item.IsPrinted = printed.IsSuccess;
 
-            Log.Debug(String.Format("Результат печати Успешно: {0} Ошибка: {1}  Требовалась смена: {2}", printed.IsSuccess, printed.HasError, printed.IsNeedNewTicketRoll));
+            Log.Debug("Результат печати Успешно: {0} Ошибка: {1}  Требовалась смена: {2}".F(printed.IsSuccess, printed.HasError, printed.IsNeedNewTicketRoll));
 
             if (!printed.IsNeedNewTicketRoll) return !printed.HasError;
             
@@ -619,12 +630,14 @@ namespace ASofCP.Cashier.ViewModels
             try
             {
                 #if !DEBUG || PRINT_DEBUG
+                if(!PrinterDeviceHelper.IsPlug(printerName)) throw new Exception("Принтер {0} не подключен!".F(printerName));
                 var pathToTemplate = SettingsStore.Load().PathToTemplate;
                 RawPrinterHelper.SendStringToPrinter(printerName, ZebraHelper.LoadAndFillTemplate(pathToTemplate, CurrentDateTime.Date.ToString("dd.MM.yyyy"), item.Price.ToString(CultureInfo.InvariantCulture), item.PrintTitle, "", barcode));
                 #endif
             }
             catch (Exception e)
             {
+                PrintTroubleToLog(e);
                 IsShowErrorMessage = true;
                 RightErrorMessage = e.Message;
                 return PrintResult.Failure;
@@ -637,7 +650,7 @@ namespace ASofCP.Cashier.ViewModels
 
             if (TicketsLeft <= 25)
             {
-                RightErrorMessage = String.Format("Заканчиваются билеты! Осталось: {0}", TicketsLeft);
+                RightErrorMessage = "Заканчиваются билеты! Осталось: {0}".F(TicketsLeft);
                 IsShowErrorMessage = true;
             }
 
@@ -659,7 +672,7 @@ namespace ASofCP.Cashier.ViewModels
 
             sb.AppendLine("Не напечатанными остались следующие позиции:");
             foreach (var item in _cashVoucherToPrint.Where(item => item.Count >= 1 && !item.IsPrinted))
-                sb.AppendLine(String.Format("\"{0}\" X {1} = {2}", item.Title, item.Count, item.Price));
+                sb.AppendLine("\"{0}\" X {1} = {2}".F(item.Title, item.Count, item.Price));
 
             Log.Fatal(sb);
         }
@@ -678,7 +691,7 @@ namespace ASofCP.Cashier.ViewModels
                 OnPropertyChanged(() => CurrentTicketNumber);
                 OnPropertyChanged(() => CurrentTicketSeries);
                 OnPropertyChanged(() => TicketsLeft);
-                PrintTickets(); 
+                PrintTickets(PrinterName); 
             };
         }
         #endregion

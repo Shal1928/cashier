@@ -40,5 +40,10 @@ namespace ASofCP.Cashier.Helpers
         {
             return String.IsNullOrWhiteSpace(value) || value.IsEmpty();
         }
+
+        public static string F(this string value, params object[] parameters)
+        {
+            return String.Format(value, parameters);
+        }
     }
 }

@@ -88,24 +88,8 @@ namespace ASofCP.Cashier.ViewModels
         }
 
 
-
-        private ICommand _loadedCommand;
-        public ICommand LoadedCommand
-        {
-            get
-            {
-                return _loadedCommand ?? (_loadedCommand = new RelayCommand(param => OnLoadedCommand(), null));
-            }
-        }
-
         protected override void OnLoadedCommand()
         {
-            //var template = ZebraHelper.LoadAndFillTemplate("ZebraRu.xml", DateTime.Now.Date.ToString("dd.MM.yyyy"), "5.0", "ПринтTitle", "", "111");
-            //var fileStream = new FileStream("Out.xml", FileMode.Create);
-            //var uniEncoding = Encoding.UTF8;
-            //fileStream.Write(uniEncoding.GetBytes(template), 0, uniEncoding.GetByteCount(template));
-            //fileStream.Close();
-
             IsShowAll = true;
             IsShowErrorMessage = false;
             POSInfo posInfo;
