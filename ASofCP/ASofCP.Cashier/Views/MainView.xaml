@@ -48,20 +48,21 @@
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center"
                     Margin="5,0,15,0" Grid.Column="0" Grid.Row="0">
-            <TextBlock Text="{Binding PosTitle}" Style="{DynamicResource TitleTextBlockStyle}" Margin="0,0,15,0" />
-            <TextBlock Text="{Binding User}" Style="{DynamicResource TitleTextBlockStyle}" />
+            <TextBlock Text="{Binding PosTitle}" Style="{DynamicResource TitleTextBlockStyle}" FontSize="14" Margin="0,0,15,0" />
+            <TextBlock Text="{Binding User}" Style="{DynamicResource TitleTextBlockStyle}" FontSize="14" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"
                     Margin="0,0,0,0" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5">
-            <TextBlock Text="{Binding CurrentDateTime, StringFormat={}{0:dd.MM.yyyy}}" Margin="0,0,10,0" Style="{DynamicResource TitleTextBlockStyle}" />
-            <TextBlock Text="{Binding CurrentDateTime, StringFormat={}{0:HH:mm}}" Style="{DynamicResource TitleTextBlockStyle}" />
+            <TextBlock Text="{Binding CurrentDateTime, StringFormat={}{0:dd.MM.yyyy}}" Margin="0,0,10,0" FontSize="14" Style="{DynamicResource TitleTextBlockStyle}" />
+            <TextBlock Text="{Binding CurrentDateTime, StringFormat={}{0:HH:mm}}" FontSize="14" Style="{DynamicResource TitleTextBlockStyle}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"
-                    Margin="0,0,75,0" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="2">
-            <LinkButtonParts:LinkButton Content="Сменить бабину" Command="{Binding ChangeRollCommand}" FontSize="16" FontWeight="Semibold" Margin="0,0,15,0" />
-            <LinkButtonParts:LinkButton Content="Закрыть смену" Command="{Binding CloseShiftCommand}" FontSize="16" FontWeight="Semibold" Margin="0,0,15,0" />
+                    Margin="0,0,55,0" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="2">
+            <LinkButtonParts:LinkButton Content="Сменить бабину" Command="{Binding ChangeRollCommand}" FontSize="14" FontWeight="Semibold" Margin="0,0,15,0" />
+            <LinkButtonParts:LinkButton Content="Закрыть смену" Command="{Binding CloseShiftCommand}" FontSize="14" FontWeight="Semibold" Margin="0,0,15,0" />
+            <LinkButtonParts:LinkButton Content="Списать билеты" Command="{Binding WriteOffTicketsCommand}" FontSize="14" FontWeight="Semibold" Margin="0,0,15,0" />
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"

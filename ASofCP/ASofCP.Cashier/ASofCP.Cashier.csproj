@@ -197,6 +197,7 @@
     <Compile Include="ViewModels\ChildViewModels\PaymentViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\RollInfoViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\ChildViewModels\TicketWriteOffViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\ChildViews\InformationView.xaml.cs">
@@ -210,6 +211,9 @@
     </Compile>
     <Compile Include="Views\ChildViews\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChildViews\TicketWriteOffView.xaml.cs">
+      <DependentUpon>TicketWriteOffView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\GroupContentGridParts\Converters\EmptyToBoolConverter.cs" />
     <Compile Include="Views\Controls\GroupContentGridParts\GroupContentGrid.xaml.cs">
@@ -244,6 +248,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ChildViews\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChildViews\TicketWriteOffView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

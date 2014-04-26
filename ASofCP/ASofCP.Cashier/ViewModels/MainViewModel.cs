@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -558,23 +559,32 @@ namespace ASofCP.Cashier.ViewModels
             
             var sb = new StringBuilder();
             sb.AppendLine("Чек закрыт");
-            sb.AppendLine("{0} – {1}".F(c.OpenDate, c.CloseDate));
             string paymentType;
             switch (c.MoneyType)
             {
                 case 0: paymentType = "Наличные"; break;
                 case 1: paymentType = "Безналичный расчет"; break;
                 case 2: paymentType = "Сертификат"; break;
+                case 66: paymentType = "Списание"; break;
                 default: paymentType = "Неопознаный тип оплаты"; break;
             }
-            sb.AppendLine("{0} – {1}; {2}".F(c.MoneyType, c.CloseDate, paymentType));
+            sb.AppendLine("{0} – {1}; {2}".F(c.OpenDate, c.CloseDate, paymentType));
             sb.AppendLine("Смена открыта {0} {1}".F(c.Shift.OpenDate, c.Shift.CashierName));
-            sb.AppendLine("Позиции чека:");
-            foreach (var row in c.Rows)
+            if ((short)PaymentTypes.WriteOff == c.MoneyType)
             {
-                sb.AppendLine("Напечатано {0}; {1} {2} {3}".F(row.PrintDate, row.TicketNumber, row.TicketBarCode, row.TicketRoll.Color.Color));
-                sb.AppendLine("\"{0}\" {1} = {2}".F(row.Attraction.DisplayName, row.Attraction.Code, row.Attraction.Price));
-                sb.AppendLine("---");
+                sb.AppendLine("Списанные билеты:");
+                foreach (var row in c.Rows)
+                    sb.AppendLine("{0} {1} {2}".F(row.TicketRoll.Series, row.TicketNumber, row.TicketRoll.Color.Color));
+            }
+            else
+            {
+                sb.AppendLine("Позиции чека:");
+                foreach (var row in c.Rows)
+                {
+                    sb.AppendLine("Напечатано {0}; {1} {2} {3}".F(row.PrintDate, row.TicketNumber, row.TicketBarCode, row.TicketRoll.Color.Color));
+                    sb.AppendLine("\"{0}\" {1} = {2}".F(row.Attraction.DisplayName, row.Attraction.Code, row.Attraction.Price));
+                    sb.AppendLine("---");
+                }
             }
 
             Log.Debug(sb);
@@ -632,7 +642,7 @@ namespace ASofCP.Cashier.ViewModels
                 #if !DEBUG || PRINT_DEBUG
                 if(!PrinterDeviceHelper.IsPlug(printerName)) throw new Exception("Принтер {0} не подключен!".F(printerName));
                 var pathToTemplate = SettingsStore.Load().PathToTemplate;
-                RawPrinterHelper.SendStringToPrinter(printerName, ZebraHelper.LoadAndFillTemplate(pathToTemplate, CurrentDateTime.Date.ToString("dd.MM.yyyy"), item.Price.ToString(CultureInfo.InvariantCulture), item.PrintTitle, "", barcode));
+                RawPrinterHelper.SendStringToPrinter(printerName, ZebraHelper.LoadAndFillTemplate(pathToTemplate, CurrentDateTime.Date.ToString("dd.MM.yyyy HH:mm:ss"), item.Price.ToString(CultureInfo.InvariantCulture), item.PrintTitle, "", barcode));
                 #endif
             }
             catch (Exception e)
@@ -701,5 +711,50 @@ namespace ASofCP.Cashier.ViewModels
             var settingsVM = ObserveWrapperHelper.GetInstance().Resolve<SettingsViewModel>();
             settingsVM.Show();
         }
+
+        #region WriteOffTicketsCommand
+        private ICommand _writeOffTicketsCommand;
+        public ICommand WriteOffTicketsCommand
+        {
+            get
+            {
+                return _writeOffTicketsCommand ?? (_writeOffTicketsCommand = new RelayCommand(param => OnWriteOffTicketsCommand(), can => ValidateWriteOffTicketsCommand()));
+            }
+        }
+
+        private void OnWriteOffTicketsCommand()
+        {
+            var ticketWriteOffViewModel = ObserveWrapperHelper.GetInstance().Resolve<TicketWriteOffViewModel>();
+            ticketWriteOffViewModel.Show(CurrentRollInfo);
+            ticketWriteOffViewModel.Closed += delegate(object sender, WriteOffEventArgs args)
+            {
+                if (args == null || args.ChequeRows.IsNullOrEmpty())
+                {
+                    Log.Debug("Отмена списания порченых билетов.");
+                    return;
+                }
+
+                var writeOffCheque = new Cheque
+                {
+                    MoneyType = (short)PaymentTypes.WriteOff,
+                    OpenDate = DateTime.Now,
+                    CloseDate = DateTime.Now,
+                    Rows = args.ChequeRows.ToArray(),
+                    Shift = CurrentShift
+                };
+
+                BaseAPI.createCheque(writeOffCheque);
+                ChequeToLog(writeOffCheque);
+
+                OnPropertyChanged(() => CurrentTicketNumber);
+                OnPropertyChanged(() => TicketsLeft);
+            };
+        }
+
+        private bool ValidateWriteOffTicketsCommand()
+        {
+            return CurrentRollInfo.NotNull() && CurrentShift.NotNull() && CurrentShift.Active;
+        }
+        #endregion
     }
 }

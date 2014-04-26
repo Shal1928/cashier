@@ -20,7 +20,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
             #if DEBUG
             FirstTicketSeries = "RC";
-            FirstTicketNumber = 16;
+            FirstTicketNumber = 17;
             TicketColorIndex = 0;
             #endif
         }
@@ -34,9 +34,6 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         public virtual bool IsCanCanceld { get; set; }
         public virtual bool IsShowAll { get; set; }
 
-        //public string CurrentTicketSeries { get; set; }
-        //public long CurrentTicketNumber { get; set; }
-        //public RollColor CurrentTicketColor { get; set; }
         public RollInfo CurrentRollInfo { get; set; }
 
         private ChildWindowMode _mode;

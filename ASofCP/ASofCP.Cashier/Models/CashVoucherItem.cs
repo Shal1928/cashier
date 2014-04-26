@@ -4,7 +4,7 @@ namespace ASofCP.Cashier.Models
 {
     public sealed class CashVoucherItem : CashVoucherItemBase
     {
-        //public static CashVoucherItem Empty = new CashVoucherItem("", 0, 0);
+        public static CashVoucherItem Empty = new CashVoucherItem(ParkService.Empty);
 
         //public CashVoucherItem(String title, double price)
         //{

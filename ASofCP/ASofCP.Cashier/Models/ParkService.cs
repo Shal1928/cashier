@@ -7,6 +7,8 @@ namespace ASofCP.Cashier.Models
 {
     public class ParkService : IGroupContentItem, IPrice
     {
+        public static ParkService Empty = new ParkService(new AttractionInfo{Id = 0});
+
         public ParkService()
         {
             //

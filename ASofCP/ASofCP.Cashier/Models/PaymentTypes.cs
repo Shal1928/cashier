@@ -9,6 +9,8 @@ namespace ASofCP.Cashier.Models
         [Description("безналом")]
         Cashless = 1,
         [Description("сертификатом")]
-        Certificate = 2
+        Certificate = 2,
+        [Description("списание")]
+        WriteOff = 66
     }
 }
