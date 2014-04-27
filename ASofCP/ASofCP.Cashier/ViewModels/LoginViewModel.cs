@@ -6,6 +6,7 @@ using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.ViewModels.Base;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
 using hessiancsharp.io;
+using log4net;
 using UseAbilities.IoC.Attributes;
 using UseAbilities.IoC.Stores;
 using UseAbilities.MVVM.Command;
@@ -15,6 +16,8 @@ namespace ASofCP.Cashier.ViewModels
 {
     public class LoginViewModel : UtilViewModel
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(LoginViewModel));
+
         // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public LoginViewModel()
         {
@@ -75,8 +78,9 @@ namespace ASofCP.Cashier.ViewModels
                 Close();
                 Dispose();
             }
-            catch (CHessianException)
+            catch (Exception e)
             {
+                Log.Fatal(e);
                 ErrorMessage = "Не верный логин или пароль!";
                 IsShowErrorMessage = true;
             }
@@ -99,6 +103,7 @@ namespace ASofCP.Cashier.ViewModels
             }
             catch (Exception e)
             {
+                Log.Fatal(e);
                 IsShowAll = false;
                 ErrorMessage = e.Message;
                 IsShowErrorMessage = true;

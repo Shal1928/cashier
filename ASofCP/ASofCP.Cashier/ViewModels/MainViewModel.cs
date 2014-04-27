@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -44,11 +43,20 @@ namespace ASofCP.Cashier.ViewModels
                     Log.Debug("BaseAPI не определен. Возможно смена не будет закрыта, а лента билетов деактивирована!");
                     return;
                 }
-                if (CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation)
-                    if (!BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
-                        Log.Fatal("Деактивировать ленту билетов {0} {1} {2} не получилось!".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
-                    else Log.Debug("Лента билетов {0} {1} {2} деактивирована.".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
-                if(BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
+
+                try
+                {
+                    if (CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation)
+                        if (!BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
+                            Log.Fatal("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+                        else Log.Debug("Лента билетов {0} {1} {2} деактивирована.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+                    if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
+                }
+                catch (Exception e)
+                {
+                    Log.Fatal(e);
+                    throw;
+                }
             };
 
             var resultCashVoucher = new CashVoucher<ICashVoucherItem>();
@@ -210,6 +218,7 @@ namespace ASofCP.Cashier.ViewModels
         {
             IsShowErrorMessage = false;
 
+            #if !DEBUG || PRINT_DEBUG
             if (!PrinterDeviceHelper.IsPlug(PrinterName))
             {
                 var message = "Принтер {0} не подключен!".F(PrinterName);
@@ -218,6 +227,7 @@ namespace ASofCP.Cashier.ViewModels
                 IsShowErrorMessage = true;
                 return;
             }
+            #endif
 
             var paymentViewModel = ObserveWrapperHelper.GetInstance().Resolve<PaymentViewModel>();
             paymentViewModel.Total = Total;
@@ -539,7 +549,18 @@ namespace ASofCP.Cashier.ViewModels
         {
             _cheque.CloseDate = DateTime.Now;
             _cheque.Rows = _chequeRows.ToArray();
-            BaseAPI.createCheque(_cheque);
+            try
+            {
+                BaseAPI.createCheque(_cheque);
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e);
+
+                //throw;
+            }
+
+
             ChequeToLog(_cheque);
 
             UpdateResultCashVoucher(new CashVoucher<ICashVoucherItem>());
@@ -743,8 +764,19 @@ namespace ASofCP.Cashier.ViewModels
                     Shift = CurrentShift
                 };
 
-                BaseAPI.createCheque(writeOffCheque);
                 ChequeToLog(writeOffCheque);
+                try
+                {
+                    BaseAPI.createCheque(writeOffCheque);
+                }
+                catch (Exception e)
+                {
+                    Log.Fatal(e);
+                }
+                
+
+
+                
 
                 OnPropertyChanged(() => CurrentTicketNumber);
                 OnPropertyChanged(() => TicketsLeft);

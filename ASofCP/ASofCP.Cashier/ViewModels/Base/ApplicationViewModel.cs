@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows.Input;
+using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Stores.API;
 using ASofCP.Cashier.Stores.Base;
 using UseAbilities.IoC.Attributes;

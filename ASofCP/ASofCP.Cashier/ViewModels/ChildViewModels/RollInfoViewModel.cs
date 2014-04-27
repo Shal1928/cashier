@@ -6,12 +6,15 @@ using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.ViewModels.Base;
 using it.q02.asocp.api.data;
+using log4net;
 using UseAbilities.MVVM.Command;
 
 namespace ASofCP.Cashier.ViewModels.ChildViewModels
 {
     public class RollInfoViewModel : ChildViewModelBase
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(RollInfoViewModel));
+
         // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public RollInfoViewModel()
         {
@@ -108,37 +111,50 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         private void OnMainCommand()
         {
             IsShowErrorMessage = false;
-            switch (Mode)
-            {
-                case ChildWindowMode.OpenShift:
-                    _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
-                    _shift = BaseAPI.isShiftOpen() ? BaseAPI.getCurrentShift() : BaseAPI.openShift();
-                    break;
-                case ChildWindowMode.CloseShift:
-                    if (!DeactivateRoll()) return;
-                    if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
-                    _rollInfo = null;
-                    _shift = null;
-                    break;
-                case ChildWindowMode.NeedNewRoll:
-                    if (!CloseRoll()) return;
-                    _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
-                    _shift = BaseAPI.getCurrentShift();
-                    break;
-                //case ChildWindowMode.ChangeRollDeactivate:
-                //    isDeactivateSucces = BaseAPI.deactivateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
-                //    _rollInfo = null;
-                //    _shift = BaseAPI.getCurrentShift();
-                //    break;
-                case ChildWindowMode.ChangeRoll:
-                    if (!DeactivateRoll()) return;
-                    _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
-                    _shift = BaseAPI.getCurrentShift();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
 
+            try
+            {
+                switch (Mode)
+                {
+                    case ChildWindowMode.OpenShift:
+                        _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                        _shift = BaseAPI.isShiftOpen() ? BaseAPI.getCurrentShift() : BaseAPI.openShift();
+                        break;
+                    case ChildWindowMode.CloseShift:
+                        if (!DeactivateRoll()) return;
+                        if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
+                        _rollInfo = null;
+                        _shift = null;
+                        break;
+                    case ChildWindowMode.NeedNewRoll:
+                        if (!CloseRoll()) return;
+                        _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                        _shift = BaseAPI.getCurrentShift();
+                        break;
+                    //case ChildWindowMode.ChangeRollDeactivate:
+                    //    isDeactivateSucces = BaseAPI.deactivateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                    //    _rollInfo = null;
+                    //    _shift = BaseAPI.getCurrentShift();
+                    //    break;
+                    case ChildWindowMode.ChangeRoll:
+                        if (!DeactivateRoll()) return;
+                        _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                        _shift = BaseAPI.getCurrentShift();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            catch (Exception e)
+            {
+                e.ToLog(Log);
+                //throw;
+
+                ErrorMessage = "Произошло исключение: {0}".F(e.Message);
+                IsShowErrorMessage = true;
+                return;
+            }
+            
             if (_rollInfo.IsNull() && Mode != ChildWindowMode.CloseShift /*&& Mode != ChildWindowMode.ChangeRollDeactivate*/)
             {
                 ErrorMessage = String.Format("Бабина с параметрами {0} {1} {2} не существует!", FirstTicketSeries, FirstTicketNumber, TicketColor.Color);
@@ -195,26 +211,9 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             return false;
         }
 
-        #region DeactivateCommand
-        private ICommand _deactivateCommand;
-        public ICommand DeactivateCommand
-        {
-            get
-            {
-                return _deactivateCommand ?? (_deactivateCommand = new RelayCommand(param => OnDeactivateCommand(), null));
-            }
-        }
-
-        private void OnDeactivateCommand()
-        {
-            if (Mode == ChildWindowMode.NeedNewRoll) CloseRoll();
-            else DeactivateRoll();
-        }
-        #endregion
-
         protected override void OnLoadedCommand()
         {
-            var colors = BaseAPI.getColors();
+            var colors = ExecuteHelper.Try(a => BaseAPI.getColors());
             Colors = new ObservableCollection<RollColor>(colors);
         }
 

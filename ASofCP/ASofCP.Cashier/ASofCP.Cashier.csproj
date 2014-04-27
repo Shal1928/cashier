@@ -151,6 +151,8 @@
     <Compile Include="Converters\UniversalDecimalDelimetrConverter.cs" />
     <Compile Include="Helpers\CollectionExt.cs" />
     <Compile Include="Helpers\DependencyMechHelper.cs" />
+    <Compile Include="Helpers\ExceptionExt.cs" />
+    <Compile Include="Helpers\ILogExt.cs" />
     <Compile Include="Helpers\ObjectExt.cs" />
     <Compile Include="Helpers\ObserveWrapperHelper.cs" />
     <Compile Include="Helpers\PrinterDeviceHelper.cs" />
@@ -159,12 +161,14 @@
     <Compile Include="Helpers\StringExt.cs" />
     <Compile Include="Helpers\Test\TestConverter.cs" />
     <Compile Include="Helpers\Test\TestDataHelper.cs" />
+    <Compile Include="Helpers\ExecuteHelper.cs" />
     <Compile Include="Helpers\ZebraHelper.cs" />
     <Compile Include="Models\Base\CashVoucherItemBase.cs" />
     <Compile Include="Models\Base\ICashVoucherItem.cs" />
     <Compile Include="Models\Base\IPrice.cs" />
     <Compile Include="Models\CashVoucher.cs" />
     <Compile Include="Models\CashVoucherItem.cs" />
+    <Compile Include="Models\ChequeQueue.cs" />
     <Compile Include="Models\ChildWindowMode.cs" />
     <Compile Include="Models\Contracts\AttractionGroupInfo.cs" />
     <Compile Include="Models\Contracts\AttractionInfo.cs" />
@@ -185,6 +189,7 @@
     <Compile Include="Stores\Base\CHessianStore.cs" />
     <Compile Include="Stores\Base\FileStore.cs" />
     <Compile Include="Stores\Base\ISecureReadStore.cs" />
+    <Compile Include="Stores\ChequeQueueStore.cs" />
     <Compile Include="Stores\POSInfoStore.cs" />
     <Compile Include="Stores\Base\XMLStore.cs" />
     <Compile Include="Stores\SettingsStore.cs" />
