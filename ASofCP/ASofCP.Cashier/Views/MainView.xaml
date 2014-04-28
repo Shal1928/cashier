@@ -9,7 +9,8 @@
         xmlns:SquareButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.SquareButtonParts"
         Title="{Binding Title}" WindowState="Maximized" 
         Width="1024" Height="700" 
-        MinWidth="1024" MinHeight="600">
+        MinWidth="1024" MinHeight="600"
+        IsEnabled="{Binding IsEnabled}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

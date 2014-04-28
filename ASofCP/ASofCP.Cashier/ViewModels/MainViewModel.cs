@@ -25,19 +25,21 @@ namespace ASofCP.Cashier.ViewModels
 {
     public class MainViewModel : UtilViewModel
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(MainViewModel));
+
         private static IEnumerable<ICashVoucherItem> _cashVoucherToPrint;
         private int _backupIndex;
         private Dictionary<int, CashVoucher<ICashVoucherItem>> _backup = new Dictionary<int, CashVoucher<ICashVoucherItem>>();
         private Cheque _cheque;
         private int _currentOrder;
 
-        private static readonly ILog Log = LogManager.GetLogger(typeof(MainViewModel));
-
         // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public MainViewModel()
         {
             AppDomain.CurrentDomain.ProcessExit += delegate
             {
+                IsShowErrorMessage = false;
+
                 if (BaseAPI == null)
                 {
                     Log.Debug("BaseAPI не определен. Возможно смена не будет закрыта, а лента билетов деактивирована!");
@@ -54,8 +56,11 @@ namespace ASofCP.Cashier.ViewModels
                 }
                 catch (Exception e)
                 {
+                    RightErrorMessage = "При закрытии смены, возникло исключение. Попробуйте снова!";
+                    IsShowErrorMessage = true;
                     Log.Fatal(e);
-                    throw;
+                    //throw;
+                    return;
                 }
             };
 
@@ -196,7 +201,18 @@ namespace ASofCP.Cashier.ViewModels
                 informationViewModel.Show();
                 informationViewModel.Closed += delegate(object senderD, RollInfoEventArgs args)
                 {
-                    if (args != null) CurrentRollInfo = args.RollInfo ?? CurrentRollInfo;
+                    if (args.IsNull())
+                    {
+                        Log.Fatal("Информация о смене и бабине не определена! (Автоматический запрос на смену)");
+                        throw new NullReferenceException("Информация о смене и бабине не определена!");
+                    }
+
+                    if (!args.IsCancel)
+                    {
+                        ChangeRollInfoToLog(args.RollInfo, true);
+                        CurrentRollInfo = args.RollInfo;
+                    }
+                    else Log.Debug("Отмена автоматического запроса на смену билетов");
 
                     ResolvePaymentViewModel();
                 };
@@ -378,18 +394,32 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnChangeRollCommand()
         {
+            IsEnabled = false;
             IsShowErrorMessage = false;
-
             var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-            rollInfoViewModelA.Mode = ChildWindowMode.ChangeRoll;
+            rollInfoViewModelA.Mode = RollInfoViewModelMode.ChangeRoll;
             rollInfoViewModelA.CurrentRollInfo = CurrentRollInfo;
             rollInfoViewModelA.Show();
             rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
             {
-                if (argsA == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
+                IsEnabled = true;
+
+                if (argsA == null)
+                {
+                    Log.Fatal("Информация о смене и бабине не определена! (Смена ленты билетов)");
+                    throw new NullReferenceException("Информация о смене и бабине не определена!");
+                }
+
+                if (argsA.IsCancel)
+                {
+                    Log.Debug("Отмена смены ленты билетов");
+                    return;
+                }
+
                 var isChange = !Equals(CurrentRollInfo, argsA.RollInfo);
                 CurrentRollInfo = argsA.RollInfo ?? CurrentRollInfo;
                 ChangeRollInfoToLog(CurrentRollInfo, isChange);
+
                 OnPropertyChanged(() => CurrentTicketNumber);
                 OnPropertyChanged(() => CurrentTicketSeries);
                 OnPropertyChanged(() => TicketsLeft);
@@ -430,13 +460,23 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnCloseShiftCommand()
         {
+            IsEnabled = false;
             var rollInfoViewModel = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-            rollInfoViewModel.Mode = ChildWindowMode.CloseShift;
+            rollInfoViewModel.Mode = RollInfoViewModelMode.CloseShift;
             rollInfoViewModel.CurrentRollInfo = CurrentRollInfo;
             rollInfoViewModel.Show();
             rollInfoViewModel.Closed += delegate(object sender, RollInfoEventArgs args)
             {
+                IsEnabled = true;
+
                 if (args == null) return;
+
+                if (args.IsCancel)
+                {
+                    Log.Debug("Отмена закрытия смены");
+                    return;
+                }
+
                 ChangeRollInfoToLog(CurrentRollInfo, false);
                 Log.Debug("Смена закрыта {0} – {1} {2}".F(CurrentShift.OpenDate, CurrentShift.CloseDate, CurrentShift.CashierName));
 
@@ -456,15 +496,19 @@ namespace ASofCP.Cashier.ViewModels
 
         public void OpenSession()
         {
+            IsEnabled = false;
             //TODO: Переопределить Show
             Show();
             var rollInfoViewModel = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-            rollInfoViewModel.Mode = ChildWindowMode.OpenShift;
+            rollInfoViewModel.Mode = RollInfoViewModelMode.OpenShift;
             rollInfoViewModel.Show();
             rollInfoViewModel.Closed += delegate(object sender, RollInfoEventArgs args)
             {
-                if (args == null || args.RollInfo == null)
+                IsEnabled = true;
+
+                if (args.IsNull() || args.IsCancel || args.RollInfo.IsNull())
                 {
+                    Log.Debug("Отмена открытия сессии");
                     var loginViewModel = ObserveWrapperHelper.GetInstance().Resolve<LoginViewModel>();
                     loginViewModel.Show();
                     Close();
@@ -474,6 +518,7 @@ namespace ASofCP.Cashier.ViewModels
 
                 CurrentRollInfo = args.RollInfo;
                 CurrentShift = args.Shift;
+                 
                 OnPropertyChanged(() => CurrentTicketNumber);
                 OnPropertyChanged(() => CurrentTicketSeries);
                 OnPropertyChanged(() => TicketsLeft);
@@ -486,7 +531,7 @@ namespace ASofCP.Cashier.ViewModels
 
                 CollectionServices = collectionServices;
 
-                Log.Debug("Смена открыта {0} {1}".F(CurrentShift.OpenDate, CurrentShift.CashierName));
+                Log.Debug("Смена открыта {0} {1}", CurrentShift.OpenDate, CurrentShift.CashierName);
             };
         }
 
@@ -710,13 +755,20 @@ namespace ASofCP.Cashier.ViewModels
 
         private void NeedChangeRoll()
         {
+            IsEnabled = false;
             var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-            rollInfoViewModelA.Mode = ChildWindowMode.NeedNewRoll;
+            rollInfoViewModelA.Mode = RollInfoViewModelMode.NeedNewRoll;
             rollInfoViewModelA.CurrentRollInfo = CurrentRollInfo;
             rollInfoViewModelA.Show();
             rollInfoViewModelA.Closed += delegate(object sender, RollInfoEventArgs args)
             {
-                if (args == null || args.RollInfo.IsNull()) throw new NullReferenceException("Информация о смене и бабине не определена!");
+                IsEnabled = true;
+                if (args.IsNull() || args.RollInfo.IsNull())
+                {
+                    Log.Fatal("Информация о смене и бабине не определена! (Необходимая смена ленты билетов)");
+                    throw new NullReferenceException("Информация о смене и бабине не определена!");
+                }
+
                 CurrentRollInfo = args.RollInfo;
                 ChangeRollInfoToLog(CurrentRollInfo, true);
                 OnPropertyChanged(() => CurrentTicketNumber);
@@ -774,10 +826,6 @@ namespace ASofCP.Cashier.ViewModels
                     Log.Fatal(e);
                 }
                 
-
-
-                
-
                 OnPropertyChanged(() => CurrentTicketNumber);
                 OnPropertyChanged(() => TicketsLeft);
             };

@@ -15,6 +15,10 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(RollInfoViewModel));
 
+        private RollInfo _rollInfo;
+        private Shift _shift;
+        private bool _isCancel;
+
         // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public RollInfoViewModel()
         {
@@ -36,11 +40,13 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         public virtual bool IsColorNeed { get; set; }
         public virtual bool IsCanCanceld { get; set; }
         public virtual bool IsShowAll { get; set; }
-
+        public virtual int TicketColorIndex { get; set; }
         public RollInfo CurrentRollInfo { get; set; }
+        public string FirstTicketSeries { get; set; }
+        public long FirstTicketNumber { get; set; }
 
-        private ChildWindowMode _mode;
-        public ChildWindowMode Mode
+        private RollInfoViewModelMode _mode;
+        public RollInfoViewModelMode Mode
         {
             get { return _mode; }
             set
@@ -48,22 +54,22 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                 _mode = value;
                 switch (_mode)
                 {
-                    case ChildWindowMode.OpenShift:
+                    case RollInfoViewModelMode.OpenShift:
                         Prepare("Укажите информацию о вашей смене", "Первый билет", "Открыть смену", true);
                         IsCanCanceld = true;
                         break;
-                    case ChildWindowMode.CloseShift:
+                    case RollInfoViewModelMode.CloseShift:
                         Prepare("Укажите информацию о вашей смене", "Последний напечатанный билет", "Закрыть смену", true);
                         IsCanCanceld = true;
                         break;
-                    case ChildWindowMode.NeedNewRoll:
+                    case RollInfoViewModelMode.NeedNewRoll:
                         Prepare("Билеты в рулоне закончились, укажите информацию о новом рулоне билетов", "Первый билет", "Активировать ленту", true);
                         IsCanCanceld = false;
                         break;
-                    //case ChildWindowMode.ChangeRollDeactivate:
+                    //case RollInfoViewModelMode.ChangeRollDeactivate:
                     //    Prepare("Укажите информацию о текущем рулоне билетов", "Последний напечатанный билет", "Деактивировать ленту", true);
                     //    break;
-                    case ChildWindowMode.ChangeRoll:
+                    case RollInfoViewModelMode.ChangeRoll:
                         Prepare("Укажите информацию о новом рулоне билетов", "Первый билет", "Активировать ленту", true);
                         IsCanCanceld = true;
                         break;
@@ -72,13 +78,6 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                 }
             }
         }
-
-        public string FirstTicketSeries{get; set;}
-
-        public long FirstTicketNumber{get; set;}
-        
-
-        public virtual int TicketColorIndex{get; set;}
 
         public RollColor TicketColor
         {
@@ -111,32 +110,26 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         private void OnMainCommand()
         {
             IsShowErrorMessage = false;
-
             try
             {
                 switch (Mode)
                 {
-                    case ChildWindowMode.OpenShift:
+                    case RollInfoViewModelMode.OpenShift:
                         _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
                         _shift = BaseAPI.isShiftOpen() ? BaseAPI.getCurrentShift() : BaseAPI.openShift();
                         break;
-                    case ChildWindowMode.CloseShift:
+                    case RollInfoViewModelMode.CloseShift:
                         if (!DeactivateRoll()) return;
                         if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
                         _rollInfo = null;
                         _shift = null;
                         break;
-                    case ChildWindowMode.NeedNewRoll:
+                    case RollInfoViewModelMode.NeedNewRoll:
                         if (!CloseRoll()) return;
                         _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
                         _shift = BaseAPI.getCurrentShift();
                         break;
-                    //case ChildWindowMode.ChangeRollDeactivate:
-                    //    isDeactivateSucces = BaseAPI.deactivateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
-                    //    _rollInfo = null;
-                    //    _shift = BaseAPI.getCurrentShift();
-                    //    break;
-                    case ChildWindowMode.ChangeRoll:
+                    case RollInfoViewModelMode.ChangeRoll:
                         if (!DeactivateRoll()) return;
                         _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
                         _shift = BaseAPI.getCurrentShift();
@@ -147,7 +140,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             }
             catch (Exception e)
             {
-                e.ToLog(Log);
+                Log.Fatal(e);
                 //throw;
 
                 ErrorMessage = "Произошло исключение: {0}".F(e.Message);
@@ -155,14 +148,14 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                 return;
             }
             
-            if (_rollInfo.IsNull() && Mode != ChildWindowMode.CloseShift /*&& Mode != ChildWindowMode.ChangeRollDeactivate*/)
+            if (_rollInfo.IsNull() && Mode != RollInfoViewModelMode.CloseShift /*&& Mode != RollInfoViewModelMode.ChangeRollDeactivate*/)
             {
                 ErrorMessage = String.Format("Бабина с параметрами {0} {1} {2} не существует!", FirstTicketSeries, FirstTicketNumber, TicketColor.Color);
                 IsShowErrorMessage = true;
                 return;
             }
 
-            if (_shift.IsNull() && Mode != ChildWindowMode.CloseShift)
+            if (_shift.IsNull() && Mode != RollInfoViewModelMode.CloseShift)
             {
                 ErrorMessage = String.Format("Смена не определена!");
                 IsShowErrorMessage = true;
@@ -229,13 +222,40 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         private void OnCancelCommand()
         {
-            _rollInfo = CurrentRollInfo;
-            _shift = BaseAPI.getCurrentShift();
+            _isCancel = true;
             Close();
             Dispose();
         }
         #endregion
 
+        #region DeactivateCommand
+        private ICommand _deactivateCommand;
+        public ICommand DeactivateCommand
+        {
+            get
+            {
+                return _deactivateCommand ?? (_deactivateCommand = new RelayCommand(param => OnDeactivateCommand(), null));
+            }
+        }
+
+        private void OnDeactivateCommand()
+        {
+            IsShowErrorMessage = false;
+            try
+            {
+                if (Mode == RollInfoViewModelMode.NeedNewRoll) CloseRoll();
+                else DeactivateRoll();
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e);
+                ErrorMessage = "Произошло исключение: {0}".F(e.Message);
+                IsShowErrorMessage = true;
+                return;
+            }
+        }
+
+        #endregion
 
         public event CloseEventHandler Closed;
         protected virtual void OnClose(RollInfoEventArgs e)
@@ -243,12 +263,9 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             if (Closed != null) Closed(this, e);
         }
 
-        private RollInfo _rollInfo;
-        private Shift _shift;
-
         public override void Close()
         {
-            OnClose(new RollInfoEventArgs(_rollInfo, _shift));
+            OnClose(_isCancel ? new RollInfoEventArgs() : new RollInfoEventArgs(_rollInfo, _shift));
             base.Close();
         }
     }
@@ -261,9 +278,17 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         {
             RollInfo = rollInfo;
             Shift = shift;
+            IsCancel = false;
+        }
+
+        public RollInfoEventArgs()
+        {
+            IsCancel = true;
         }
 
         public RollInfo RollInfo { get; set; }
         public Shift Shift { get; set; }
+
+        public bool IsCancel { get; set; }
     }
 }

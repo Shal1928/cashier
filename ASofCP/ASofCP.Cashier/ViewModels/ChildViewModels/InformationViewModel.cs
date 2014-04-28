@@ -4,17 +4,20 @@ using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.ViewModels.Base;
 using it.q02.asocp.api.data;
+using log4net;
 using UseAbilities.MVVM.Command;
 
 namespace ASofCP.Cashier.ViewModels.ChildViewModels
 {
     public class InformationViewModel : ChildViewModelBase
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(InformationViewModel));
+
         public virtual string Message
         {
             get
             {
-                return String.Format("Для печати не хватит {0} билетов!", Count);
+                return "Для печати не хватит {0} билетов!".F(Count);
             }
         }
 
@@ -35,12 +38,17 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         private void OnChangeRollCommand()
         {
             var rollInfoViewModelA = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
-            rollInfoViewModelA.Mode = ChildWindowMode.ChangeRoll;
+            rollInfoViewModelA.Mode = RollInfoViewModelMode.ChangeRoll;
             rollInfoViewModelA.CurrentRollInfo = CurrentRollInfo;
             rollInfoViewModelA.Show();
             rollInfoViewModelA.Closed += delegate(object senderA, RollInfoEventArgs argsA)
             {
-                if (argsA == null) throw new NullReferenceException("Информация о смене и бабине не определена!");
+                if (argsA == null)
+                {
+                    Log.Fatal("Информация о смене и бабине не определена! (Автоматический запрос на смену)");
+                    throw new NullReferenceException("Информация о смене и бабине не определена!");
+                }
+
                 _rollInfoEventArgs = argsA;
                 Close();
                 Dispose();
@@ -60,8 +68,9 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         private void OnCancelCommand()
         {
-            _rollInfoEventArgs = null;
+            _rollInfoEventArgs = new RollInfoEventArgs();
             Close();
+            Dispose();
         }
         #endregion
 

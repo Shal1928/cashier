@@ -44,6 +44,13 @@ namespace ASofCP.Cashier.ViewModels.Base
             }
         }
 
+        private bool _isEnabled = true;
+        public virtual bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set { _isEnabled = value; }
+        }
+
         [InjectedProperty]
         public ISecureReadStore<BaseAPI> BaseAPIStore
         {
