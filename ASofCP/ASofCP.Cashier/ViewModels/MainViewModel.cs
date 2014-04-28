@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
+using System.Threading;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -38,30 +41,7 @@ namespace ASofCP.Cashier.ViewModels
         {
             AppDomain.CurrentDomain.ProcessExit += delegate
             {
-                IsShowErrorMessage = false;
-
-                if (BaseAPI == null)
-                {
-                    Log.Debug("BaseAPI не определен. Возможно смена не будет закрыта, а лента билетов деактивирована!");
-                    return;
-                }
-
-                try
-                {
-                    if (CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation)
-                        if (!BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
-                            Log.Fatal("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
-                        else Log.Debug("Лента билетов {0} {1} {2} деактивирована.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
-                    if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
-                }
-                catch (Exception e)
-                {
-                    RightErrorMessage = "При закрытии смены, возникло исключение. Попробуйте снова!";
-                    IsShowErrorMessage = true;
-                    Log.Fatal(e);
-                    //throw;
-                    return;
-                }
+                ExtremeCloseShift();
             };
 
             var resultCashVoucher = new CashVoucher<ICashVoucherItem>();
@@ -496,6 +476,7 @@ namespace ASofCP.Cashier.ViewModels
 
         public void OpenSession()
         {
+            _isTerminate = false;
             IsEnabled = false;
             //TODO: Переопределить Show
             Show();
@@ -836,5 +817,52 @@ namespace ASofCP.Cashier.ViewModels
             return CurrentRollInfo.NotNull() && CurrentShift.NotNull() && CurrentShift.Active;
         }
         #endregion
+
+        #region ClosedCommand
+        private ICommand _closedCommand;
+        public ICommand ClosedCommand
+        {
+            get
+            {
+                return _closedCommand ?? (_closedCommand = new RelayCommand(param => OnClosedCommand(), null));
+            }
+        }
+
+        private bool _isTerminate = true;
+        private void OnClosedCommand()
+        {
+            ExtremeCloseShift();
+
+            if (_isTerminate) Application.Current.Shutdown();
+        }
+        #endregion
+
+        private void ExtremeCloseShift()
+        {
+            IsShowErrorMessage = false;
+
+            if (BaseAPI == null)
+            {
+                Log.Debug("BaseAPI не определен. Возможно смена не будет закрыта, а лента билетов деактивирована!");
+                return;
+            }
+
+            try
+            {
+                if (CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation)
+                    if (!BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
+                        Log.Fatal("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+                    else Log.Debug("Лента билетов {0} {1} {2} деактивирована.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+                if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
+            }
+            catch (Exception e)
+            {
+                RightErrorMessage = "При закрытии смены, возникло исключение. Попробуйте снова!";
+                IsShowErrorMessage = true;
+                Log.Fatal(e);
+                //throw;
+                return;
+            }
+        }
     }
 }
