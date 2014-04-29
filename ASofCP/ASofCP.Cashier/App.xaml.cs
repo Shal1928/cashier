@@ -76,6 +76,7 @@ namespace ASofCP.Cashier
             ioc.RegisterSingleton<IStore<ModuleSettings>, SettingsStore>();
             ioc.RegisterSingleton<ISecureReadStore<BaseAPI>, BaseAPIStore>();
             ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
+            ioc.RegisterSingleton<IQueueStore<ChequeQueue>, ChequeQueueStore>();
         }
     }
 

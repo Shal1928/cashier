@@ -10,7 +10,8 @@
         Height="375" Width="525"
         MinHeight="375" MinWidth="525"
         MaxHeight="375" MaxWidth="525"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        IsEnabled="{Binding IsEnabled}">
 
     <Window.Resources>
         <ResourceDictionary>

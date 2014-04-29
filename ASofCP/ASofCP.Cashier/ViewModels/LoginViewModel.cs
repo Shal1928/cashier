@@ -132,10 +132,12 @@ namespace ASofCP.Cashier.ViewModels
 
         protected override void OnSettingsCommand()
         {
+            IsEnabled = false;
             var settingsVM = ObserveWrapperHelper.GetInstance().Resolve<SettingsViewModel>();
             settingsVM.Show();
             settingsVM.CloseEventHandler += delegate(object sender, ResultEventArgs args)
             {
+                IsEnabled = true;
                 if(args==null) return;
 
                 if (args.Result == Result.Yes) OnLoadedCommand();

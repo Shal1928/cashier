@@ -5,9 +5,11 @@
         xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts"
         xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
         Title="{Binding Title}" 
-        WindowState="Maximized" WindowStyle="None" Topmost="{Binding Topmost}"
+        WindowState="Normal"  WindowStyle="None" Topmost="True"
         WindowStartupLocation="CenterScreen"
-        Background="#7f000000" AllowsTransparency="True">
+        Width="520" Height="220" 
+        MinWidth="520" MaxWidth="520"
+        MinHeight="220" MaxHeight="220">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Net.Mime;
 using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -14,6 +12,7 @@ using System.Windows.Threading;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Models.Base;
+using ASofCP.Cashier.Stores;
 using ASofCP.Cashier.ViewModels.Base;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
@@ -61,6 +60,10 @@ namespace ASofCP.Cashier.ViewModels
 
         [InjectedProperty]
         public IStore<ModuleSettings> SettingsStore { get; set; }
+        [InjectedProperty]
+        public IQueueStore<ChequeQueue> ChequeQueueStore { get; set; }
+        private ChequeQueue _queue;
+
         private ModuleSettings Settings { get { return SettingsStore != null ? SettingsStore.Load() : null; } }
         private string PrinterName {get { return Settings != null ? Settings.PrinterName : string.Empty; }}
 
@@ -175,12 +178,14 @@ namespace ASofCP.Cashier.ViewModels
             var ticketsNeed = Math.Abs(TicketsLeft - _cashVoucherToPrint.Sum(item => item.Count));
             if (ticketsNeed < 0)
             {
+                IsEnabled = false;
                 var informationViewModel = ObserveWrapperHelper.GetInstance().Resolve<InformationViewModel>();
                 informationViewModel.Count = ticketsNeed;
                 informationViewModel.CurrentRollInfo = CurrentRollInfo;
                 informationViewModel.Show();
                 informationViewModel.Closed += delegate(object senderD, RollInfoEventArgs args)
                 {
+                    IsEnabled = true;
                     if (args.IsNull())
                     {
                         Log.Fatal("Информация о смене и бабине не определена! (Автоматический запрос на смену)");
@@ -225,11 +230,13 @@ namespace ASofCP.Cashier.ViewModels
             }
             #endif
 
+            IsEnabled = false;
             var paymentViewModel = ObserveWrapperHelper.GetInstance().Resolve<PaymentViewModel>();
             paymentViewModel.Total = Total;
             paymentViewModel.Show();
             paymentViewModel.PaymentReached += delegate(object sender, PaymentEventArgs args)
             {
+                IsEnabled = true;
                 if (!args.PaymentType.HasValue) return;
 
                 _cheque.MoneyType = (short)args.PaymentType.Value;
@@ -575,19 +582,8 @@ namespace ASofCP.Cashier.ViewModels
         {
             _cheque.CloseDate = DateTime.Now;
             _cheque.Rows = _chequeRows.ToArray();
-            try
-            {
-                BaseAPI.createCheque(_cheque);
-            }
-            catch (Exception e)
-            {
-                Log.Fatal(e);
 
-                //throw;
-            }
-
-
-            ChequeToLog(_cheque);
+            SendChequeToServer(_cheque);
 
             UpdateResultCashVoucher(new CashVoucher<ICashVoucherItem>());
             Total = 0;
@@ -596,7 +592,33 @@ namespace ASofCP.Cashier.ViewModels
             _cashVoucherToPrint = null;
         }
 
-        private static void ChequeToLog(Cheque c)
+        private void SendChequeToServer(Cheque cheque)
+        {
+            _queue = ChequeQueueStore.LoadAll();
+            _queue.Add(cheque);
+            try
+            {
+                foreach (var element in _queue.Elements)
+                {
+                    var currentCheque = element.Cheques.First();
+                    BaseAPI.createCheque(currentCheque);
+                    element.IsDelete = true;
+                    ChequeToLog(currentCheque);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e);
+
+                ChequeQueueStore.Save(_queue);
+                ChequeToLog(cheque, true);
+                //throw;
+            }
+
+            ChequeQueueStore.Delete(_queue);
+        }
+
+        private static void ChequeToLog(Cheque c, bool isInQueue = false)
         {
             if (c.IsNull())
             {
@@ -605,7 +627,8 @@ namespace ASofCP.Cashier.ViewModels
             }
             
             var sb = new StringBuilder();
-            sb.AppendLine("Чек закрыт");
+            var chequeStatus = isInQueue ? "в очереди" : "закрыт";
+            sb.AppendLine("Чек {0}".F(chequeStatus));
             string paymentType;
             switch (c.MoneyType)
             {
@@ -762,8 +785,13 @@ namespace ASofCP.Cashier.ViewModels
 
         protected override void OnSettingsCommand()
         {
+            IsEnabled = false;
             var settingsVM = ObserveWrapperHelper.GetInstance().Resolve<SettingsViewModel>();
             settingsVM.Show();
+            settingsVM.CloseEventHandler += delegate
+            {
+                IsEnabled = true;
+            };
         }
 
         #region WriteOffTicketsCommand
@@ -778,10 +806,13 @@ namespace ASofCP.Cashier.ViewModels
 
         private void OnWriteOffTicketsCommand()
         {
+            IsEnabled = false;
             var ticketWriteOffViewModel = ObserveWrapperHelper.GetInstance().Resolve<TicketWriteOffViewModel>();
             ticketWriteOffViewModel.Show(CurrentRollInfo);
             ticketWriteOffViewModel.Closed += delegate(object sender, WriteOffEventArgs args)
             {
+                IsEnabled = true;
+
                 if (args == null || args.ChequeRows.IsNullOrEmpty())
                 {
                     Log.Debug("Отмена списания порченых билетов.");
@@ -797,15 +828,7 @@ namespace ASofCP.Cashier.ViewModels
                     Shift = CurrentShift
                 };
 
-                ChequeToLog(writeOffCheque);
-                try
-                {
-                    BaseAPI.createCheque(writeOffCheque);
-                }
-                catch (Exception e)
-                {
-                    Log.Fatal(e);
-                }
+                SendChequeToServer(writeOffCheque);
                 
                 OnPropertyChanged(() => CurrentTicketNumber);
                 OnPropertyChanged(() => TicketsLeft);

@@ -8,7 +8,9 @@
         Title="{Binding Title}" 
         WindowState="Normal"  WindowStyle="None" Topmost="True"
         WindowStartupLocation="CenterScreen"
-        Width="550" Height="380" MinHeight="380" MaxHeight="380" MinWidth="550" MaxWidth="550">
+        Width="550" Height="380" 
+        MinWidth="550" MaxWidth="550"
+        MinHeight="380" MaxHeight="380">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

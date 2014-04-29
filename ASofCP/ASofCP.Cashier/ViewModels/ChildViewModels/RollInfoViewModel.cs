@@ -26,8 +26,8 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             IsShowAll = true;
 
             #if DEBUG
-            FirstTicketSeries = "RC";
-            FirstTicketNumber = 17;
+            FirstTicketSeries = "QQ";
+            FirstTicketNumber = 1;
             TicketColorIndex = 0;
             #endif
         }
