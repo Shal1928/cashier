@@ -1,4 +1,5 @@
-﻿using System.Management;
+﻿using System;
+using System.Management;
 using log4net;
 
 namespace ASofCP.Cashier.Helpers
@@ -47,7 +48,8 @@ namespace ASofCP.Cashier.Helpers
 
             foreach (var obj in collection)
             {
-                var status = (uint)obj["ExtendedPrinterStatus"];
+                Log.Debug("Статус принтера (не обработанный) {0}", obj["ExtendedPrinterStatus"].ToString());
+                var status = Int32.Parse(obj["ExtendedPrinterStatus"].ToString());
                 Log.Debug("Статус принтера {0}", ExtendedPrinterStatus[status]);
                 if (status == 7 || status == 9 || status == 11) return false;
             }

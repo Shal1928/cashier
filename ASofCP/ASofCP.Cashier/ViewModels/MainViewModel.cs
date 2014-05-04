@@ -46,14 +46,13 @@ namespace ASofCP.Cashier.ViewModels
             var resultCashVoucher = new CashVoucher<ICashVoucherItem>();
             UpdateResultCashVoucher(resultCashVoucher);
             
-            CurrentDateTime = DateTime.Now;
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += delegate
                 {
-                    CurrentDateTime = DateTime.Now;
+                    OnPropertyChanged(() => CurrentDateTime);
                 };
 
-            dispatcherTimer.Interval = new TimeSpan(0, 1, 0);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 30);
             dispatcherTimer.Start();
         }
         // ReSharper restore DoNotCallOverridableMethodsInConstructor
@@ -83,7 +82,7 @@ namespace ASofCP.Cashier.ViewModels
             get { return CurrentRollInfo.NotNull() ? CurrentRollInfo.NextTicket : -1; } 
             set { if (CurrentRollInfo.NotNull()) CurrentRollInfo.NextTicket = value; }
         }
-        public virtual DateTime CurrentDateTime { get; set; }
+        public virtual DateTime CurrentDateTime { get { return DateTime.Now; } }
         public virtual DateTime OpenDate { get; set; }
         public virtual bool IsShowErrorMessage { get; set; }
         public virtual String RightErrorMessage { get; set; }
@@ -712,7 +711,7 @@ namespace ASofCP.Cashier.ViewModels
                 #if !DEBUG || PRINT_DEBUG
                 if(!PrinterDeviceHelper.IsPlug(printerName)) throw new Exception("Принтер {0} не подключен!".F(printerName));
                 var pathToTemplate = SettingsStore.Load().PathToTemplate;
-                RawPrinterHelper.SendStringToPrinter(printerName, ZebraHelper.LoadAndFillTemplate(pathToTemplate, CurrentDateTime.Date.ToString("dd.MM.yyyy HH:mm:ss"), item.Price.ToString(CultureInfo.InvariantCulture), item.PrintTitle, "", barcode));
+                RawPrinterHelper.SendStringToPrinter(printerName, ZebraHelper.LoadAndFillTemplate(pathToTemplate, CurrentDateTime.ToString("dd.MM.yyyy HH:mm:ss"), item.Price.ToString(CultureInfo.InvariantCulture), item.PrintTitle, "", barcode));
                 #endif
             }
             catch (Exception e)
