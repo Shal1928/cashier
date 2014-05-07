@@ -37,6 +37,8 @@ namespace ASofCP.Cashier.Helpers
 
         public static bool IsPlug(string printerName)
         {
+            return true;
+
             if (printerName.IsNullOrEmptyOrSpaces()) return false;
 
             var scope = new ManagementScope(@"\root\cimv2");
