@@ -40,6 +40,7 @@ namespace ASofCP.Cashier.ViewModels
         {
             AppDomain.CurrentDomain.ProcessExit += delegate
             {
+                Log.Debug("Деактивация ленты билетов и закрытие смены вызвано завершением работы процесса приложения!");
                 ExtremeCloseShift();
             };
 
@@ -482,7 +483,7 @@ namespace ASofCP.Cashier.ViewModels
 
         public void OpenSession()
         {
-            _isTerminate = false;
+            //_isTerminate = false;
             IsEnabled = false;
             //TODO: Переопределить Show
             Show();
@@ -850,12 +851,9 @@ namespace ASofCP.Cashier.ViewModels
             }
         }
 
-        private bool _isTerminate = true;
-        private void OnClosedCommand()
+        private static void OnClosedCommand()
         {
-            ExtremeCloseShift();
-
-            if (_isTerminate) Application.Current.Shutdown();
+            Application.Current.Shutdown();
         }
         #endregion
 
@@ -872,9 +870,15 @@ namespace ASofCP.Cashier.ViewModels
             try
             {
                 if (CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation)
-                    if (!BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
+                    if (BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
+                        Log.Debug("Лента билетов {0} {1} {2} деактивирована.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+                    else
+                    {
                         Log.Fatal("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
-                    else Log.Debug("Лента билетов {0} {1} {2} деактивирована.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+                        
+                        return;
+                    }
+                
                 if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
             }
             catch (Exception e)
@@ -883,7 +887,6 @@ namespace ASofCP.Cashier.ViewModels
                 IsShowErrorMessage = true;
                 Log.Fatal(e);
                 //throw;
-                return;
             }
         }
     }

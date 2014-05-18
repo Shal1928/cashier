@@ -7,7 +7,7 @@
         xmlns:Triggers="clr-namespace:ASofCP.Cashier.Triggers"
         xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts"
         xmlns:SquareButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.SquareButtonParts"
-        Title="{Binding Title}" WindowState="Maximized" 
+        Title="{Binding Title}" WindowState="Maximized"
         Width="1024" Height="700" 
         MinWidth="1024" MinHeight="600"
         IsEnabled="{Binding IsEnabled}">
@@ -82,14 +82,18 @@
         </StackPanel>
 
 
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+        <!--<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                     Margin="5,15,0,0" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="3">
 
             <GroupContentGridParts:GroupContentGrid ContentItems="{Binding CollectionServices}" SelectedItem="{Binding SelectedParkService, Mode=OneWayToSource}" 
                                                     DefaultTitle="Услуги" Margin="0,0,15,0" Height="610" MaxHeight="610" MinWidth="400"
                                                     HorizontalAlignment="Stretch" VerticalAlignment="Top" />
             
-        </StackPanel>
+        </StackPanel>-->
+        <GroupContentGridParts:GroupContentGrid ContentItems="{Binding CollectionServices}" SelectedItem="{Binding SelectedParkService, Mode=OneWayToSource}" 
+                                                    DefaultTitle="Услуги" Margin="5,15,15,0" Height="610" MaxHeight="610" MinWidth="400"
+                                                    HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                                    Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="3" />
 
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="2">

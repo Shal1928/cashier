@@ -6,7 +6,7 @@
         xmlns:converters="clr-namespace:ASofCP.Cashier.Converters"
         xmlns:SquareButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.SquareButtonParts"
         Title="{Binding Title}" 
-        WindowState="Normal"  WindowStyle="None" Topmost="True"
+        WindowState="Normal"  WindowStyle="None" Topmost="True" ShowInTaskbar="False"
         WindowStartupLocation="CenterScreen"
         Width="550" Height="380" 
         MinWidth="550" MaxWidth="550"

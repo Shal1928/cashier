@@ -121,6 +121,13 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                     case RollInfoViewModelMode.CloseShift:
                         if (!DeactivateRoll()) return;
                         if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
+                        if (BaseAPI.isShiftOpen())
+                        {
+                            ErrorMessage = "Закрыть смену ({0} {1}) не получилось!".F(BaseAPI.getCurrentShift().CashierName, BaseAPI.getCurrentShift().OpenDate);
+                            Log.Warn(ErrorMessage);
+                            IsShowErrorMessage = true;
+                            return;
+                        }
                         _rollInfo = null;
                         _shift = null;
                         break;
@@ -140,6 +147,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             }
             catch (Exception e)
             {
+                Log.Debug("{0} Вызвало исключение:".F(Mode.ToString()));
                 Log.Fatal(e);
                 //throw;
 
@@ -151,6 +159,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             if (_rollInfo.IsNull() && Mode != RollInfoViewModelMode.CloseShift /*&& Mode != RollInfoViewModelMode.ChangeRollDeactivate*/)
             {
                 ErrorMessage = String.Format("Бабина с параметрами {0} {1} {2} не существует!", FirstTicketSeries, FirstTicketNumber, TicketColor.Color);
+                Log.Warn(ErrorMessage);
                 IsShowErrorMessage = true;
                 return;
             }
@@ -158,6 +167,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             if (_shift.IsNull() && Mode != RollInfoViewModelMode.CloseShift)
             {
                 ErrorMessage = String.Format("Смена не определена!");
+                Log.Warn(ErrorMessage);
                 IsShowErrorMessage = true;
                 return;
             }
@@ -177,14 +187,17 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         private bool DeactivateRoll()
         {
             IsShowErrorMessage = false;
+
             if (!CurrentRollInfo.IsActiveOnStation || BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
             {
+                Log.Debug("Лента билетов {0} {1} {2} деактивирована.".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
                 IsShowAll = true;
                 return true;
             }
 
             IsShowAll = false;
-            ErrorMessage = String.Format("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+            ErrorMessage = "Деактивировать ленту билетов {0} {1} {2} не получилось!".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+            Log.Warn(ErrorMessage);
             IsShowErrorMessage = true;
             return false;
         }
@@ -194,12 +207,14 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             IsShowErrorMessage = false;
             if (BaseAPI.closeTicketRoll(CurrentRollInfo))
             {
+                Log.Debug("Лента билетов {0} {1} {2} закрыта.".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
                 IsShowAll = true;
                 return true;
             }
 
             IsShowAll = false;
             ErrorMessage = String.Format("Закрыть ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+            Log.Warn(ErrorMessage);
             IsShowErrorMessage = true;
             return false;
         }
@@ -251,7 +266,6 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                 Log.Fatal(e);
                 ErrorMessage = "Произошло исключение: {0}".F(e.Message);
                 IsShowErrorMessage = true;
-                return;
             }
         }
 

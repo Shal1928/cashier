@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:SquareButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.SquareButtonParts"
         Title="{Binding Title}" 
-        WindowState="Normal"  WindowStyle="None" Topmost="True"
+        WindowState="Normal"  WindowStyle="None" Topmost="True" ShowInTaskbar="False"
         WindowStartupLocation="CenterScreen"
         Width="520" Height="380" 
         MinWidth="520" MaxWidth="520"

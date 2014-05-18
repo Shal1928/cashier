@@ -5,7 +5,7 @@
         xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
         xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts"
         Title="{Binding Title}" 
-         WindowState="Normal"  WindowStyle="None" Topmost="True"
+         WindowState="Normal"  WindowStyle="None" Topmost="True" ShowInTaskbar="False"
         WindowStartupLocation="CenterScreen"
         Width="550" Height="380" 
         MinWidth="550" MaxWidth="550"

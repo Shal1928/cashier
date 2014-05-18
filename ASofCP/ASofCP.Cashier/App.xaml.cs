@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Threading;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
 using ASofCP.Cashier.Stores;
@@ -77,6 +78,18 @@ namespace ASofCP.Cashier
             ioc.RegisterSingleton<ISecureReadStore<BaseAPI>, BaseAPIStore>();
             ioc.RegisterSingleton<IReadStore<POSInfo>, POSInfoStore>();
             ioc.RegisterSingleton<IQueueStore<ChequeQueue>, ChequeQueueStore>();
+        }
+
+        private void OnSessionEnding(object sender, SessionEndingCancelEventArgs e)
+        {
+            //
+            var e2 = e;
+        }
+
+        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {   
+            Log.Debug("Произошло необработанное исключение!");
+            Log.Fatal(e.Exception);
         }
     }
 
