@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
@@ -38,10 +39,26 @@ namespace ASofCP.Cashier.ViewModels
         // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public MainViewModel()
         {
-            AppDomain.CurrentDomain.ProcessExit += delegate
+            Application.Current.SessionEnding += delegate(object sender, SessionEndingCancelEventArgs args)
             {
-                Log.Debug("Деактивация ленты билетов и закрытие смены вызвано завершением работы процесса приложения!");
+                //Не вызывается
+            };
+
+            Application.Current.Exit += delegate(object sender, ExitEventArgs args)
+            {
+                if (ApplicationStaticHelper.IsValidExit)
+                {
+                    var version = Assembly.GetExecutingAssembly().GetName().Version;
+                    Log.Info("Работа кассы версии {0} завершена.", version);
+                    return;
+                }
+                Log.Debug("Деактивация ленты билетов и закрытие смены вызвано завершением работы процесса приложения! Код завершения {0}", args.ApplicationExitCode);
                 ExtremeCloseShift();
+            };
+
+            AppDomain.CurrentDomain.ProcessExit += delegate(object sender, EventArgs args)
+            {
+                //
             };
 
             var resultCashVoucher = new CashVoucher<ICashVoucherItem>();
@@ -211,7 +228,8 @@ namespace ASofCP.Cashier.ViewModels
             sb.AppendLine("На печать отправлен чек");
             foreach (var item in cashVoucher)
                 sb.AppendLine("\"{0}\" X {1} = {2}".F(item.Title, item.Count, item.Price));
-            
+
+            sb.Remove(sb.Length - 1, 1);
             Log.Debug(sb);
         }
 
@@ -240,7 +258,7 @@ namespace ASofCP.Cashier.ViewModels
                 if (!args.PaymentType.HasValue) return;
 
                 _cheque.MoneyType = (short)args.PaymentType.Value;
-                Log.Debug("Чек оплачен {0}.".F(args.PaymentType.Value.DescriptionOf()));
+                Log.Debug("Чек оплачен {0}.", args.PaymentType.Value.DescriptionOf());
                 _chequeRows = new List<ChequeRow>();
 
                 PrintCashVoucherToLog(_cashVoucherToPrint);
@@ -413,7 +431,7 @@ namespace ASofCP.Cashier.ViewModels
             };
         }
 
-        private static void ChangeRollInfoToLog(RollInfo r, bool isChange)
+        private static void ChangeRollInfoToLog(RollInfo r, bool? isChange)
         {
             if (r.IsNull())
             {
@@ -422,10 +440,14 @@ namespace ASofCP.Cashier.ViewModels
             }
 
             var sb = new StringBuilder();
-            var firstPart = isChange ? "Произошла смена ленты билетов" : "Текущая лента билетов";
+            string firstPart;
+            if (isChange.HasValue) firstPart = isChange.Value ? "Произошла смена ленты билетов" : "Текущая лента билетов";
+            else firstPart = "Информация о ленте билетов на момент закрытия смены";
+
             sb.AppendLine(firstPart);
             sb.AppendLine("{0} {1} {2}".F(r.Series, r.NextTicket, r.Color.Color));
-            sb.AppendLine("Состояние: {0}; Осталось билетов: {1};".F(r.IsActiveOnStation ? "Активирована" : "Деактивирована", r.TicketsLeft));
+            var isActive = !(!r.IsActiveOnStation || ApplicationStaticHelper.IsCurrentRollDeactivated);
+            sb.AppendFormat("Состояние: {0}; Осталось билетов: {1};", isActive ? "Активирована" : "Деактивирована", r.TicketsLeft);
             Log.Debug(sb);
         }
 
@@ -464,11 +486,13 @@ namespace ASofCP.Cashier.ViewModels
                     return;
                 }
 
-                ChangeRollInfoToLog(CurrentRollInfo, false);
-                Log.Debug("Смена закрыта {0} – {1} {2}".F(CurrentShift.OpenDate, CurrentShift.CloseDate, CurrentShift.CashierName));
+                ChangeRollInfoToLog(CurrentRollInfo, null);
+                var closeDate = CurrentShift.CloseDate == new DateTime() ? DateTime.Now : CurrentShift.CloseDate;
+                Log.Debug("Смена закрыта {0} – {1} {2}", CurrentShift.OpenDate, closeDate, CurrentShift.CashierName);
 
                 var loginViewModel = ObserveWrapperHelper.GetInstance().Resolve<LoginViewModel>();
                 loginViewModel.Show();
+                ApplicationStaticHelper.IsValidExit = true;
                 Close();
                 Dispose();
             };
@@ -483,7 +507,7 @@ namespace ASofCP.Cashier.ViewModels
 
         public void OpenSession()
         {
-            //_isTerminate = false;
+            ApplicationStaticHelper.IsValidExit = true;
             IsEnabled = false;
             //TODO: Переопределить Show
             Show();
@@ -503,6 +527,8 @@ namespace ASofCP.Cashier.ViewModels
                     Dispose();
                     return;
                 }
+
+                ApplicationStaticHelper.IsValidExit = false;
 
                 CurrentRollInfo = args.RollInfo;
                 CurrentShift = args.Shift;
@@ -575,7 +601,7 @@ namespace ASofCP.Cashier.ViewModels
                 Attraction = attraction,
                 TicketRoll = CurrentRollInfo
             });
-            Log.Debug("Напечатана позиция чека {0} {1} {2} ".F(attraction.DisplayName, CurrentTicketNumber - 1, CurrentRollInfo.NextTicket));
+            Log.Debug("Напечатана позиция чека {0} {1} {2} ", attraction.DisplayName, CurrentTicketNumber - 1, CurrentRollInfo.NextTicket);
         }
 
         private void CloseCheque()
@@ -657,6 +683,7 @@ namespace ASofCP.Cashier.ViewModels
                 }
             }
 
+            sb.Remove(sb.Length - 1, 1);
             Log.Debug(sb);
         }
 
@@ -687,7 +714,10 @@ namespace ASofCP.Cashier.ViewModels
             if (item.Count > 1) item.Count--;
             else item.IsPrinted = printed.IsSuccess;
 
-            Log.Debug("Результат печати Успешно: {0} Ошибка: {1}  Требовалась смена: {2}".F(printed.IsSuccess, printed.HasError, printed.IsNeedNewTicketRoll));
+            var isSuccessStr = printed.IsSuccess ? "успшена" : "не успешна";
+            var isErrorStr = printed.HasError ? "Были ошибки" : "Ошибок не было";
+            var isChangeStr = printed.IsNeedNewTicketRoll ? "требовалась" : "не требовалась";
+            Log.Debug("Печать {0}; {1}; Смена рулона билетов {2}.", isSuccessStr, isErrorStr, isChangeStr);
 
             if (!printed.IsNeedNewTicketRoll) return !printed.HasError;
             
@@ -754,6 +784,7 @@ namespace ASofCP.Cashier.ViewModels
             foreach (var item in _cashVoucherToPrint.Where(item => item.Count >= 1 && !item.IsPrinted))
                 sb.AppendLine("\"{0}\" X {1} = {2}".F(item.Title, item.Count, item.Price));
 
+            sb.Remove(sb.Length - 1, 1);
             Log.Fatal(sb);
         }
 
@@ -853,6 +884,7 @@ namespace ASofCP.Cashier.ViewModels
 
         private static void OnClosedCommand()
         {
+            if (ApplicationStaticHelper.IsValidExit) return;
             Application.Current.Shutdown();
         }
         #endregion
@@ -869,17 +901,23 @@ namespace ASofCP.Cashier.ViewModels
 
             try
             {
-                if (CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation)
+                if (CurrentRollInfo != null && !ApplicationStaticHelper.IsCurrentRollDeactivated)
+                {
                     if (BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
                         Log.Debug("Лента билетов {0} {1} {2} деактивирована.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
                     else
                     {
                         Log.Fatal("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
-                        
                         return;
                     }
-                
-                if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
+                }
+                    
+                if (!BaseAPI.isShiftOpen()) return;
+
+                BaseAPI.closeShift(BaseAPI.getCurrentShift());
+                var closeDate = CurrentShift.CloseDate == new DateTime() ? DateTime.Now : CurrentShift.CloseDate;
+                if (BaseAPI.isShiftOpen()) Log.Debug("Закрыть смену ({0} {1}) не получилось!", CurrentShift.OpenDate, CurrentShift.CashierName);
+                else Log.Debug("Смена закрыта {0} – {1} {2}", CurrentShift.OpenDate, closeDate, CurrentShift.CashierName);
             }
             catch (Exception e)
             {

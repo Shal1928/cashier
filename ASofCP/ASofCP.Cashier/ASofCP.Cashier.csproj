@@ -158,6 +158,7 @@
     <Compile Include="Helpers\PrinterDeviceHelper.cs" />
     <Compile Include="Helpers\RawPrinterHelper.cs" />
     <Compile Include="Helpers\SingleInstanceHelper.cs" />
+    <Compile Include="Helpers\ApplicationStaticHelper.cs" />
     <Compile Include="Helpers\StringExt.cs" />
     <Compile Include="Helpers\Test\TestConverter.cs" />
     <Compile Include="Helpers\Test\TestDataHelper.cs" />

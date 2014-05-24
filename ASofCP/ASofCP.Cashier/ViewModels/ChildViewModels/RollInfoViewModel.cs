@@ -123,7 +123,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                         if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
                         if (BaseAPI.isShiftOpen())
                         {
-                            ErrorMessage = "Закрыть смену ({0} {1}) не получилось!".F(BaseAPI.getCurrentShift().CashierName, BaseAPI.getCurrentShift().OpenDate);
+                            ErrorMessage = "Закрыть смену ({0} {1}) не получилось! Режим {2}.".F(BaseAPI.getCurrentShift().CashierName, BaseAPI.getCurrentShift().OpenDate, Mode);
                             Log.Warn(ErrorMessage);
                             IsShowErrorMessage = true;
                             return;
@@ -147,7 +147,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             }
             catch (Exception e)
             {
-                Log.Debug("{0} Вызвало исключение:".F(Mode.ToString()));
+                Log.Debug("{0} Вызвало исключение:", Mode);
                 Log.Fatal(e);
                 //throw;
 
@@ -158,7 +158,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             
             if (_rollInfo.IsNull() && Mode != RollInfoViewModelMode.CloseShift /*&& Mode != RollInfoViewModelMode.ChangeRollDeactivate*/)
             {
-                ErrorMessage = String.Format("Бабина с параметрами {0} {1} {2} не существует!", FirstTicketSeries, FirstTicketNumber, TicketColor.Color);
+                ErrorMessage = String.Format("Бабина с параметрами {0} {1} {2} не существует! Режим {3}.", FirstTicketSeries, FirstTicketNumber, TicketColor.Color, Mode);
                 Log.Warn(ErrorMessage);
                 IsShowErrorMessage = true;
                 return;
@@ -188,15 +188,28 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         {
             IsShowErrorMessage = false;
 
-            if (!CurrentRollInfo.IsActiveOnStation || BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
+            var series = Mode == RollInfoViewModelMode.CloseShift ? FirstTicketSeries : CurrentRollInfo.Series;
+            var num = Mode == RollInfoViewModelMode.CloseShift ? FirstTicketNumber : CurrentRollInfo.NextTicket;
+            var color = Mode == RollInfoViewModelMode.CloseShift ? TicketColor : CurrentRollInfo.Color;
+
+            if (!CurrentRollInfo.IsActiveOnStation)
             {
-                Log.Debug("Лента билетов {0} {1} {2} деактивирована.".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
+                Log.Debug("Лента билетов {0} {1} {2} не активирована. Режим {3}.", series, num, color.Color, Mode);
                 IsShowAll = true;
                 return true;
             }
 
-            IsShowAll = false;
-            ErrorMessage = "Деактивировать ленту билетов {0} {1} {2} не получилось!".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+            if (BaseAPI.deactivateTicketRoll(series, num, color))
+            {
+                ApplicationStaticHelper.IsCurrentRollDeactivated = true;
+                Log.Debug("Лента билетов {0} {1} {2} деактивирована. Режим {3}.", series, num, color.Color, Mode);
+                IsShowAll = true;
+                return true;
+            }
+
+            ApplicationStaticHelper.IsCurrentRollDeactivated = false;
+            IsShowAll = Mode == RollInfoViewModelMode.CloseShift;
+            ErrorMessage = "Деактивировать ленту билетов {0} {1} {2} не получилось! Режим {3}.".F(series, num, color.Color, Mode);
             Log.Warn(ErrorMessage);
             IsShowErrorMessage = true;
             return false;
@@ -207,13 +220,13 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             IsShowErrorMessage = false;
             if (BaseAPI.closeTicketRoll(CurrentRollInfo))
             {
-                Log.Debug("Лента билетов {0} {1} {2} закрыта.".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color));
+                Log.Debug("Лента билетов {0} {1} {2} закрыта. Режим {3}.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color, Mode);
                 IsShowAll = true;
                 return true;
             }
 
             IsShowAll = false;
-            ErrorMessage = String.Format("Закрыть ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+            ErrorMessage = String.Format("Закрыть ленту билетов {0} {1} {2} не получилось! Режим {3}.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color, Mode);
             Log.Warn(ErrorMessage);
             IsShowErrorMessage = true;
             return false;

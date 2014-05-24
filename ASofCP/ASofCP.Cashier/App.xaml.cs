@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using ASofCP.Cashier.Helpers;
@@ -33,8 +34,11 @@ namespace ASofCP.Cashier
         {
             SingleInstanceHelper.Make();
 
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            Log.Info("Запущена касса версии {0}", version);
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendFormat("Запущена касса версии {0}", Assembly.GetExecutingAssembly().GetName().Version);
+            Log.Info(sb);
+
             Loader(StaticHelper.IoCcontainer);
             var o = ObserveWrapperHelper.GetInstance();
             var relationsViewToViewModel = new Dictionary<Type, Type>
