@@ -149,6 +149,7 @@
     <Compile Include="Converters\PriceToTextConverter.cs" />
     <Compile Include="Converters\PriceToWidthConverter.cs" />
     <Compile Include="Converters\UniversalDecimalDelimetrConverter.cs" />
+    <Compile Include="Helpers\BarcodeHelper.cs" />
     <Compile Include="Helpers\CollectionExt.cs" />
     <Compile Include="Helpers\DependencyMechHelper.cs" />
     <Compile Include="Helpers\ExceptionExt.cs" />

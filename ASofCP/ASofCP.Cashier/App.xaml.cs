@@ -84,12 +84,6 @@ namespace ASofCP.Cashier
             ioc.RegisterSingleton<IQueueStore<ChequeQueue>, ChequeQueueStore>();
         }
 
-        private void OnSessionEnding(object sender, SessionEndingCancelEventArgs e)
-        {
-            //
-            var e2 = e;
-        }
-
         private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {   
             Log.Debug("Произошло необработанное исключение!");

@@ -45,5 +45,16 @@ namespace ASofCP.Cashier.Helpers
         {
             return String.Format(value, parameters);
         }
+
+        public static string ConvertToASCIICodes(this string str)
+        {
+            var sb = new StringBuilder();
+            var bytes = Encoding.ASCII.GetBytes(str);
+
+            foreach (var t in bytes)
+                sb.Append(t);
+
+            return sb.ToString();
+        }
     }
 }

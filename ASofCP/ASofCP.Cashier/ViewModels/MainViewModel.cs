@@ -708,13 +708,14 @@ namespace ASofCP.Cashier.ViewModels
 
         private bool ProcessingPrint(string printerName, ICashVoucherItem item)
         {
-            var barcode = PrepareBarcode(CurrentTicketNumber);
+            //var barcode = PrepareBarcode(CurrentTicketNumber);
+            var barcode = BarcodeHelper.GetBarcode(CurrentTicketNumber, CurrentRollInfo);
             var printed = SendToPrint(printerName, item, barcode);
             CreateChequeRow(printed.IsSuccess, DateTime.Now, barcode, item.AttractionInfo);
             if (item.Count > 1) item.Count--;
             else item.IsPrinted = printed.IsSuccess;
 
-            var isSuccessStr = printed.IsSuccess ? "успшена" : "не успешна";
+            var isSuccessStr = printed.IsSuccess ? "успешна" : "не успешна";
             var isErrorStr = printed.HasError ? "Были ошибки" : "Ошибок не было";
             var isChangeStr = printed.IsNeedNewTicketRoll ? "требовалась" : "не требовалась";
             Log.Debug("Печать {0}; {1}; Смена рулона билетов {2}.", isSuccessStr, isErrorStr, isChangeStr);
@@ -725,14 +726,14 @@ namespace ASofCP.Cashier.ViewModels
             return false;
         }
 
-        private static String PrepareBarcode(long num)
-        {
-            var curTicketNum = num.ToString(CultureInfo.InvariantCulture);
-            var curTicketLength = curTicketNum.Length;
-            return curTicketLength > 13
-                               ? curTicketNum.Remove(13, curTicketLength)
-                               : curTicketNum.Insert(curTicketLength - 1, "0000000000000".Remove(0, 13 - curTicketLength));
-        }
+        //private static String PrepareBarcode(long num)
+        //{
+        //    var curTicketNum = num.ToString(CultureInfo.InvariantCulture);
+        //    var curTicketLength = curTicketNum.Length;
+        //    return curTicketLength > 13
+        //                       ? curTicketNum.Remove(13, curTicketLength)
+        //                       : curTicketNum.Insert(curTicketLength - 1, "0000000000000".Remove(0, 13 - curTicketLength));
+        //}
 
         private PrintResult SendToPrint(String printerName, ICashVoucherItem item, String barcode)
         {
