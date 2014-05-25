@@ -64,9 +64,10 @@
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"
                     Margin="0,0,55,0" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="2">
-            <LinkButtonParts:LinkButton Content="Сменить бабину" Command="{Binding ChangeRollCommand}" FontSize="14" FontWeight="Semibold" Margin="0,0,15,0" />
-            <LinkButtonParts:LinkButton Content="Закрыть смену" Command="{Binding CloseShiftCommand}" FontSize="14" FontWeight="Semibold" Margin="0,0,15,0" />
-            <LinkButtonParts:LinkButton Content="Списать билеты" Command="{Binding WriteOffTicketsCommand}" FontSize="14" FontWeight="Semibold" Margin="0,0,15,0" />
+            <LinkButtonParts:LinkButton Content="Сменить бабину" Command="{Binding ChangeRollCommand}" FontSize="12" FontWeight="Semibold" Margin="0,0,15,0" />
+            <LinkButtonParts:LinkButton Content="Закрыть смену" Command="{Binding CloseShiftCommand}" FontSize="12" FontWeight="Semibold" Margin="0,0,15,0" />
+            <LinkButtonParts:LinkButton Content="Списать билеты" Command="{Binding WriteOffTicketsCommand}" FontSize="12" FontWeight="Semibold" Margin="0,0,15,0" />
+            <LinkButtonParts:LinkButton Content="Сторнирование" Command="{Binding ReversalCommand}" FontSize="12" FontWeight="Semibold" Margin="0,0,15,0" />
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"

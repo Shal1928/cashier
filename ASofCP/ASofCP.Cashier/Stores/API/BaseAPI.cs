@@ -31,6 +31,10 @@ namespace ASofCP.Cashier.Stores.API
         long getNextChequeNumber();
 
         long createCheque(Cheque cheque);
+
+        TicketInfo findTicketByBarcode(String ticketBarcode);
+
+        TicketInfo reverseTicket(TicketInfo ticketInfo, String reverseReason);
     }
     // ReSharper restore InconsistentNaming
 }

@@ -19,7 +19,7 @@ namespace ASofCP.Cashier.Helpers
 
         public static string GetBarcode(long currentNum, RollInfo roll)
         {
-            return GetBarcode(roll.Color.Id, roll.Series.ConvertToASCIICodes(), currentNum, _random.Next(0, 9));
+            return GetBarcode(roll.Color.Id, roll.Series.ConvertToASCIICodes(), currentNum, _random.Next(1000, 9999));
             //[ID ЦВЕТА][СЕРИЯ-НОМЕР][СЛУЧАЙНОЕ ЧИСЛО]
         }
     }

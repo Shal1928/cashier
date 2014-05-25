@@ -171,6 +171,7 @@
     <Compile Include="Models\CashVoucher.cs" />
     <Compile Include="Models\CashVoucherItem.cs" />
     <Compile Include="Models\ChequeQueue.cs" />
+    <Compile Include="Models\Contracts\TicketInfo.cs" />
     <Compile Include="Models\RollInfoViewModelMode.cs" />
     <Compile Include="Models\Contracts\AttractionGroupInfo.cs" />
     <Compile Include="Models\Contracts\AttractionInfo.cs" />
@@ -202,6 +203,7 @@
     <Compile Include="ViewModels\Base\UtilViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\InformationViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\PaymentViewModel.cs" />
+    <Compile Include="ViewModels\ChildViewModels\ReversalTicketViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\RollInfoViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\TicketWriteOffViewModel.cs" />
@@ -213,6 +215,9 @@
     </Compile>
     <Compile Include="Views\ChildViews\PaymentView.xaml.cs">
       <DependentUpon>PaymentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChildViews\ReversalTicketView.xaml.cs">
+      <DependentUpon>ReversalTicketView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ChildViews\RollInfoView.xaml.cs">
       <DependentUpon>RollInfoView.xaml</DependentUpon>
@@ -248,6 +253,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ChildViews\PaymentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChildViews\ReversalTicketView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -259,6 +261,13 @@ namespace ASofCP.Cashier.ViewModels
                 _cheque.MoneyType = (short)args.PaymentType.Value;
                 Log.Debug("Чек оплачен {0}.", args.PaymentType.Value.DescriptionOf());
                 _chequeRows = new List<ChequeRow>();
+
+                while (PrinterDeviceHelper.IsPrinterBusy(PrinterName))
+                {
+                    RightErrorMessage = "Необходимо выключить и включить принтер!";
+                    IsShowErrorMessage = true;
+                    Thread.Sleep(1000);
+                } 
 
                 PrintCashVoucherToLog(_cashVoucherToPrint);
                 PrintTickets(PrinterName);
@@ -926,5 +935,27 @@ namespace ASofCP.Cashier.ViewModels
                 //throw;
             }
         }
+
+        #region ReversalCommand
+        private ICommand _reversalCommand;
+        public ICommand ReversalCommand
+        {
+            get
+            {
+                return _reversalCommand ?? (_reversalCommand = new RelayCommand(param => OnReversalCommand(), can => ValidateWriteOffTicketsCommand()));
+            }
+        }
+
+        private void OnReversalCommand()
+        {
+            IsEnabled = false;
+            var reversalTicketViewModel = ObserveWrapperHelper.GetInstance().Resolve<ReversalTicketViewModel>();
+            reversalTicketViewModel.Show();
+            reversalTicketViewModel.Closed += delegate
+            {
+                IsEnabled = true;
+            };
+        }
+        #endregion
     }
 }

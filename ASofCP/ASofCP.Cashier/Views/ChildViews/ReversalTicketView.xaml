@@ -1,0 +1,136 @@
+﻿<Window x:Class="ASofCP.Cashier.Views.ChildViews.ReversalTicketView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:Converters="clr-namespace:ASofCP.Cashier.Converters"
+        xmlns:LinkButtonParts="clr-namespace:ASofCP.Cashier.Views.Controls.LinkButtonParts"
+        xmlns:Triggers="clr-namespace:ASofCP.Cashier.Triggers"
+        Title="{Binding Title}" 
+         WindowState="Normal"  WindowStyle="None" Topmost="True" ShowInTaskbar="False"
+        WindowStartupLocation="CenterScreen"
+        Width="550" Height="380" 
+        MinWidth="550" MaxWidth="550"
+        MinHeight="420" MaxHeight="420">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Views\ResourceDictionaries/ColorDictionary.xaml" />
+                <ResourceDictionary Source="../../Views\ResourceDictionaries/BaseStyleDictionary.xaml" />
+                <ResourceDictionary Source="/Views/Controls/LinkButtonParts/LinkButtonDic.xaml" />
+                <ResourceDictionary Source="../../Views\ResourceDictionaries/DataTemplateDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+
+        <Grid Opacity="1" Background="#ffFFFFFF"
+              Width="525" Height="360" 
+              HorizontalAlignment="Center" VerticalAlignment="Center"
+              Grid.Column="1" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Возврат билетов" Margin="0,0,0,0"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" />
+
+            <StackPanel Orientation="Vertical" Margin="10,0,15,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                        Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3">
+                <TextBlock Text="Штрихкод билета" Margin="0,0,0,4" FontWeight="SemiBold" />
+                <TextBox Text="{Binding TicketBarcode, UpdateSourceTrigger=PropertyChanged}" MinWidth="150px" Height="42px" FontSize="16">
+                    <i:Interaction.Triggers>
+                        <Triggers:EnterUpTrigger EventName="KeyUp">
+                            <i:InvokeCommandAction Command="{Binding FindCommand}" />
+                        </Triggers:EnterUpTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+            </StackPanel>
+
+            <LinkButtonParts:LinkButton Content="Найти" Command="{Binding FindCommand}" 
+                                        FontSize="16" FontWeight="SemiBold" Margin="0,15,15,0" 
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Grid.Column="3" Grid.Row="1" />
+
+            <StackPanel Orientation="Vertical" Margin="10,0,15,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                        Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4">
+                <TextBlock Text="Причина" Margin="0,0,0,4" FontWeight="SemiBold" IsEnabled="{Binding IsDisplayTicketInfo}" />
+                <TextBox Text="{Binding ReversalReason, UpdateSourceTrigger=PropertyChanged}" MinWidth="150px" Height="42px" FontSize="16"
+                         IsEnabled="{Binding IsDisplayTicketInfo}">
+                    <i:Interaction.Triggers>
+                        <Triggers:EnterUpTrigger EventName="KeyUp">
+                            <i:InvokeCommandAction Command="{Binding FindCommand}" />
+                        </Triggers:EnterUpTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Margin="10,0,15,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                        Visibility="{Binding IsDisplayTicketInfo, Converter={Converters:BoolVisibleHidddenConverter}}"
+                        Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="4">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Аттракцион: " Margin="0,0,0,0" />
+                    <TextBlock Text="{Binding Name}" Margin="0,0,0,0" FontWeight="SemiBold" />
+
+                    <TextBlock Text="Цена: " Margin="15,0,0,0" />
+                    <TextBlock Text="{Binding Price}" Margin="0,0,0,0" FontWeight="SemiBold" />
+                    <TextBlock Text=" руб. (" Margin="0,0,0,0" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding PayType}" Margin="0,0,0,0" FontWeight="SemiBold" />
+                    <TextBlock Text=")" Margin="0,0,0,0" FontWeight="SemiBold" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="Чек закрыт: " Margin="0,0,0,0" />
+                    <TextBlock Text="{Binding CloseDate}" Margin="0,0,0,0" FontWeight="SemiBold" />
+
+                    <TextBlock Text="{Binding ReservalStatus}" Margin="15,0,0,0" FontWeight="SemiBold" Foreground="{DynamicResource MainRedSB}" />
+                    <TextBlock Text="{Binding ReservalCashier}" Margin="0,0,0,0" FontWeight="SemiBold" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="Касса: " Margin="0,0,0,0" />
+                    <TextBlock Text="{Binding POSName}" Margin="0,0,0,0" FontWeight="SemiBold" />
+                    <TextBlock Text=" Кассир: " Margin="15,0,0,0" />
+                    <TextBlock Text="{Binding Cashier}" Margin="0,0,0,0" FontWeight="SemiBold" />
+                </StackPanel>
+            </StackPanel>
+
+            <TextBlock Text="{Binding ErrorMessage}" Style="{DynamicResource FadeInOutStyle}" Visibility="{Binding IsShowErrorMessage, Converter={Converters:BoolVisibleHidddenConverter}}"
+                       FontSize="16" FontWeight="SemiBold" TextWrapping="WrapWithOverflow" Foreground="{DynamicResource MainRedSB}" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="4" 
+                       HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="0,10,0,15" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="4" Margin="0,0,0,15">
+                <LinkButtonParts:LinkButton Style="{DynamicResource RedLinkButtonStyle}" Content="Сторнирование" Command="{Binding ReversalCommand}" Margin="0,0,25,0"
+                                        FontSize="16" FontWeight="SemiBold" />
+                <LinkButtonParts:LinkButton Content="Закрыть" Command="{Binding CancelCommand}" 
+                                        FontSize="16" FontWeight="SemiBold" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

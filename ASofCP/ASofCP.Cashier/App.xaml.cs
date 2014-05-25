@@ -49,7 +49,8 @@ namespace ASofCP.Cashier
                                             {o.GetWrappedType<RollInfoViewModel>(true), typeof(RollInfoView)},
                                             {o.GetWrappedType<InformationViewModel>(true), typeof(InformationView)},
                                             {o.GetWrappedType<SettingsViewModel>(true), typeof(SettingsView)},
-                                            {o.GetWrappedType<TicketWriteOffViewModel>(true), typeof(TicketWriteOffView)}
+                                            {o.GetWrappedType<TicketWriteOffViewModel>(true), typeof(TicketWriteOffView)},
+                                            {o.GetWrappedType<ReversalTicketViewModel>(true), typeof(ReversalTicketView)}
                                          };
             
             ViewManager.RegisterViewViewModelRelations(relationsViewToViewModel);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Management;
 using log4net;
 
@@ -34,6 +35,33 @@ namespace ASofCP.Cashier.Helpers
         //            where String.Equals(printerName, name, StringComparison.InvariantCultureIgnoreCase) 
         //            select (bool) printer.GetPropertyValue("WorkOffline")).FirstOrDefault();
         //}
+
+        public static bool IsPrinterBusy(string printerName)
+        {
+            var printJobCollection = new StringCollection();
+            const string searchQuery = "SELECT * FROM Win32_PrintJob";
+
+            /*searchQuery can also be mentioned with where Attribute,
+                but this is not working in Windows 2000 / ME / 98 machines 
+                and throws Invalid query error*/
+            var searchPrintJobs = new ManagementObjectSearcher(searchQuery);
+            var prntJobCollection = searchPrintJobs.Get();
+            foreach (var prntJob in prntJobCollection)
+            {
+                var jobName = prntJob.Properties["Name"].Value.ToString();
+
+                //Job name would be of the format [Printer name], [Job ID]
+                var splitArr = new char[1];
+                splitArr[0] = Convert.ToChar(",");
+                var prnterName = jobName.Split(splitArr)[0];
+                var documentName = prntJob.Properties["Document"].Value.ToString();
+                if (String.Compare(prnterName, printerName, StringComparison.OrdinalIgnoreCase) == 0)
+                    printJobCollection.Add(documentName);
+                
+            }
+
+            return !printJobCollection.IsNullOrEmpty();
+        }
 
         public static bool IsPlug(string printerName)
         {
