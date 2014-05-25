@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -185,7 +184,7 @@ namespace ASofCP.Cashier.ViewModels
 
         private bool ValidateCalculateCommand()
         {
-            return Total > 0 && CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation;
+            return Total > 0 && CurrentRollInfo != null && !ApplicationStaticHelper.IsCurrentRollDeactivated;
         }
 
         private void OnCalculateCommand()
@@ -446,14 +445,13 @@ namespace ASofCP.Cashier.ViewModels
 
             sb.AppendLine(firstPart);
             sb.AppendLine("{0} {1} {2}".F(r.Series, r.NextTicket, r.Color.Color));
-            var isActive = !(!r.IsActiveOnStation || ApplicationStaticHelper.IsCurrentRollDeactivated);
-            sb.AppendFormat("Состояние: {0}; Осталось билетов: {1};", isActive ? "Активирована" : "Деактивирована", r.TicketsLeft);
+            sb.AppendFormat("Состояние: {0}; Осталось билетов: {1};", ApplicationStaticHelper.IsCurrentRollDeactivated ? "Деактивирована" : "Активирована", r.TicketsLeft);
             Log.Debug(sb);
         }
 
         private bool ValidateChangeRollCommand()
         {
-            return CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation;
+            return CurrentRollInfo != null && !ApplicationStaticHelper.IsCurrentRollDeactivated;
         }
         #endregion
 
@@ -500,7 +498,7 @@ namespace ASofCP.Cashier.ViewModels
 
         private bool ValidateCloseShiftCommand()
         {
-            return CurrentShift != null && CurrentShift.Active && CurrentRollInfo != null && CurrentRollInfo.IsActiveOnStation;
+            return CurrentShift != null && CurrentShift.Active && CurrentRollInfo != null && !ApplicationStaticHelper.IsCurrentRollDeactivated;
         }
 
         #endregion
@@ -899,7 +897,7 @@ namespace ASofCP.Cashier.ViewModels
                 Log.Debug("BaseAPI не определен. Возможно смена не будет закрыта, а лента билетов деактивирована!");
                 return;
             }
-
+            
             try
             {
                 if (CurrentRollInfo != null && !ApplicationStaticHelper.IsCurrentRollDeactivated)
@@ -916,9 +914,9 @@ namespace ASofCP.Cashier.ViewModels
                 if (!BaseAPI.isShiftOpen()) return;
 
                 BaseAPI.closeShift(BaseAPI.getCurrentShift());
-                var closeDate = CurrentShift.CloseDate == new DateTime() ? DateTime.Now : CurrentShift.CloseDate;
+                ApplicationStaticHelper.ShiftCloseDate = DateTime.Now;
                 if (BaseAPI.isShiftOpen()) Log.Debug("Закрыть смену ({0} {1}) не получилось!", CurrentShift.OpenDate, CurrentShift.CashierName);
-                else Log.Debug("Смена закрыта {0} – {1} {2}", CurrentShift.OpenDate, closeDate, CurrentShift.CashierName);
+                else Log.Debug("Смена закрыта {0} – {1} {2}", CurrentShift.OpenDate, ApplicationStaticHelper.ShiftCloseDate, CurrentShift.CashierName);
             }
             catch (Exception e)
             {

@@ -116,11 +116,17 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                 {
                     case RollInfoViewModelMode.OpenShift:
                         _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                        ApplicationStaticHelper.IsCurrentRollDeactivated = false;
                         _shift = BaseAPI.isShiftOpen() ? BaseAPI.getCurrentShift() : BaseAPI.openShift();
                         break;
                     case RollInfoViewModelMode.CloseShift:
                         if (!DeactivateRoll()) return;
-                        if (BaseAPI.isShiftOpen()) BaseAPI.closeShift(BaseAPI.getCurrentShift());
+                        if (BaseAPI.isShiftOpen())
+                        {
+                            BaseAPI.closeShift(BaseAPI.getCurrentShift());
+                            ApplicationStaticHelper.ShiftCloseDate = DateTime.Now;
+                        }
+
                         if (BaseAPI.isShiftOpen())
                         {
                             ErrorMessage = "Закрыть смену ({0} {1}) не получилось! Режим {2}.".F(BaseAPI.getCurrentShift().CashierName, BaseAPI.getCurrentShift().OpenDate, Mode);
@@ -128,17 +134,20 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                             IsShowErrorMessage = true;
                             return;
                         }
+
                         _rollInfo = null;
                         _shift = null;
                         break;
                     case RollInfoViewModelMode.NeedNewRoll:
                         if (!CloseRoll()) return;
                         _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                        ApplicationStaticHelper.IsCurrentRollDeactivated = false;
                         _shift = BaseAPI.getCurrentShift();
                         break;
                     case RollInfoViewModelMode.ChangeRoll:
                         if (!DeactivateRoll()) return;
                         _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                        ApplicationStaticHelper.IsCurrentRollDeactivated = false;
                         _shift = BaseAPI.getCurrentShift();
                         break;
                     default:
@@ -192,7 +201,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             var num = Mode == RollInfoViewModelMode.CloseShift ? FirstTicketNumber : CurrentRollInfo.NextTicket;
             var color = Mode == RollInfoViewModelMode.CloseShift ? TicketColor : CurrentRollInfo.Color;
 
-            if (!CurrentRollInfo.IsActiveOnStation)
+            if (ApplicationStaticHelper.IsCurrentRollDeactivated)
             {
                 Log.Debug("Лента билетов {0} {1} {2} не активирована. Режим {3}.", series, num, color.Color, Mode);
                 IsShowAll = true;
@@ -220,11 +229,13 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             IsShowErrorMessage = false;
             if (BaseAPI.closeTicketRoll(CurrentRollInfo))
             {
+                ApplicationStaticHelper.IsCurrentRollDeactivated = true;
                 Log.Debug("Лента билетов {0} {1} {2} закрыта. Режим {3}.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color, Mode);
                 IsShowAll = true;
                 return true;
             }
 
+            ApplicationStaticHelper.IsCurrentRollDeactivated = false;
             IsShowAll = false;
             ErrorMessage = String.Format("Закрыть ленту билетов {0} {1} {2} не получилось! Режим {3}.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color, Mode);
             Log.Warn(ErrorMessage);
