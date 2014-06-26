@@ -151,6 +151,13 @@ namespace ASofCP.Cashier.ViewModels
 
                 if (_cheque.IsNull())
                 {
+                    while (Settings.IsCheckPrinterQueue && PrinterDeviceHelper.IsPrinterBusy(PrinterName))
+                    {
+                        RightErrorMessage = Settings.PrinterBusyMessage;
+                        IsShowErrorMessage = true;
+                        Thread.Sleep(1000);
+                    } 
+
                     OpenDate = DateTime.Now;
                     _cheque = new Cheque
                     {
@@ -261,13 +268,6 @@ namespace ASofCP.Cashier.ViewModels
                 _cheque.MoneyType = (short)args.PaymentType.Value;
                 Log.Debug("Чек оплачен {0}.", args.PaymentType.Value.DescriptionOf());
                 _chequeRows = new List<ChequeRow>();
-
-                while (PrinterDeviceHelper.IsPrinterBusy(PrinterName))
-                {
-                    RightErrorMessage = "Необходимо выключить и включить принтер!";
-                    IsShowErrorMessage = true;
-                    Thread.Sleep(1000);
-                } 
 
                 PrintCashVoucherToLog(_cashVoucherToPrint);
                 PrintTickets(PrinterName);

@@ -40,7 +40,9 @@ namespace ASofCP.Cashier.Stores
                 Id = "id123",
                 PrinterName = "Zebra",
                 PathToTemplate = "ZebraTemplate.xml",
-                PathToZpl = "ZebraTemplate.zpl"
+                PathToZpl = "ZebraTemplate.zpl",
+                IsCheckPrinterQueue = true,
+                PrinterBusyMessage = "Необходимо выключить и включить принтер!"
             });
 
             return SerializationUtility.Deserialize<ModuleSettings>(FileName);

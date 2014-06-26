@@ -57,6 +57,18 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             set { if (Settings.NotNull()) Settings.PathToZpl = value; }
         }
 
+        public virtual bool IsCheckPrinterQueue
+        {
+            get { return Settings.IsCheckPrinterQueue; }
+            set { Settings.IsCheckPrinterQueue = value; }
+        }
+
+        public virtual String PrinterBusyMessage
+        {
+            get { return Settings.NotNull() ? Settings.PrinterBusyMessage : String.Empty; }
+            set { if (Settings.NotNull()) Settings.PrinterBusyMessage = value; }
+        }
+
         protected override void OnLoadedCommand()
         {
             Settings = SettingsStore.Load();
@@ -66,6 +78,8 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             OnPropertyChanged(() => PrinterName);
             OnPropertyChanged(() => PathToTemplate);
             OnPropertyChanged(() => PathToZpl);
+            OnPropertyChanged(() => IsCheckPrinterQueue);
+            OnPropertyChanged(() => PrinterBusyMessage);
             _isLoadComplete = true;
         }
 

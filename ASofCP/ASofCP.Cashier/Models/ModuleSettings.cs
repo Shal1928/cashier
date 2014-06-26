@@ -25,10 +25,15 @@ namespace ASofCP.Cashier.Models
         [DataMember]
         public String PathToZpl { get; set; }
 
+        [DataMember]
+        public bool IsCheckPrinterQueue { get; set; }
+
+        [DataMember]
+        public String PrinterBusyMessage { get; set; }
 
         public override int GetHashCode()
         {
-            return String.Format("{0}{1}{2}{3}{4}{5}", IP, Port, Id, PrinterName, PathToTemplate, PathToZpl).GetHashCode();
+            return String.Format("{0}{1}{2}{3}{4}{5}{6}{7}", IP, Port, Id, PrinterName, PathToTemplate, PathToZpl, IsCheckPrinterQueue, PrinterBusyMessage).GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -38,7 +43,8 @@ namespace ASofCP.Cashier.Models
 
             // ReSharper disable PossibleNullReferenceException
             return Equals(IP, that.IP) && Equals(Port, that.Port) && Equals(Id, that.Id) && Equals(PrinterName, that.PrinterName) &&
-                   Equals(PathToTemplate, that.PathToTemplate) && Equals(PathToZpl, that.PathToZpl);
+                   Equals(PathToTemplate, that.PathToTemplate) && Equals(PathToZpl, that.PathToZpl) && 
+                   Equals(IsCheckPrinterQueue, that.IsCheckPrinterQueue) && Equals(PrinterBusyMessage, that.PrinterBusyMessage);
             // ReSharper restore PossibleNullReferenceException
         }
     }
