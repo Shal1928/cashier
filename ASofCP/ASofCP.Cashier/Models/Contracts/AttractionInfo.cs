@@ -29,6 +29,19 @@ namespace it.q02.asocp.api.data
         [DataMember]
         public long Id;
 
+        [DataMember]
+        public long CategoryId;
+
+        [DataMember]
+        public String BackgroundColor;
+
+        [DataMember]
+        public String ForegroundColor;
+
+        [DataMember]
+        public long Number;
+
+
 
         public override String ToString()
         {
@@ -40,6 +53,10 @@ namespace it.q02.asocp.api.data
                     ", VersionSeries='" + VersionSeries + '\'' +
                     ", Code='" + Code + '\'' +
                     ", Id=" + Id +
+                    ", CategoryId=" + CategoryId +
+                    ", BackgroundColor='" + BackgroundColor + '\'' +
+                    ", ForegroundColor='" + ForegroundColor + '\'' +
+                    ", Number=" + Number +
                     '}';
         }
     }

@@ -546,9 +546,25 @@ namespace ASofCP.Cashier.ViewModels
                 ChangeRollInfoToLog(CurrentRollInfo, false);
 
                 var collectionServices = new GroupContentList();
-                var attractions = BaseAPI.getAttractionsFromGroup(new AttractionGroupInfo());
-                if (attractions.IsNullOrEmpty()) return;
-                collectionServices.AddRange(attractions.OrderBy(i => i.DisplayName).Select(attraction => new ParkService(attraction)));
+
+                var categories = BaseAPI.getGroups();
+                AttractionInfo[] attractions = null;
+                if (categories.IsNullOrEmpty())
+                {
+                    attractions = BaseAPI.getAttractionsFromGroup(new AttractionGroupInfo());
+                    if (attractions.IsNullOrEmpty()) return;
+                    collectionServices.AddRange(attractions.OrderBy(i => i.Number).Select(attraction => new ParkService(attraction)));
+                }
+                else
+                {
+                    foreach (var category in categories)
+                    {
+                        attractions = BaseAPI.getAttractionsFromGroup(category);
+                        if (category.Type == 0) collectionServices.AddRange(attractions.OrderBy(i => i.Number).Select(attraction => new ParkService(attraction)));
+                        else collectionServices.Add(new CategoryService(category, attractions));  
+                    }
+                }
+
 
                 CollectionServices = collectionServices;
 

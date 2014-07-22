@@ -21,6 +21,10 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models
         {
             get; 
         }
+
+        long Number { get; }
+        String Background { get; }
+        String Foreground { get; }
     }
 
     //public interface IGroupContentItem : IGroupContentItem<IGroupContentItem>

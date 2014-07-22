@@ -170,6 +170,7 @@
     <Compile Include="Models\Base\IPrice.cs" />
     <Compile Include="Models\CashVoucher.cs" />
     <Compile Include="Models\CashVoucherItem.cs" />
+    <Compile Include="Models\CategoryService.cs" />
     <Compile Include="Models\ChequeQueue.cs" />
     <Compile Include="Models\Contracts\TicketInfo.cs" />
     <Compile Include="Models\RollInfoViewModelMode.cs" />

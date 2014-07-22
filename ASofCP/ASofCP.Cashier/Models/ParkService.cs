@@ -1,4 +1,5 @@
-﻿using ASofCP.Cashier.Helpers;
+﻿using System;
+using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models.Base;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
 using it.q02.asocp.api.data;
@@ -62,9 +63,18 @@ namespace ASofCP.Cashier.Models
             get { return SubItemsCollection.IsNullOrEmpty(); }
         }
 
-        public AttractionInfo AttractionInfo { get; set; }
+        public long Number
+        {
+            get { return AttractionInfo.Number; }
+        }
+
+        public String Background {get { return AttractionInfo.BackgroundColor; }}
+        public String Foreground { get { return AttractionInfo.ForegroundColor; } }
 
         #endregion
+
+
+        public AttractionInfo AttractionInfo { get; set; }
 
 
         #region Implementation of IPrice

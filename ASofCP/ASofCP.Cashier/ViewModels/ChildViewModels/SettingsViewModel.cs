@@ -59,8 +59,8 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         public virtual bool IsCheckPrinterQueue
         {
-            get { return Settings.IsCheckPrinterQueue; }
-            set { Settings.IsCheckPrinterQueue = value; }
+            get { return Settings.NotNull() && Settings.IsCheckPrinterQueue; }
+            set { if (Settings.NotNull()) Settings.IsCheckPrinterQueue = value; }
         }
 
         public virtual String PrinterBusyMessage
