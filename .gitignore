@@ -173,3 +173,4 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 Common/Log4Net/log4net.xml
+*.zip
