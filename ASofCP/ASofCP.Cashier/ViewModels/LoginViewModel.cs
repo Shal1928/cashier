@@ -5,6 +5,7 @@ using System.Windows.Input;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.ViewModels.Base;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
+using ASofCP.Cashier.ViewModels._00_MainViewModel;
 using hessiancsharp.io;
 using log4net;
 using UseAbilities.IoC.Attributes;

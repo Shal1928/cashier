@@ -198,6 +198,7 @@
     <Compile Include="Stores\Base\XMLStore.cs" />
     <Compile Include="Stores\SettingsStore.cs" />
     <Compile Include="Triggers\EnterUpTrigger.cs" />
+    <Compile Include="ViewModels\00_MainViewModel\MainViewModelHelpers.cs" />
     <Compile Include="ViewModels\Base\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\Base\ChildViewModelBase.cs" />
     <Compile Include="ViewModels\Base\ResultViewModel.cs" />
@@ -209,7 +210,7 @@
     <Compile Include="ViewModels\ChildViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ChildViewModels\TicketWriteOffViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\00_MainViewModel\MainViewModel.cs" />
     <Compile Include="ViewModels\Managers\RollInfoManager.cs" />
     <Compile Include="Views\ChildViews\InformationView.xaml.cs">
       <DependentUpon>InformationView.xaml</DependentUpon>

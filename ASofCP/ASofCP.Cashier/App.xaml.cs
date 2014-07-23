@@ -11,6 +11,7 @@ using ASofCP.Cashier.Stores.API;
 using ASofCP.Cashier.Stores.Base;
 using ASofCP.Cashier.ViewModels;
 using ASofCP.Cashier.ViewModels.ChildViewModels;
+using ASofCP.Cashier.ViewModels._00_MainViewModel;
 using ASofCP.Cashier.Views;
 using ASofCP.Cashier.Views.ChildViews;
 using log4net;

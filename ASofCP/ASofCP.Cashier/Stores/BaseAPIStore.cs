@@ -11,7 +11,7 @@ namespace ASofCP.Cashier.Stores
         public BaseAPIStore()
         {
             #if DEBUG && !LOGIN_DEBUG
-            Logon("administrator", "1");
+            Logon("c", "1");
             #endif
         }
 
