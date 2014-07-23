@@ -25,11 +25,7 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 
         public Button CreateItemControl(IGroupContentItem item, int column, int row)
         {
-            //var squareButtonDic = new ResourceDictionary
-            //{
-            //    Source = new Uri(@"UseAbilities.Visual;component/Styles/Controls/Buttons/SquareButtonStyle.xaml", UriKind.RelativeOrAbsolute)
-            //};
-            var itemControl = new SquareButton
+            var itemControl = new SquareButton(item.Background)
             {
                 Content = item.Title,
                 Height = 42,
@@ -37,7 +33,7 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
                 FontSize = 14,
                 Margin = new Thickness(2),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                
+                Foreground = new SolidColorBrush { Color = item.Foreground.ToMediaColor() }
             };
 
             itemControl.Click += delegate

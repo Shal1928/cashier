@@ -1,0 +1,7 @@
+﻿<ResourceDictionary x:Class="ASofCP.Cashier.Views.Controls.SquareButtonParts.Colors.BlueDic" 
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="MainColor">#ff0000FF</Color>
+    <Color x:Key="HalfMainColor">#7f0000FF</Color>
+    <Color x:Key="QuarterMainColor">#3f0000FF</Color>
+</ResourceDictionary>

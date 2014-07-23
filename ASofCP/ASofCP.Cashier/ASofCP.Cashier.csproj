@@ -240,6 +240,14 @@
     <Compile Include="Views\Controls\GroupContentGridParts\Models\GroupContentList.cs" />
     <Compile Include="Views\Controls\LinkButtonParts\LinkButton.cs" />
     <Compile Include="Views\Controls\LinkButtonParts\LinkButtonDic.cs" />
+    <Compile Include="Views\Controls\SquareButtonParts\Colors\BlackDic.cs" />
+    <Compile Include="Views\Controls\SquareButtonParts\Colors\BlueDic.cs" />
+    <Compile Include="Views\Controls\SquareButtonParts\Colors\GrayDic.cs" />
+    <Compile Include="Views\Controls\SquareButtonParts\Colors\GreenDic.cs" />
+    <Compile Include="Views\Controls\SquareButtonParts\Colors\OrangeDic.cs" />
+    <Compile Include="Views\Controls\SquareButtonParts\Colors\RedDic.cs" />
+    <Compile Include="Views\Controls\SquareButtonParts\Colors\WhiteDic.cs" />
+    <Compile Include="Views\Controls\SquareButtonParts\Colors\YellowDic.cs" />
     <Compile Include="Views\Controls\SquareButtonParts\SquareButton.cs" />
     <Compile Include="Views\Controls\SquareButtonParts\SquareButtonDic.cs" />
     <Compile Include="Views\Images\MainResource.Designer.cs">
@@ -275,6 +283,38 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\GroupContentGridParts\GroupContentGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\SquareButtonParts\Colors\BlackDic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\SquareButtonParts\Colors\BlueDic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\SquareButtonParts\Colors\GrayDic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\SquareButtonParts\Colors\GreenDic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\SquareButtonParts\Colors\OrangeDic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\SquareButtonParts\Colors\RedDic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\SquareButtonParts\Colors\WhiteDic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\SquareButtonParts\Colors\YellowDic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
