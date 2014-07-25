@@ -618,6 +618,7 @@ namespace ASofCP.Cashier.ViewModels._00_MainViewModel
             _cheque = null;
             _currentOrder = 0;
             _cashVoucherToPrint = null;
+            FillCollectionServices();
         }
 
         private void SendChequeToServer(Cheque cheque)

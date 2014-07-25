@@ -26,22 +26,24 @@ namespace ASofCP.Cashier.ViewModels._00_MainViewModel
             }
             else
             {
+                var list = new List<IGroupContentItem>();
                 var sb = new StringBuilder();
                 foreach (var category in categories)
                 {
                     attractions = BaseAPI.getAttractionsFromGroup(category);
-                    if (category.Type == 0) collectionServices.AddRange(attractions.OrderBy(i => i.Number).Select(attraction => new ParkService(attraction)));
-                    else collectionServices.Add(new CategoryService(category, attractions));
-
+                    if (category.Type == 0) list.AddRange(attractions.OrderBy(i => i.Number).Select(attraction => new ParkService(attraction)));
+                    else list.Add(new CategoryService(category, attractions));
 
                     foreach (var a in attractions)
                         sb.AppendLine("Аттракцион {0} добавлен в группу {1}".F(a.DisplayName, category.Title));
                 }
                 Log.Debug(sb);
+
+                collectionServices.AddRange(list.OrderBy(i => i.Number));
             }
 
-
             CollectionServices = collectionServices;
+            OnPropertyChanged(() => CollectionServices);
         }
     }
 }
