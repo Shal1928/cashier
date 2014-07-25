@@ -13,34 +13,44 @@ namespace ASofCP.Cashier.ViewModels._00_MainViewModel
     {
         private void FillCollectionServices()
         {
+            var backupCollectionService = CollectionServices;
             var collectionServices = new GroupContentList { IsTop = true };
 
-            var categories = BaseAPI.getGroups();
-            AttractionInfo[] attractions;
-            if (categories.IsNullOrEmpty())
+            try
             {
-                Log.Debug("Категории не найдены! Все аттракционы будут загружены в корневую группу.");
-                attractions = BaseAPI.getAttractionsFromGroup(new AttractionGroupInfo());
-                if (attractions.IsNullOrEmpty()) return;
-                collectionServices.AddRange(attractions.OrderBy(i => i.Number).Select(attraction => new ParkService(attraction)));
-            }
-            else
-            {
-                var list = new List<IGroupContentItem>();
-                var sb = new StringBuilder();
-                foreach (var category in categories)
+                var categories = BaseAPI.getGroups();
+                AttractionInfo[] attractions;
+                if (categories.IsNullOrEmpty())
                 {
-                    attractions = BaseAPI.getAttractionsFromGroup(category);
-                    if (category.Type == 0) list.AddRange(attractions.OrderBy(i => i.Number).Select(attraction => new ParkService(attraction)));
-                    else list.Add(new CategoryService(category, attractions));
-
-                    foreach (var a in attractions)
-                        sb.AppendLine("Аттракцион {0} добавлен в группу {1}".F(a.DisplayName, category.Title));
+                    Log.Debug("Категории не найдены! Все аттракционы будут загружены в корневую группу.");
+                    attractions = BaseAPI.getAttractionsFromGroup(new AttractionGroupInfo());
+                    if (attractions.IsNullOrEmpty()) return;
+                    collectionServices.AddRange(attractions.OrderBy(i => i.Number).Select(attraction => new ParkService(attraction)));
                 }
-                Log.Debug(sb);
+                else
+                {
+                    var list = new List<IGroupContentItem>();
+                    var sb = new StringBuilder();
+                    foreach (var category in categories)
+                    {
+                        attractions = BaseAPI.getAttractionsFromGroup(category);
+                        if (category.Type == 0) list.AddRange(attractions.OrderBy(i => i.Number).Select(attraction => new ParkService(attraction)));
+                        else list.Add(new CategoryService(category, attractions));
 
-                collectionServices.AddRange(list.OrderBy(i => i.Number));
+                        foreach (var a in attractions)
+                            sb.AppendLine("Аттракцион {0} добавлен в группу {1}".F(a.DisplayName, category.Title));
+                    }
+                    Log.Debug(sb);
+
+                    collectionServices.AddRange(list.OrderBy(i => i.Number));
+                }
             }
+            catch (Exception e)
+            {
+                Log.Fatal("Во время обновления списка аттракционов/категорий произошло исключение!", e);
+                collectionServices = backupCollectionService;
+            }
+            
 
             CollectionServices = collectionServices;
             OnPropertyChanged(() => CollectionServices);
