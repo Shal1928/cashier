@@ -516,6 +516,8 @@ namespace ASofCP.Cashier.ViewModels._00_MainViewModel
         {
             ApplicationStaticHelper.IsValidExit = true;
             IsEnabled = false;
+            //Отправляем ранее не отправленные на сервер
+            SendChequeToServer(null);
             //TODO: Переопределить Show
             Show();
             var rollInfoViewModel = ObserveWrapperHelper.GetInstance().Resolve<RollInfoViewModel>();
@@ -624,7 +626,8 @@ namespace ASofCP.Cashier.ViewModels._00_MainViewModel
         private void SendChequeToServer(Cheque cheque)
         {
             _queue = ChequeQueueStore.LoadAll();
-            _queue.Add(cheque);
+            if(cheque != null) _queue.Add(cheque);
+
             try
             {
                 foreach (var element in _queue.Elements)

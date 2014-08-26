@@ -36,7 +36,7 @@ namespace ASofCP.Cashier.ViewModels.Base
         {
             get
             {
-                #if DEBUG
+                #if DEBUG || LOGIN_DEBUG || PRINT_DEBUG
                 return false;
                 #else
                 return true;

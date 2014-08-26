@@ -97,10 +97,11 @@ namespace ASofCP.Cashier.ViewModels
         {
             IsShowAll = true;
             IsShowErrorMessage = false;
-            POSInfo posInfo;
             try
             {
-                posInfo = POSInfoStore.Load();
+                var posInfo = POSInfoStore.Load();
+                PosTitle = posInfo.DisplayName;
+                Users = new ObservableCollection<UserCS>(POSInfoStore.Load().AvailableUsers.OrderBy(u => u.DisplayName));
             }
             catch (Exception e)
             {
@@ -108,12 +109,7 @@ namespace ASofCP.Cashier.ViewModels
                 IsShowAll = false;
                 ErrorMessage = e.Message;
                 IsShowErrorMessage = true;
-                //throw e;
-                return;
             }
-            
-            PosTitle = posInfo.DisplayName;
-            Users = new ObservableCollection<UserCS>(POSInfoStore.Load().AvailableUsers.OrderBy(u => u.DisplayName));
         }
 
         private ICommand _logonOffCommand;

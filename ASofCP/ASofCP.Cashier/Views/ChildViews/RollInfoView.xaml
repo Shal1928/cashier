@@ -80,16 +80,16 @@
             </StackPanel>
 
 
-            <StackPanel Orientation="Vertical" Margin="10,0,15,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Visibility="{Binding IsShowAll, Converter={converters:BoolVisibleHidddenConverter}}"
+            <!--<StackPanel Orientation="Vertical" Margin="10,0,15,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Visibility="{Binding IsShowAll, Converter={converters:BoolVisibleHidddenConverter}}"
                         Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3">
                 <TextBlock Text="Выберите цвет билетов" Margin="0,0,0,4" FontWeight="SemiBold" IsEnabled="{Binding IsColorNeed}" />
                 <ComboBox ItemsSource="{Binding Colors}" SelectedIndex="{Binding TicketColorIndex, UpdateSourceTrigger=PropertyChanged}"  Height="42px" Margin="0,0,0,0"
                                   ItemTemplate="{DynamicResource ColorDataTemplate}" IsEnabled="{Binding IsColorNeed}" HorizontalAlignment="Stretch" />
-            </StackPanel>
+            </StackPanel>-->
 
             <SquareButtonParts:SquareButton Content="{Binding MainButtonTitle}" Command="{Binding MainCommand}" Visibility="{Binding IsShowAll, Converter={converters:BoolVisibleHidddenConverter}}"
-                            FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource DarkGraySB}"  Grid.Column="3" Grid.Row="2" Margin="0,32,10,13"
-                            MinWidth="150px" Height="42px" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
+                            FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource DarkGraySB}"  Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="0,32,10,13"
+                            MinWidth="150px" MaxWidth="200px" Height="42px" VerticalAlignment="Bottom" HorizontalAlignment="Center" />
 
             <LinkButtonParts:LinkButton Content="Попробовать деактивировать еще раз" Command="{Binding DeactivateCommand}" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="4" Visibility="{Binding IsShowAll, Converter={converters:InvertBoolVisibleHidddenConverter}}" />
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
@@ -22,25 +20,25 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
         // ReSharper disable DoNotCallOverridableMethodsInConstructor
         public RollInfoViewModel()
         {
-            TicketColorIndex = -1;
+            //TicketColorIndex = -1;
             IsShowAll = true;
 
             #if DEBUG
             FirstTicketSeries = "QQ";
             FirstTicketNumber = 1;
-            TicketColorIndex = 0;
+            //TicketColorIndex = 0;
             #endif
         }
         // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
-        public virtual ObservableCollection<RollColor> Colors { get; set; }
+        //public virtual ObservableCollection<RollColor> Colors { get; set; }
         public virtual string MainTitle { get; set; }
         public virtual string TicketTitle { get; set; }
         public virtual string MainButtonTitle { get; set; }
-        public virtual bool IsColorNeed { get; set; }
+        //public virtual bool IsColorNeed { get; set; }
         public virtual bool IsCanCanceld { get; set; }
         public virtual bool IsShowAll { get; set; }
-        public virtual int TicketColorIndex { get; set; }
+        //public virtual int TicketColorIndex { get; set; }
         public RollInfo CurrentRollInfo { get; set; }
         public string FirstTicketSeries { get; set; }
         public long FirstTicketNumber { get; set; }
@@ -55,22 +53,22 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                 switch (_mode)
                 {
                     case RollInfoViewModelMode.OpenShift:
-                        Prepare("Укажите информацию о вашей смене", "Первый билет", "Открыть смену", true);
+                        Prepare("Укажите информацию о вашей смене", "Первый билет", "Открыть смену");
                         IsCanCanceld = true;
                         break;
                     case RollInfoViewModelMode.CloseShift:
-                        Prepare("Укажите информацию о вашей смене", "Последний напечатанный билет", "Закрыть смену", true);
+                        Prepare("Укажите информацию о вашей смене", "Последний напечатанный билет", "Закрыть смену");
                         IsCanCanceld = true;
                         break;
                     case RollInfoViewModelMode.NeedNewRoll:
-                        Prepare("Билеты в рулоне закончились, укажите информацию о новом рулоне билетов", "Первый билет", "Активировать ленту", true);
+                        Prepare("Билеты в рулоне закончились, укажите информацию о новом рулоне билетов", "Первый билет", "Активировать ленту");
                         IsCanCanceld = false;
                         break;
                     //case RollInfoViewModelMode.ChangeRollDeactivate:
                     //    Prepare("Укажите информацию о текущем рулоне билетов", "Последний напечатанный билет", "Деактивировать ленту", true);
                     //    break;
                     case RollInfoViewModelMode.ChangeRoll:
-                        Prepare("Укажите информацию о новом рулоне билетов", "Первый билет", "Активировать ленту", true);
+                        Prepare("Укажите информацию о новом рулоне билетов", "Первый билет", "Активировать ленту");
                         IsCanCanceld = true;
                         break;
                     default:
@@ -79,21 +77,21 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             }
         }
 
-        public RollColor TicketColor
-        {
-            get
-            {
-                return Colors.IsNullOrEmpty() ? null : Colors.ElementAtOrDefault(TicketColorIndex);
-            }
-        }
+        //public RollColor TicketColor
+        //{
+        //    get
+        //    {
+        //        return Colors.IsNullOrEmpty() ? null : Colors.ElementAtOrDefault(TicketColorIndex);
+        //    }
+        //}
 
 
-        public void Prepare(string mainTitle, string ticketTitle, string mainButtonTitle, bool isColorNeed)
+        public void Prepare(string mainTitle, string ticketTitle, string mainButtonTitle)
         {
             MainTitle = mainTitle;
             TicketTitle = ticketTitle;
             MainButtonTitle = mainButtonTitle;
-            IsColorNeed = isColorNeed;
+            //IsColorNeed = isColorNeed;
         }
 
         #region MainCommand
@@ -115,7 +113,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                 switch (Mode)
                 {
                     case RollInfoViewModelMode.OpenShift:
-                        _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                        _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, RollColor.Default);
                         ApplicationStaticHelper.IsCurrentRollDeactivated = false;
                         _shift = BaseAPI.isShiftOpen() ? BaseAPI.getCurrentShift() : BaseAPI.openShift();
                         break;
@@ -140,13 +138,13 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                         break;
                     case RollInfoViewModelMode.NeedNewRoll:
                         if (!CloseRoll()) return;
-                        _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                        _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, RollColor.Default);
                         ApplicationStaticHelper.IsCurrentRollDeactivated = false;
                         _shift = BaseAPI.getCurrentShift();
                         break;
                     case RollInfoViewModelMode.ChangeRoll:
                         if (!DeactivateRoll()) return;
-                        _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, TicketColor);
+                        _rollInfo = BaseAPI.activateTicketRoll(FirstTicketSeries, FirstTicketNumber, RollColor.Default);
                         ApplicationStaticHelper.IsCurrentRollDeactivated = false;
                         _shift = BaseAPI.getCurrentShift();
                         break;
@@ -167,7 +165,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             
             if (_rollInfo.IsNull() && Mode != RollInfoViewModelMode.CloseShift /*&& Mode != RollInfoViewModelMode.ChangeRollDeactivate*/)
             {
-                ErrorMessage = String.Format("Бабина с параметрами {0} {1} {2} не существует! Режим {3}.", FirstTicketSeries, FirstTicketNumber, TicketColor.Color, Mode);
+                ErrorMessage = String.Format("Бабина с параметрами {0} {1} не существует! Режим {2}.", FirstTicketSeries, FirstTicketNumber, Mode);
                 Log.Warn(ErrorMessage);
                 IsShowErrorMessage = true;
                 return;
@@ -187,9 +185,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         private bool ValidateMainCommand()
         {
-            return FirstTicketNumber > 0
-                && !FirstTicketSeries.IsNullOrEmptyOrSpaces()
-                && (!TicketColor.IsNull() || !IsColorNeed);
+            return FirstTicketNumber > 0 && !FirstTicketSeries.IsNullOrEmptyOrSpaces();
         }
         #endregion
 
@@ -199,26 +195,25 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
             var series = Mode == RollInfoViewModelMode.CloseShift ? FirstTicketSeries : CurrentRollInfo.Series;
             var num = Mode == RollInfoViewModelMode.CloseShift ? FirstTicketNumber : CurrentRollInfo.NextTicket;
-            var color = Mode == RollInfoViewModelMode.CloseShift ? TicketColor : CurrentRollInfo.Color;
 
             if (ApplicationStaticHelper.IsCurrentRollDeactivated)
             {
-                Log.Debug("Лента билетов {0} {1} {2} не активирована. Режим {3}.", series, num, color.Color, Mode);
+                Log.Debug("Лента билетов {0} {1} не активирована. Режим {2}.", series, num, Mode);
                 IsShowAll = true;
                 return true;
             }
 
-            if (BaseAPI.deactivateTicketRoll(series, num, color))
+            if (BaseAPI.deactivateTicketRoll(series, num, null))
             {
                 ApplicationStaticHelper.IsCurrentRollDeactivated = true;
-                Log.Debug("Лента билетов {0} {1} {2} деактивирована. Режим {3}.", series, num, color.Color, Mode);
+                Log.Debug("Лента билетов {0} {1} деактивирована. Режим {2}.", series, num, Mode);
                 IsShowAll = true;
                 return true;
             }
 
             ApplicationStaticHelper.IsCurrentRollDeactivated = false;
             IsShowAll = Mode == RollInfoViewModelMode.CloseShift;
-            ErrorMessage = "Деактивировать ленту билетов {0} {1} {2} не получилось! Режим {3}.".F(series, num, color.Color, Mode);
+            ErrorMessage = "Деактивировать ленту билетов {0} {1} не получилось! Режим {2}.".F(series, num, Mode);
             Log.Warn(ErrorMessage);
             IsShowErrorMessage = true;
             return false;
@@ -245,8 +240,8 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
 
         protected override void OnLoadedCommand()
         {
-            var colors = ExecuteHelper.Try(a => BaseAPI.getColors());
-            Colors = new ObservableCollection<RollColor>(colors);
+            //var colors = ExecuteHelper.Try(a => BaseAPI.getColors());
+            //Colors = new ObservableCollection<RollColor>(colors);
         }
 
         #region CancelCommand
