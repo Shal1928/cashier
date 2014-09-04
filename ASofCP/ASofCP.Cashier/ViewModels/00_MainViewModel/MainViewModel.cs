@@ -910,11 +910,11 @@ namespace ASofCP.Cashier.ViewModels._00_MainViewModel
             {
                 if (CurrentRollInfo != null && !ApplicationStaticHelper.IsCurrentRollDeactivated)
                 {
-                    if (BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color))
-                        Log.Debug("Лента билетов {0} {1} {2} деактивирована.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+                    if (BaseAPI.deactivateTicketRoll(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, RollColor.Default))
+                        Log.Debug("Лента билетов {0} {1} деактивирована.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket);
                     else
                     {
-                        Log.Fatal("Деактивировать ленту билетов {0} {1} {2} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color);
+                        Log.Fatal("Деактивировать ленту билетов {0} {1} не получилось!", CurrentRollInfo.Series, CurrentRollInfo.NextTicket);
                         return;
                     }
                 }

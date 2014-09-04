@@ -24,8 +24,10 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             IsShowAll = true;
 
             #if DEBUG
-            FirstTicketSeries = "QQ";
-            FirstTicketNumber = 1;
+            //FirstTicketSeries = "QQ";
+            //FirstTicketNumber = 1;
+            FirstTicketSeries = "АК";
+            FirstTicketNumber = 206851;
             //TicketColorIndex = 0;
             #endif
         }
@@ -203,7 +205,7 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
                 return true;
             }
 
-            if (BaseAPI.deactivateTicketRoll(series, num, null))
+            if (BaseAPI.deactivateTicketRoll(series, num, RollColor.Default))
             {
                 ApplicationStaticHelper.IsCurrentRollDeactivated = true;
                 Log.Debug("Лента билетов {0} {1} деактивирована. Режим {2}.", series, num, Mode);
@@ -225,14 +227,14 @@ namespace ASofCP.Cashier.ViewModels.ChildViewModels
             if (BaseAPI.closeTicketRoll(CurrentRollInfo))
             {
                 ApplicationStaticHelper.IsCurrentRollDeactivated = true;
-                Log.Debug("Лента билетов {0} {1} {2} закрыта. Режим {3}.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color, Mode);
+                Log.Debug("Лента билетов {0} {1} закрыта. Режим {3}.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, Mode);
                 IsShowAll = true;
                 return true;
             }
 
             ApplicationStaticHelper.IsCurrentRollDeactivated = false;
             IsShowAll = false;
-            ErrorMessage = String.Format("Закрыть ленту билетов {0} {1} {2} не получилось! Режим {3}.", CurrentRollInfo.Series, CurrentRollInfo.NextTicket, CurrentRollInfo.Color.Color, Mode);
+            ErrorMessage = "Закрыть ленту билетов {0} {1} не получилось! Режим {3}.".F(CurrentRollInfo.Series, CurrentRollInfo.NextTicket, Mode);
             Log.Warn(ErrorMessage);
             IsShowErrorMessage = true;
             return false;

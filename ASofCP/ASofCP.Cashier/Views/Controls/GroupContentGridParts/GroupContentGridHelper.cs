@@ -8,11 +8,14 @@ using System.Windows.Threading;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Views.Controls.SquareButtonParts;
+using log4net;
 
 namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 {
     public class GroupContentGridHelper
     {
+        //private static readonly ILog Log = LogManager.GetLogger(typeof(GroupContentGridHelper));
+
         private readonly GroupContentGrid _entity;
         // ReSharper disable StaticFieldInGenericType
         private static readonly DispatcherTimer DispatcherTimer = new DispatcherTimer();
@@ -62,10 +65,14 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 
         public void GenerateItems(IList<IGroupContentItem> itemsCollection)
         {
+            //Log.Debug("GenerateItems count: {0}", itemsCollection.Count);
+
             var curCol = 0;
             var curRow = 0;
             foreach (var contentItem in itemsCollection)
             {
+                //Log.Debug("curCol > 1 < {0}", curCol);
+
                 if (curCol > 1)
                 {
                     curCol = 0;

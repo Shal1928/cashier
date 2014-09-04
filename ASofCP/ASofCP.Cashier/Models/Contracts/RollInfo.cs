@@ -8,6 +8,11 @@ namespace it.q02.asocp.api.data
     [DataContract]
     public class RollInfo
     {
+        public RollInfo()
+        {
+            Color = RollColor.Default;
+        }
+
         [DataMember]
         public long Id;
 

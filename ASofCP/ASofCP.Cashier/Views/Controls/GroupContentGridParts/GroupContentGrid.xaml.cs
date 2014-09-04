@@ -11,6 +11,8 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
     /// </summary>
     public partial class GroupContentGrid
     {
+        //private static readonly ILog Log = LogManager.GetLogger(typeof(GroupContentGrid));
+
         internal GroupContentList TopContentItems;
         internal GroupContentList PreviousContentItems;
         internal bool IsSub
@@ -62,12 +64,20 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 
         private static void OnContentItemsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            //Log.Debug("OnSelectedItemPropertyChanged {0}; N: {1}; O: {2}", d.GetType(), e.NewValue, e.OldValue);
+
             //Показывать ошибку
             var entity = d as GroupContentGrid;
             if(entity == null) return;
 
+            //Log.Debug("DependencyObject d as GroupContentGrid");
+
             var newContentItems = e.NewValue as GroupContentList;
             if(newContentItems.IsNullOrEmpty()) return;
+
+            //Log.Debug("e.NewValue as GroupContentList");
+
+            //Log.Debug("newContentItems.IsTop = ", newContentItems.IsTop);
 
             // ReSharper disable PossibleNullReferenceException
             if (newContentItems.IsTop) entity.TopContentItems = newContentItems;
@@ -104,17 +114,29 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
 
         private static void OnSelectedItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            //Log.Debug("OnSelectedItemPropertyChanged {0}; N: {1}; O: {2}", d.GetType(), e.NewValue, e.OldValue);
+
             var entity = d as GroupContentGrid;
             if (entity == null) return;
 
+            //Log.Debug("DependencyObject d as GroupContentGrid");
+
             var contentItem = e.NewValue as IGroupContentItem;
             if (contentItem == null) return;
+
+            //Log.Debug("e.NewValue as IGroupContentItem");
+
+            //Log.Debug("!contentItem.IsFinal = ", !contentItem.IsFinal);
+            //Log.Debug("Equals(entity.ContentItems, contentItem.SubItemsCollection) = ", Equals(entity.ContentItems, contentItem.SubItemsCollection));
 
             //Не обрабатываем если уже является выбранным
             if (!contentItem.IsFinal && Equals(entity.ContentItems, contentItem.SubItemsCollection))
                 return;
 
+            //Log.Debug("contentItem.SubItemsCollection.IsNullOrEmpty() = ", contentItem.SubItemsCollection.IsNullOrEmpty());
+
             if (contentItem.SubItemsCollection.IsNullOrEmpty()) return;
+
             entity.PreviousContentItems = entity.ContentItems;
             entity.ContentItems = contentItem.SubItemsCollection;
             //if (!contentItem.SubItemsCollection.IsNullOrEmpty())
