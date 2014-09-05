@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -44,6 +45,9 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
                 if (_entity.IsSub && !item.IsFinal) return;
 
                 _entity.SelectedItem = item;
+
+                var binding = _entity.GetBindingExpression(GroupContentGrid.SelectedItemProperty);
+                if (binding != null) binding.UpdateSource();
             };
 
             Grid.SetColumn(itemControl, column);

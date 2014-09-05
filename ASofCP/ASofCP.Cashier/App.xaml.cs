@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Models;
@@ -31,8 +32,12 @@ namespace ASofCP.Cashier
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(App));
 
+        public static int Tier { get { return RenderCapability.Tier >> 16; } }
+
         private void OnStartup(object sender, StartupEventArgs e)
         {
+            Console.Out.WriteLine("Render Tier: {0}", Tier);
+
             SingleInstanceHelper.Make();
 
             var sb = new StringBuilder();

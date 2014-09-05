@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using ASofCP.Cashier.Helpers;
 using ASofCP.Cashier.Views.Controls.GroupContentGridParts.Models;
@@ -9,7 +10,7 @@ namespace ASofCP.Cashier.Views.Controls.GroupContentGridParts
     /// <summary>
     /// Interaction logic for GroupContentGrid.xaml
     /// </summary>
-    public partial class GroupContentGrid
+    public partial class GroupContentGrid : UserControl
     {
         //private static readonly ILog Log = LogManager.GetLogger(typeof(GroupContentGrid));
 

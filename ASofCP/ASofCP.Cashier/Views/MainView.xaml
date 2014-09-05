@@ -91,7 +91,7 @@
                                                     HorizontalAlignment="Stretch" VerticalAlignment="Top" />
             
         </StackPanel>-->
-        <GroupContentGridParts:GroupContentGrid ContentItems="{Binding CollectionServices}" SelectedItem="{Binding SelectedParkService, Mode=OneWayToSource}" 
+        <GroupContentGridParts:GroupContentGrid ContentItems="{Binding CollectionServices}" SelectedItem="{Binding SelectedParkService, Mode=OneWayToSource, UpdateSourceTrigger=Explicit}" 
                                                     DefaultTitle="Услуги" Margin="5,15,15,0" Height="610" MaxHeight="610" MinWidth="400"
                                                     HorizontalAlignment="Stretch" VerticalAlignment="Top"
                                                     Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="3" />
